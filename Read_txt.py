@@ -10,21 +10,24 @@ import cv2
 import os
 from MTCNN import MTCNN
 
-file_paths = ['/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Fam2a/PersonData.txt',
-            '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Fam4a/PersonData.txt',
-            '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Fam5a/PersonData.txt',
-            '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Fam8a/PersonData.txt',
-            '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Group2a/PersonData.txt',
-            '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Group4a/PersonData.txt',
-            '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Group5a/PersonData.txt',
-            '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Group8a/PersonData.txt',
-            '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Wed2a/PersonData.txt',
-            '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Wed3a/PersonData.txt',
-            '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Wed5a/PersonData.txt'
+
+file_paths = [     
+        '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Fam2a/PersonData.txt',
+        '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Fam4a/PersonData.txt',
+        '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Fam5a/PersonData.txt',
+        '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Fam8a/PersonData.txt',
+        '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Group2a/PersonData.txt',                       
+        '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Group4a/PersonData.txt',
+        '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Group5a/PersonData.txt',
+        '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Group8a/PersonData.txt',
+        '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Wed2a/PersonData.txt',
+        '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Wed3a/PersonData.txt',
+        '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Wed5a/PersonData.txt'
 ]
 
 output_path = '/media/vmc/12D37C49724FE954/Face_Data/The_Images_of_Groups_Dataset/Output_face'
 img = 0
+
 mtcnn_model_dir = '/media/vmc/12D37C49724FE954/Smart-Advertising-Systems/MTCNN/Models'
 mtcnn = MTCNN.MTCNN(mtcnn_model_dir)
 
@@ -34,12 +37,18 @@ def draw(img , coord):
     return img
 
 
+def DrawBB(img, bounding_boxes):
+    for bb in bounding_boxes:
+        cv2.rectangle(img, (bb[0],bb[1]),(bb[2],bb[3]), (0,255,0),2)
+    return img
+
+
 def IsInside(bounding_boxes, coord):
     pt1 = coord[0]
     pt2 = coord[1]
     try:
         for index, bb in enumerate(bounding_boxes):
-            print('bb index: {}'.format(index))
+            # print('bb index: {}'.format(index))
             bb = bb.astype(int)
             if bb[0] < pt1[0] and bb[2] > pt1[0]:
                 pass
@@ -69,35 +78,41 @@ def IsInside(bounding_boxes, coord):
     
     return False, -1
 
+
 def main():
-    crop_faces = []
-    bounding_boxes = []
-    coord = []
+    I_crop_faces = []                   # Face image cropped
+    bounding_boxes = []                 # Detect facial bounding box
+    coord = []                          # Coordination of eye from data's description
+
+    print('#No.Folders: {}'.format(len(file_paths)))
 
     for file_path in file_paths:
-        
+
+        print('#Open file: {}'.format(file_path))
+
         with open(file_path, 'r') as file:
-            lines = file.readlines()
+            lines = file.readlines()            # Read all lines in file
             
-            for line in lines:
-                # print(line)
+            for line in lines:                   
                 # Read Image filename
                 if str(line[-4:]) == 'jpg\n':
-                    
+                    I_crop_faces.clear()                 # Reset
+
                     image_name = line[:-5]
                     image_folder = os.path.split(file_paths[0])[0]
-
                     image_path = os.path.join(image_folder, line[:-1])  # -1 because of filename: *.jpg\n
 
-                    print('#File {}'.format(image_path))
+                    print('--> File {}'.format(image_path))
                     try:
                         img = cv2.imread(image_path)
                         # Split face from image
-                        [crop_faces, bounding_boxes, ret] = mtcnn.multi_face_crop(img)
+                        [I_crop_faces, bounding_boxes, ret] = mtcnn.multi_face_crop(img)
                         print('No.faces: {}'.format(len(bounding_boxes)))
-
+                        # img = DrawBB(img, bounding_boxes)
                         if len(bounding_boxes) == 0:
                             continue
+
+                        
 
                     except Exception as e:
                         print('Cannot open file: {}'.format(image_path))
@@ -121,18 +136,23 @@ def main():
                         print('Index : {}'.format(index))
 
                         try:
-                            face_crop = crop_faces[index]
+                            face_crop = I_crop_faces[index]
                             face_crop = cv2.resize(face_crop, (64, 64))    
                             face_crop = cv2.cvtColor(face_crop, cv2.COLOR_RGB2GRAY)
+                            
                             # img = draw(img, coord)
                             # cv2.imshow('test', img)
                             # cv2.waitKey(0)
-                            filename = 'A{}-G{}-{}.jpg'.format(age, gender, image_name) 
+
+                            filename = 'A{}-G{}-{}-{}-{}.jpg'.format(age, gender, index, image_name, image_path.split('/')[6]) 
                             cv2.imwrite(os.path.join(output_path, filename), face_crop)
 
                         except Exception as e:
                             print('Some faces is too close to edge')
                             print('Fail Image: {}'.format(image_path))
+
+        print('Done')
+        continue
                        
 
 if __name__ == '__main__':
