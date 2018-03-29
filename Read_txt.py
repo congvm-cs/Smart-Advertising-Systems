@@ -63,7 +63,7 @@ def IsInside(bounding_boxes, coord):
 
             return True, index
 
-    except expression as identifier:
+    except Exception as identifier:
         print('Wrong bb')
         return False, -1
     
@@ -133,7 +133,6 @@ def main():
                         except Exception as e:
                             print('Some faces is too close to edge')
                             print('Fail Image: {}'.format(image_path))
-                        # # (face_position[0],face_position[1]),(face_position[2],face_position[3])
                        
 
 if __name__ == '__main__':
