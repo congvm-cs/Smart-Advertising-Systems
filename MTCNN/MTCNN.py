@@ -1,9 +1,7 @@
-import tensorflow as tf
-import numpy as np
 from MTCNN import detect_face
-import argparse
-import cv2 
-import logging
+import cv2
+import tensorflow as tf
+
 
 class MTCNN():
 

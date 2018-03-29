@@ -47,6 +47,7 @@ def DrawBB(img, bounding_boxes):
 def IsInside(bounding_boxes, coord):
     pt1 = coord[0]
     pt2 = coord[1]
+    
     try:
         for index, bb in enumerate(bounding_boxes):
             # print('bb index: {}'.format(index))
