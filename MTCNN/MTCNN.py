@@ -53,12 +53,12 @@ class MTCNN():
                 y1 = face_position[0]
                 y2 = face_position[2]
 
-                offset = int(0.1*y1) 
+                offset = int(0.2*(y2 - y1)) 
                 x1 = x1 - offset
                 y1 = y1 - offset
                 y2 = y2 + offset
                 x2 = x2 + offset
-                self._crop = image[x1:x2,y1:y2, :]
+                self._crop = image[x1:x2, y1:y2, :]
                 # Create crop image
                 self._crop = cv2.cvtColor(self._crop, cv2.COLOR_BGR2RGB)
 

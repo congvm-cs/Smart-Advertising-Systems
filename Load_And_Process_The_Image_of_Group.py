@@ -31,6 +31,7 @@ img = 0
 mtcnn_model_dir = '/media/vmc/12D37C49724FE954/Smart-Advertising-Systems/MTCNN/Models'
 mtcnn = MTCNN.MTCNN(mtcnn_model_dir)
 
+
 def draw(img , coord):
     cv2.circle(img, (coord[0][0], coord[0][1]), 1, (0, 255, 0), 2)
     cv2.circle(img, (coord[1][0], coord[1][1]), 1, (0, 255, 0), 2)
@@ -112,8 +113,6 @@ def main():
                         if len(bounding_boxes) == 0:
                             continue
 
-                        
-
                     except Exception as e:
                         print('Cannot open file: {}'.format(image_path))
 
@@ -129,7 +128,8 @@ def main():
                     print('{}-{}-{}-{}'.format(x1, y1, x2, y2))
                     
                     coord = [[x1, y1], [x2, y2]]
-                    # # Check inside
+
+                    # Check whether coord is inside bounding_boxes?
                     [ret, index] = IsInside(bounding_boxes, coord)
 
                     if ret == True:
@@ -152,7 +152,6 @@ def main():
                             print('Fail Image: {}'.format(image_path))
 
         print('Done')
-        continue
                        
 
 if __name__ == '__main__':
