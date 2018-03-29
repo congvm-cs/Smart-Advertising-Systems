@@ -131,8 +131,6 @@ if __name__ == '__main__':
     parser.add_argument("--data_dir", help='data directory', type=str)
     parser.add_argument("--processed_data_dir", help='processed folder directory', type=str)
     parser.add_argument("--final_dir", help='final directory', type=str)
-    # parser.add_argument("--train_dir", help='training directory', type=str)
-    # parser.add_argument("--test_dir", help='test', type=str)
     parser.add_argument("--crop_size", help='image size', type=int, default=128)
     args = parser.parse_args()
     main(args)
