@@ -14,9 +14,9 @@ class AGNet():
         if not os.path.isdir(AGNetConfig.props['LOG_PATH']):
             os.mkdir(AGNetConfig.props['LOG_PATH'])
         
-        model_checkpoint = os.path.join(AGNetConfig.props['MODEL_PATH'], AGNetConfig.props['WEIGHT_NAME'])
+        model_checkpoint_name = os.path.join(AGNetConfig.props['MODEL_PATH'], AGNetConfig.props['WEIGHT_NAME'])
 
-        self._model_checkpoint = ModelCheckpoint(filepath=AGNetConfig.props['MODEL_PATH'], 
+        self._model_checkpoint = ModelCheckpoint(filepath=model_checkpoint_name, 
                                                 monitor='val_loss', 
                                                 verbose=1, 
                                                 save_best_only=True)

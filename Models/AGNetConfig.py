@@ -1,4 +1,4 @@
-# This is FGNet configurations
+# This is AGNet configurations
 
 props = {
     'LOG_PATH': './AGNet_logs',
