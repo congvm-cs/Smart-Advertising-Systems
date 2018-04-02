@@ -22,13 +22,19 @@ class FGDataset():
         for file_name in os.listdir(train_dir):
             file_path = os.path.join(train_dir, file_name)
             
-            X_train.append(cv2.imread(file_path))
+            origin_I = cv2.imread(file_path)
+            gray_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
+
+            X_train.append(gray_I)
             y_train.append(self.categorize_labels(file_name))
 
         for file_name in os.listdir(test_dir):
             file_path = os.path.join(train_dir, file_name)
             
-            X_test.append(cv2.imread(file_path))
+            origin_I = cv2.imread(file_path)
+            gray_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
+
+            X_test.append(gray_I)
             y_test.append(self.categorize_labels(file_name))
 
         X_train = np.array(X_train)
