@@ -3,7 +3,7 @@ from keras.layers import Conv2D, MaxPooling2D, Dense, LocallyConnected2D, Averag
 from keras.callbacks import ModelCheckpoint, TensorBoard
 import AGNetConfig
 import os
-from keras.applications.mobilenet import MobileNet
+from keras.applications.vgg16 import VGG16
 
 class AGNet():
     # pass
@@ -50,7 +50,7 @@ class AGNet():
 
 
     def __reference__(self):
-        model = MobileNet(input_shape=AGNetConfig.props['INPUT_SHAPE'], include_top=False)
+        model = VGG16(input_shape=AGNetConfig.props['INPUT_SHAPE'], include_top=False)
         model.add(Dense(7, activation='softmax'))
         return model
 
