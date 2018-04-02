@@ -1,4 +1,4 @@
-from MTCNN import MTCNN
+# from MTCNN import MTCNN
 import argparse
 import os
 import cv2
