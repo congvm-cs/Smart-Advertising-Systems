@@ -20,7 +20,6 @@ class FGDataset():
         y_test = []
 
         for file_name in os.listdir(train_dir):
-            print('train_data')
             file_path = os.path.join(train_dir, file_name)
             
             origin_I_train = cv2.imread(str(file_path))
@@ -30,8 +29,7 @@ class FGDataset():
             y_train.append(self.categorize_labels(file_name))
 
         for file_name in os.listdir(test_dir):
-            print('test_data')
-            file_path = os.path.join(train_dir, file_name)
+            file_path = os.path.join(test_dir, file_name)
             
             origin_I = cv2.imread(str(file_path))
             gray_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
