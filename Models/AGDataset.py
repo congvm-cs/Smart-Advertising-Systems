@@ -35,10 +35,10 @@ class AGDataset():
         for file_name in os.listdir(test_dir):
             file_path = os.path.join(test_dir, file_name)
             
-            origin_I = cv2.imread(str(file_path))
-            gray_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
+            origin_I_train = cv2.imread(str(file_path))
+            gray_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
 
-            X_test.append(gray_I)
+            X_test.append(gray_I_train)
             y_test.append(self.categorize_labels(file_name))
 
         X_train = np.array(X_train)
@@ -55,6 +55,7 @@ class AGDataset():
         X_test = X_test/255.0
         
         return [X_train, X_test, y_train, y_test]   
+
 
     def categorize_labels(self, file_name):
         # File name: A1-G1-0-1025296488_4712c26a4f_1160_96603368@N00-Fam2a.jpg
@@ -147,7 +148,7 @@ class AGDataset():
 
 
 def main(args):
-    fgdata = FGDataset()
+    fgdata = AGDataset()
     # fgdata.crop_face_from_image(args)
     fgdata.split_train_test(args)
 
