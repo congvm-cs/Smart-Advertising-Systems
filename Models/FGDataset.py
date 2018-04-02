@@ -5,10 +5,14 @@ import cv2
 from shutil import move
 from sklearn.model_selection import train_test_split
 import numpy as np
+import FGNetConfig
+
 class FGDataset():
 
     def __init__(self):
-        pass
+        self._IMAGE_SIZE = FGNetConfig.props['IMAGE_SIZE']
+        self._IMAGE_DEPTH = FGNetConfig.props['IMAGE_DEPTH']
+
 
     def load_dataset(self, args):
         train_dir = args.train_dir
@@ -37,11 +41,16 @@ class FGDataset():
             X_test.append(gray_I)
             y_test.append(self.categorize_labels(file_name))
 
-        X_train = np.array(X_train)
-        X_test = np.array(X_test)
+        X_train = np.reshape(X_train, newshape=(len(X_train, self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
+        X_test = np.reshape(X_test, newshape=(len(X_train, self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
         y_train = np.array(y_train)
         y_test = np.array(y_test)
 
+
+        # Normalize
+        X_train = X_train/255.0
+        X_test = X_test/255.0
+        
         return [X_train, X_test, y_train, y_test]   
 
     def categorize_labels(self, file_name):

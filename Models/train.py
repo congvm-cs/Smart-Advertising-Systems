@@ -13,10 +13,6 @@ def main(args):
     print("Shape of y_train: {}".format(y_train.shape))
     print("Shape of y_test: {}".format(y_test.shape))
     
-    print('Preprocess...')
-    X_train = X_train/255.0
-    X_test = X_test/255.0
-    
     print("Training ...")
     fgnet.train(X_train, X_test, y_train, y_test)
 
