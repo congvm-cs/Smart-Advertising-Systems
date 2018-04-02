@@ -29,7 +29,7 @@ class AGNet():
         self._callback_list = [self._model_checkpoint, self._tensor_board]
 
 
-    def __reference__1(self):
+    def __reference__(self):
         model = Sequential()
         model.add(Conv2D(filters=64, kernel_size=(3, 3), padding='valid', activation='relu',
                         input_shape=AGNetConfig.props['INPUT_SHAPE']))
@@ -50,7 +50,7 @@ class AGNet():
         return model
 
 
-    def __reference__(self):
+    def __reference__1(self):
         model1 = VGG16(include_top=False, input_shape=AGNetConfig.props['INPUT_SHAPE'])
         # model2 =  Sequential()
         # model2.add(Dense(7, activation='softmax'))
