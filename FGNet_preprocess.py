@@ -2,7 +2,12 @@ from MTCNN import MTCNN
 import argparse
 import os
 import cv2
+from shutil import move
 
+
+def split_train_test(data_dir, test):
+
+    pass
 
 def main(args):
     input_data_dir = args.input_data_dir
