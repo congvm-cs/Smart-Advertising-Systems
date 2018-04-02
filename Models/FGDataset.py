@@ -41,12 +41,6 @@ class FGDataset():
         data_dir = args.input_data_dir
         train_dir = args.train_dir
         test_dir = args.test_dir
-
-        if not os.path.isdir(train_dir):
-            os.mkdir(train_dir)
-
-        if not os.path.isdir(test_dir):
-            os.mkdir(test_dir)
         
         file_paths_arr = []
         # labels_arr = []
@@ -58,6 +52,12 @@ class FGDataset():
         print('Number of images: {}'.format(len(file_paths_arr)))
 
         [file_paths_train, file_paths_test] = train_test_split(file_paths_arr, random_state=10, test_size=0.05)
+
+        if not os.path.isdir(train_dir):
+            os.mkdir(train_dir)
+
+        if not os.path.isdir(test_dir):
+            os.mkdir(test_dir)  
 
         for index, file_path in enumerate(file_paths_train):
             move(file_path, train_dir)
