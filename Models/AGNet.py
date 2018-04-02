@@ -51,11 +51,11 @@ class AGNet():
 
 
     def __reference__(self):
-        model1 = VGG16(include_top=False)
+        model1 = VGG16(include_top=False, input_shape=AGNetConfig.props['INPUT_SHAPE'])
         model2 =  Sequential()
         model2.add(Dense(7, activation='softmax'))
 
-        model = Model(model1.input, model2, input_shape=AGNetConfig.props['INPUT_SHAPE'])
+        model = Model(model1.input, model2.output)
         return model
 
 
