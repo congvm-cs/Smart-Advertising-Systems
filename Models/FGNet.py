@@ -50,7 +50,7 @@ class FGNet():
 
     def train(self, X_train, y_train, X_dev, y_dev):
         self._model = self.__reference__()
-        self._model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['loss'])
+        self._model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
         self._model.fit(x=X_train, y=y_train, batch_size=FGNetConfig.props['BATCH_SIZE'], 
                                 epochs=FGNetConfig.props['EPOCHS'],
                                 validation_data=(X_dev, y_dev),
