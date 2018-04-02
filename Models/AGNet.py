@@ -56,6 +56,13 @@ class AGNet():
         model2.add(Dense(7, activation='softmax'))
 
         model = Model(model1.input, model2.output)
+
+
+        x = model1.output
+        x = Dense(7, activation='softmax')(x)
+
+        # this is the model we will train
+        model = Model(inputs=model1.input, outputs=x)
         return model
 
 
