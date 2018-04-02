@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import AGNetConfig
 
-class FGDataset():
+class AGDataset():
 
     def __init__(self):
         self._IMAGE_SIZE = AGNetConfig.props['IMAGE_SIZE']
