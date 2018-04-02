@@ -23,10 +23,10 @@ class MTCNN():
         y2 = bounding_box[2]
 
         offset = int(0.2*(y2 - y1)) 
-        x1 = x1 - offset
-        y1 = y1 - offset
-        y2 = y2 + offset
-        x2 = x2 + offset
+        x1 = (x1 - offset) if (x1 - offset) > 0 else 0 
+        y1 = (y1 - offset) if (y1 - offset) > 0 else 0
+        y2 = (y2 + offset) if (y2 + offset) < img.shape[1] else img.shape[1]
+        x2 = x2 + offset if (x2 + offset) < img.shape[0] else img.shape[0]
         crop_image = img[x1:x2, y1:y2, :]
         return crop_image
 
