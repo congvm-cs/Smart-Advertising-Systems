@@ -10,6 +10,28 @@ class FGDataset():
     def __init__(self):
         pass
 
+    def load_dataset(self, args):
+        train_dir = args.train_dir
+        test_dir = args.test_dir
+
+        X_train = []
+        X_test = []
+        y_train = []
+        y_test = []
+
+        for file_name in os.listdir(train_dir):
+            file_path = os.path.join(train_dir, file_name)
+            
+            X_train.append(cv2.imread(file_path))
+            y_train.append(self.categorize_labels(file_name))
+
+        for file_name in os.listdir(test_dir):
+            file_path = os.path.join(train_dir, file_name)
+            
+            X_test.append(cv2.imread(file_path))
+            y_test.append(self.categorize_labels(file_name))
+
+        return [X_train, X_test, y_train, y_test]   
 
     def categorize_labels(self, file_name):
         # File name: A1-G1-0-1025296488_4712c26a4f_1160_96603368@N00-Fam2a.jpg
