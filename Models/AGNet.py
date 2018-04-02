@@ -3,6 +3,7 @@ from keras.layers import Conv2D, MaxPooling2D, Dense, LocallyConnected2D, Averag
 from keras.callbacks import ModelCheckpoint, TensorBoard
 import AGNetConfig
 import os
+from keras.applications.mobilenet import MobileNet
 
 class AGNet():
     # pass
@@ -27,7 +28,7 @@ class AGNet():
         self._callback_list = [self._model_checkpoint, self._tensor_board]
 
 
-    def __reference__(self):
+    def __reference__1(self):
         model = Sequential()
         model.add(Conv2D(filters=64, kernel_size=(3, 3), padding='valid', activation='relu',
                         input_shape=AGNetConfig.props['INPUT_SHAPE']))
@@ -44,6 +45,12 @@ class AGNet():
 
         model.add(Flatten())
         model.add(Dense(1024, activation='relu'))
+        model.add(Dense(7, activation='softmax'))
+        return model
+
+
+    def __reference__(self):
+        model = MobileNet(input_shape=AGNetConfig.props['INPUT_SHAPE'], include_top=False)
         model.add(Dense(7, activation='softmax'))
         return model
 
