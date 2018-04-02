@@ -4,6 +4,7 @@ from keras.callbacks import ModelCheckpoint, TensorBoard
 import AGNetConfig
 import os
 from keras.applications.vgg16 import VGG16
+from keras import Model
 
 class AGNet():
     # pass
@@ -50,8 +51,11 @@ class AGNet():
 
 
     def __reference__(self):
-        model = VGG16(input_shape=AGNetConfig.props['INPUT_SHAPE'], include_top=True, classes=7)
-        # model.add(Dense(7, activation='softmax'))
+        model1 = VGG16(input_shape=AGNetConfig.props['INPUT_SHAPE'], include_top=False)
+        model2 =  Sequential()
+        model2.add(Dense(7, activation='softmax'))
+
+        model = Model(model1.input, model2)
         return model
 
 
