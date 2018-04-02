@@ -41,10 +41,13 @@ class FGDataset():
             X_test.append(gray_I)
             y_test.append(self.categorize_labels(file_name))
 
-        X_train = np.reshape(X_train, newshape=(len(X_train), self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
-        X_test = np.reshape(X_test, newshape=(len(X_train), self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
+        X_train = np.array(X_train)
+        X_test = np.array(X_test)
         y_train = np.array(y_train)
         y_test = np.array(y_test)
+
+        X_train = np.reshape(X_train, newshape=(len(X_train), self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
+        X_test = np.reshape(X_test, newshape=(len(X_train), self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
 
 
         # Normalize
