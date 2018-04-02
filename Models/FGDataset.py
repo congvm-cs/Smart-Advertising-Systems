@@ -22,7 +22,7 @@ class FGDataset():
         for file_name in os.listdir(train_dir):
             file_path = os.path.join(train_dir, file_name)
             
-            origin_I = cv2.imread(file_path)
+            origin_I = cv2.imread(str(file_path))
             gray_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
 
             X_train.append(gray_I)
@@ -31,7 +31,7 @@ class FGDataset():
         for file_name in os.listdir(test_dir):
             file_path = os.path.join(train_dir, file_name)
             
-            origin_I = cv2.imread(file_path)
+            origin_I = cv2.imread(str(file_path))
             gray_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
 
             X_test.append(gray_I)
