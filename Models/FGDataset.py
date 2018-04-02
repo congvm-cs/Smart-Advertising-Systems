@@ -64,7 +64,7 @@ class FGDataset():
             print('copying training file  ... | {:.2f} %'.format(index*100/len(file_paths_train)), flush=True, end='\r')
 
         for index, file_path in enumerate(file_paths_test):
-            move(file_path, train_dir)
+            move(file_path, test_dir)
             print('copying test file... | {:.2f} %'.format(index*100/len(file_paths_test)), flush=True, end='\r')
 
 
