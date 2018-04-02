@@ -44,7 +44,7 @@ class FGNet():
 
         model.add(Flatten())
         model.add(Dense(1024, activation='relu'))
-        model.add(Dense(6, activation='softmax'))
+        model.add(Dense(7, activation='softmax'))
         return model
 
 
