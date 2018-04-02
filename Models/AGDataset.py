@@ -27,18 +27,18 @@ class AGDataset():
             file_path = os.path.join(train_dir, file_name)
             
             origin_I_train = cv2.imread(str(file_path))
-            gray_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+            # origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
 
-            X_train.append(gray_I_train)
+            X_train.append(origin_I_train)
             y_train.append(self.categorize_labels(file_name))
 
         for file_name in os.listdir(test_dir):
             file_path = os.path.join(test_dir, file_name)
             
             origin_I_train = cv2.imread(str(file_path))
-            gray_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+            # origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
 
-            X_test.append(gray_I_train)
+            X_test.append(origin_I_train)
             y_test.append(self.categorize_labels(file_name))
 
         X_train = np.array(X_train)
