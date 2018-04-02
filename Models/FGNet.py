@@ -2,6 +2,7 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Dense, LocallyConnected2D, AveragePooling2D, Flatten
 from keras.callbacks import ModelCheckpoint, TensorBoard
 import FGNetConfig
+import os
 
 class FGNet():
     # pass
@@ -9,7 +10,13 @@ class FGNet():
     def __init__(self):
         self._model = Sequential()
 
-        self._model_checkpoint = ModelCheckpoint(filepath=FGNetConfig.props['LOG_PATH'], 
+        if not os.path.isdir(FGNetConfig.props['MODEL_PATH']):
+            os.mkdir(FGNetConfig.props['MODEL_PATH'])
+        
+        if not os.path.isdir(FGNetConfig.props['LOG_PATH']):
+            os.mkdir(FGNetConfig.props['LOG_PATH'])
+        
+        self._model_checkpoint = ModelCheckpoint(filepath=FGNetConfig.props['MODEL_PATH'], 
                                                 monitor='val_loss', 
                                                 verbose=1, 
                                                 save_best_only=True)
@@ -19,11 +26,6 @@ class FGNet():
                                         write_images=True)
 
         self._callback_list = [self._model_checkpoint, self._tensor_board]
-
-         # Configuration
-        # LOG_PATH = './Logs'
-        # MODEL_PATH = os.path.join(args.model_dir, 'weights-improvement-{epoch:02d}-{val_loss:.2f}-{val_acc:.2f}.hdf5')
-       
 
 
     def __reference__(self):
@@ -49,7 +51,8 @@ class FGNet():
         self._model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['loss'])
         self._model.fit(x=X_train, y=y_train, batch_size=FGNetConfig.props['BATCH_SIZE'], 
                                 epochs=FGNetConfig.props['EPOCHS'],
-                                validation_data=(X_dev, y_dev))
+                                validation_data=(X_dev, y_dev),
+                                callbacks=self._callback_list)
 
 
     def __evaluate__(self):
