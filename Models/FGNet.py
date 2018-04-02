@@ -1,7 +1,6 @@
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Dense, LocallyConnected2D, AveragePooling2D, Flatten
 from keras.callbacks import ModelCheckpoint, TensorBoard
-
 import FGNetConfig
 
 class FGNet():
