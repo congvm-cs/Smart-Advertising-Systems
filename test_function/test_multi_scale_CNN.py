@@ -1,6 +1,7 @@
 from keras.models import Sequential
 from keras.layers import Dense, MaxPooling2D, AveragePooling2D, Conv2D, Merge, Flatten
 from keras.layers.merge import Concatenate
+
 # Model 1
 model1 = Sequential()
 model1.add(Conv2D(filters=32, kernel_size=(3, 3), activation='relu', 
