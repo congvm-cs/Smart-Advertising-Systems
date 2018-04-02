@@ -5,13 +5,13 @@ import cv2
 from shutil import move
 from sklearn.model_selection import train_test_split
 import numpy as np
-import FGNetConfig
+import AGNetConfig
 
 class FGDataset():
 
     def __init__(self):
-        self._IMAGE_SIZE = FGNetConfig.props['IMAGE_SIZE']
-        self._IMAGE_DEPTH = FGNetConfig.props['IMAGE_DEPTH']
+        self._IMAGE_SIZE = AGNetConfig.props['IMAGE_SIZE']
+        self._IMAGE_DEPTH = AGNetConfig.props['IMAGE_DEPTH']
 
 
     def load_dataset(self, args):
