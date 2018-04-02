@@ -52,10 +52,10 @@ class AGNet():
 
     def __reference__(self):
         model1 = VGG16(include_top=False)
-        model2 =  Sequential()
-        model2.add(Dense(7, activation='softmax'))
+        # model2 =  Sequential()
+        # model2.add(Dense(7, activation='softmax'))
 
-        model = Model(model1.input, model2.output)
+        # model = Model(model1.input, model2.output)
 
 
         x = model1.output
