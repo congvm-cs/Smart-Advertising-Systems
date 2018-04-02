@@ -10,5 +10,5 @@ props = {
 
     # Training
     'EPOCHS': 100,
-    'BATCH_SIZE': 30
+    'BATCH_SIZE': 200
 }
