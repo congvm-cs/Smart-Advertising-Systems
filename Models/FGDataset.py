@@ -26,7 +26,7 @@ class FGDataset():
             origin_I_train = cv2.imread(str(file_path))
             gray_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
 
-            X_train.append(gray_I)
+            X_train.append(gray_I_train)
             y_train.append(self.categorize_labels(file_name))
 
         for file_name in os.listdir(test_dir):
