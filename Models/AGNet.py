@@ -50,8 +50,8 @@ class AGNet():
 
 
     def __reference__(self):
-        model = VGG16(input_shape=AGNetConfig.props['INPUT_SHAPE'], include_top=False)
-        model.add(Dense(7, activation='softmax'))
+        model = VGG16(input_shape=AGNetConfig.props['INPUT_SHAPE'], include_top=True, classes=7)
+        # model.add(Dense(7, activation='softmax'))
         return model
 
 
