@@ -16,10 +16,13 @@ class FGNet():
         if not os.path.isdir(FGNetConfig.props['LOG_PATH']):
             os.mkdir(FGNetConfig.props['LOG_PATH'])
         
+        model_checkpoint = os.path.join(FGNetConfig.props['MODEL_PATH'], FGNetConfig.props['WEIGHT_NAME'])
+
         self._model_checkpoint = ModelCheckpoint(filepath=FGNetConfig.props['MODEL_PATH'], 
                                                 monitor='val_loss', 
                                                 verbose=1, 
                                                 save_best_only=True)
+                                                
         self._tensor_board = TensorBoard(log_dir=FGNetConfig.props['LOG_PATH'], 
                                         histogram_freq=0, 
                                         write_graph=True, 
