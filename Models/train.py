@@ -14,7 +14,7 @@ def main(args):
     print("Shape of y_test: {}".format(y_test.shape))
     
     print("Training ...")
-    fgnet.train(X_train, X_test, y_train, y_test)
+    fgnet.train(X_train, y_train, X_test, y_test)
 
 
 if __name__ == '__main__':
