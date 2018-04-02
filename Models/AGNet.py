@@ -1,26 +1,26 @@
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Dense, LocallyConnected2D, AveragePooling2D, Flatten
 from keras.callbacks import ModelCheckpoint, TensorBoard
-import FGNetConfig
+import AGNetConfig
 import os
 
-class FGNet():
+class AGNet():
     # pass
 
     def __init__(self):
-        if not os.path.isdir(FGNetConfig.props['MODEL_PATH']):
-            os.mkdir(FGNetConfig.props['MODEL_PATH'])
+        if not os.path.isdir(AGNetConfig.props['MODEL_PATH']):
+            os.mkdir(AGNetConfig.props['MODEL_PATH'])
         
-        if not os.path.isdir(FGNetConfig.props['LOG_PATH']):
-            os.mkdir(FGNetConfig.props['LOG_PATH'])
+        if not os.path.isdir(AGNetConfig.props['LOG_PATH']):
+            os.mkdir(AGNetConfig.props['LOG_PATH'])
         
-        model_checkpoint = os.path.join(FGNetConfig.props['MODEL_PATH'], FGNetConfig.props['WEIGHT_NAME'])
+        model_checkpoint = os.path.join(AGNetConfig.props['MODEL_PATH'], AGNetConfig.props['WEIGHT_NAME'])
 
-        self._model_checkpoint = ModelCheckpoint(filepath=FGNetConfig.props['MODEL_PATH'], 
+        self._model_checkpoint = ModelCheckpoint(filepath=AGNetConfig.props['MODEL_PATH'], 
                                                 monitor='val_loss', 
                                                 verbose=1, 
                                                 save_best_only=True)
-        self._tensor_board = TensorBoard(log_dir=FGNetConfig.props['LOG_PATH'], 
+        self._tensor_board = TensorBoard(log_dir=AGNetConfig.props['LOG_PATH'], 
                                         histogram_freq=0, 
                                         write_graph=True, 
                                         write_images=True)
@@ -30,7 +30,7 @@ class FGNet():
     def __reference__(self):
         model = Sequential()
         model.add(Conv2D(filters=64, kernel_size=(3, 3), padding='valid', activation='relu',
-                        input_shape=FGNetConfig.props['INPUT_SHAPE']))
+                        input_shape=AGNetConfig.props['INPUT_SHAPE']))
         model.add(AveragePooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='valid', activation='relu'))
@@ -51,8 +51,8 @@ class FGNet():
     def train(self, X_train, y_train, X_dev, y_dev):
         self._model = self.__reference__()
         self._model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
-        self._model.fit(x=X_train, y=y_train, batch_size=FGNetConfig.props['BATCH_SIZE'], 
-                                epochs=FGNetConfig.props['EPOCHS'],
+        self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
+                                epochs=AGNetConfig.props['EPOCHS'],
                                 validation_data=(X_dev, y_dev),
                                 callbacks=self._callback_list)
 

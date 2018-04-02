@@ -1,12 +1,12 @@
-from FGNet import FGNet
-from FGDataset import FGDataset
+from AGNet import AGNet
+from AGDataset import AGDataset
 import argparse
 
 def main(args):
-    fgnet = FGNet()
-    fgdataset = FGDataset()
+    AGNet = AGNet()
+    agdataset = AGDataset()
 
-    [X_train, X_test, y_train, y_test] = fgdataset.load_dataset(args)
+    [X_train, X_test, y_train, y_test] = agdataset.load_dataset(args)
 
     print("Shape of X_train: {}".format(X_train.shape))
     print("Shape of X_test: {}".format(X_test.shape))
@@ -14,7 +14,7 @@ def main(args):
     print("Shape of y_test: {}".format(y_test.shape))
     
     print("Training ...")
-    fgnet.train(X_train, y_train, X_test, y_test)
+    AGNet.train(X_train, y_train, X_test, y_test)
 
 
 if __name__ == '__main__':
