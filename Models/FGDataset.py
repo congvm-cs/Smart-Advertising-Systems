@@ -4,7 +4,7 @@ import os
 import cv2
 from shutil import move
 from sklearn.model_selection import train_test_split
-
+import numpy as np
 class FGDataset():
 
     def __init__(self):
@@ -30,6 +30,11 @@ class FGDataset():
             
             X_test.append(cv2.imread(file_path))
             y_test.append(self.categorize_labels(file_name))
+
+        X_train = np.array(X_train)
+        X_test = np.array(X_test)
+        y_train = np.array(y_train)
+        y_test = np.array(y_test)
 
         return [X_train, X_test, y_train, y_test]   
 

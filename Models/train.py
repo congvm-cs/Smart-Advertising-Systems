@@ -7,6 +7,13 @@ def main(args):
     fgdataset = FGDataset()
 
     [X_train, X_test, y_train, y_test] = fgdataset.load_dataset(args)
+
+    print("Shape of X_train: ".format(X_train.shape))
+    print("Shape of X_test: ".format(X_test.shape))
+    print("Shape of y_train: ".format(y_train.shape))
+    print("Shape of y_test: ".format(y_test.shape))
+
+    print("Training ...")
     fgnet.train(X_train, X_test, y_train, y_test)
 
 
