@@ -47,7 +47,7 @@ class FGDataset():
         y_test = np.array(y_test)
 
         X_train = np.reshape(X_train, newshape=(len(X_train), self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
-        X_test = np.reshape(X_test, newshape=(len(X_train), self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
+        X_test = np.reshape(X_test, newshape=(len(X_test), self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
 
 
         # Normalize
