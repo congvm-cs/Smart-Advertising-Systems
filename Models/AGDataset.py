@@ -27,7 +27,7 @@ class AGDataset():
             file_path = os.path.join(train_dir, file_name)
             
             origin_I_train = cv2.imread(str(file_path))
-            origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+            # origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
 
             X_train.append(origin_I_train)
             y_train.append(self.categorize_labels(file_name))
@@ -36,7 +36,7 @@ class AGDataset():
             file_path = os.path.join(test_dir, file_name)
             
             origin_I_train = cv2.imread(str(file_path))
-            origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+            # origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
 
             X_test.append(origin_I_train)
             y_test.append(self.categorize_labels(file_name))

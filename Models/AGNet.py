@@ -74,7 +74,7 @@ class AGNet():
         channel - 1 for grayscale, 3 for color 
         num_classes - number of categories for our classification task
         """
-        (channel, img_rows, img_cols) = (1, 64, 64)
+        (channel, img_rows, img_cols) = (3, 64, 64)
         num_classes = 7
 
         model = Sequential()
