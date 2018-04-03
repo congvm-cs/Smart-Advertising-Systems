@@ -122,15 +122,18 @@ class AGNet():
         model.add(Dropout(0.5))
         model.add(Dense(1000, activation='softmax'))
         
+
+        model.layers.pop()
+        model.outputs = [model.layers[-1].output]
+        model.layers[-1].outbound_nodes = []
+        model.add(Dense(num_classes, activation='softmax'))
+
         print(model.summary())
         # Loads ImageNet pre-trained data
         model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
 
         # Truncate and replace softmax layer for transfer learning
-        model.layers.pop()
-        model.outputs = [model.layers[-1].output]
-        model.layers[-1].outbound_nodes = []
-        model.add(Dense(num_classes, activation='softmax'))
+     
 
         # Uncomment below to set the first 10 layers to non-trainable (weights will not be updated)
         for layer in model.layers[:10]:
