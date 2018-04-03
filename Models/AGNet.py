@@ -121,7 +121,8 @@ class AGNet():
         model.add(Dense(4096, activation='relu'))
         model.add(Dropout(0.5))
         model.add(Dense(1000, activation='softmax'))
-
+        
+        print(model.summary())
         # Loads ImageNet pre-trained data
         model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
 
