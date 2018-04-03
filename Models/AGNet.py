@@ -145,8 +145,8 @@ class AGNet():
 
 
     def train(self, X_train, y_train, X_dev, y_dev):
-        # self._model = self.__reference__()
-        self._model = self.__vgg16_model__()
+        self._model = self.__reference__()
+        # self._model = self.__vgg16_model__()
         self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
                                 epochs=AGNetConfig.props['EPOCHS'],
                                 validation_data=(X_dev, y_dev),
