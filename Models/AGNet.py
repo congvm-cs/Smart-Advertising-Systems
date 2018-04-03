@@ -122,9 +122,9 @@ class AGNet():
         model.add(Flatten())
         model.add(Dense(4096, activation='relu'))
         model.add(Dropout(0.5))
-        model.add(Dense(4096, activation='relu'))
-        model.add(Dropout(0.5))
-        model.add(Dense(1000, activation='softmax'))
+        # model.add(Dense(4096, activation='relu'))
+        # model.add(Dropout(0.5))
+        # model.add(Dense(1000, activation='softmax'))
         
 
         model.layers.pop()
@@ -136,7 +136,7 @@ class AGNet():
 
         # Uncomment below to set the first 10 layers to non-trainable (weights will not be updated)
         for layer in model.layers[:10]:
-            layer.trainable = False
+            layer.trainable = True
 
         # Learning rate is changed to 0.001
         sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
