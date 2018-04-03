@@ -1,11 +1,14 @@
 # from MTCNN import MTCNN
 import argparse
 import os
+import sys
+sys.path.append('..')
 import cv2
 from shutil import move
 from sklearn.model_selection import train_test_split
 import numpy as np
 import AGNetConfig
+from MTCNN import MTCNN
 
 class AGDataset():
 
@@ -141,10 +144,10 @@ class AGDataset():
                 
                     if ret == False:
                         continue
-                    else:            
+                    else:   
                         face_crop = cv2.cvtColor(face_crop, cv2.COLOR_RGB2GRAY)
                         resized_face = cv2.resize(face_crop, (image_size, image_size))
-                        cv2.imwrite(os.path.join(output_data_dir, file_name), resized_face)
+                        cv2.imwrite(os.path.join(output_data_dir, filename), resized_face)
 
 
 def main(args):

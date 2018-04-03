@@ -135,7 +135,7 @@ class AGNet():
 
         # Uncomment below to set the first 10 layers to non-trainable (weights will not be updated)
         for layer in model.layers[:10]:
-            layer.trainable = True
+            layer.trainable = False
 
         # Learning rate is changed to 0.001
         # sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
