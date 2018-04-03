@@ -1,6 +1,7 @@
-from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Dense, LocallyConnected2D, AveragePooling2D, Flatten
+from keras.models import Sequential, load_model
+from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, AveragePooling2D, Flatten, BatchNormalization, ZeroPadding2D, Convolution2D
 from keras.callbacks import ModelCheckpoint, TensorBoard
+from keras.optimizers import SGD
 import AGNetConfig
 import os
 from keras.applications.vgg16 import VGG16
@@ -33,49 +34,117 @@ class AGNet():
         model = Sequential()
         model.add(Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu',
                         input_shape=AGNetConfig.props['INPUT_SHAPE']))
+        model.add(BatchNormalization())
         model.add(AveragePooling2D(pool_size=(2, 2)))                        
         
-        model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu'))         
+        model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu'))   
+        model.add(BatchNormalization())      
         model.add(AveragePooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
+        model.add(BatchNormalization())
         model.add(AveragePooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu'))
+        model.add(BatchNormalization())
         model.add(AveragePooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(filters=1024, kernel_size=(3, 3), padding='same', activation='relu'))
+        model.add(BatchNormalization())
         model.add(AveragePooling2D(pool_size=(2, 2)))
         
         model.add(Conv2D(filters=2048, kernel_size=(3, 3), padding='same', activation='relu'))
+        model.add(BatchNormalization())
         model.add(AveragePooling2D(pool_size=(2, 2)))
         
         model.add(Flatten())
         model.add(Dense(1024, activation='relu'))
         model.add(Dense(7, activation='softmax'))
+
+        model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        
         print(model.summary())
         return model
 
 
-    def __reference__1(self):
-        model1 = VGG16(include_top=False, input_shape=AGNetConfig.props['INPUT_SHAPE'])
-        # model2 =  Sequential()
-        # model2.add(Dense(7, activation='softmax'))
+    def __vgg16_model__(self):
+        """VGG 16 Model 
+        Parameters:
+        img_rows, img_cols - resolution of inputs
+        channel - 1 for grayscale, 3 for color 
+        num_classes - number of categories for our classification task
+        """
+        (channel, img_rows, img_cols) = (1, 64, 64)
+        num_classes = 7
 
-        # model = Model(model1.input, model2.output)
+        model = Sequential()
+        model.add(ZeroPadding2D((1, 1), input_shape=(channel, img_rows, img_cols)))
+        model.add(Convolution2D(64, 3, 3, activation='relu'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(64, 3, 3, activation='relu'))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(128, 3, 3, activation='relu'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(128, 3, 3, activation='relu'))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
-        x = model1.outputs
-        x = Dense(7, activation='softmax')(x)
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(256, 3, 3, activation='relu'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(256, 3, 3, activation='relu'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(256, 3, 3, activation='relu'))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
-        # this is the model we will train
-        model = Model(inputs = model1.input, outputs=x)
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu'))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu'))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+        # Add Fully Connected Layer
+        model.add(Flatten())
+        model.add(Dense(4096, activation='relu'))
+        model.add(Dropout(0.5))
+        model.add(Dense(4096, activation='relu'))
+        model.add(Dropout(0.5))
+        model.add(Dense(1000, activation='softmax'))
+
+        # Loads ImageNet pre-trained data
+        model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
+
+        # Truncate and replace softmax layer for transfer learning
+        model.layers.pop()
+        model.outputs = [model.layers[-1].output]
+        model.layers[-1].outbound_nodes = []
+        model.add(Dense(num_classes, activation='softmax'))
+
+        # Uncomment below to set the first 10 layers to non-trainable (weights will not be updated)
+        for layer in model.layers[:10]:
+            layer.trainable = False
+
+        # Learning rate is changed to 0.001
+        sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
+        model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
+
         return model
 
 
     def train(self, X_train, y_train, X_dev, y_dev):
-        self._model = self.__reference__()
-        self._model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        # self._model = self.__reference__()
+        self._model = self.__vgg16_model__()
         self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
                                 epochs=AGNetConfig.props['EPOCHS'],
                                 validation_data=(X_dev, y_dev),
