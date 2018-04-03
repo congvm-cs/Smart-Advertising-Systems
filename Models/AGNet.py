@@ -82,13 +82,13 @@ class AGNet():
         model.add(Convolution2D(64, 3, 3, activation='relu'))
         model.add(ZeroPadding2D((1, 1)))
         model.add(Convolution2D(64, 3, 3, activation='relu'))
-        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(MaxPooling2D((2, 2), strides=(1, 1)))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Convolution2D(128, 3, 3, activation='relu'))
         model.add(ZeroPadding2D((1, 1)))
         model.add(Convolution2D(128, 3, 3, activation='relu'))
-        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(MaxPooling2D((2, 2), strides=(1, 1)))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Convolution2D(256, 3, 3, activation='relu'))
@@ -96,7 +96,7 @@ class AGNet():
         model.add(Convolution2D(256, 3, 3, activation='relu'))
         model.add(ZeroPadding2D((1, 1)))
         model.add(Convolution2D(256, 3, 3, activation='relu'))
-        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(MaxPooling2D((2, 2), strides=(1, 1)))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Convolution2D(512, 3, 3, activation='relu'))
@@ -104,7 +104,7 @@ class AGNet():
         model.add(Convolution2D(512, 3, 3, activation='relu'))
         model.add(ZeroPadding2D((1, 1)))
         model.add(Convolution2D(512, 3, 3, activation='relu'))
-        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(MaxPooling2D((2, 2), strides=(1, 1)))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Convolution2D(512, 3, 3, activation='relu'))
@@ -112,7 +112,7 @@ class AGNet():
         model.add(Convolution2D(512, 3, 3, activation='relu'))
         model.add(ZeroPadding2D((1, 1)))
         model.add(Convolution2D(512, 3, 3, activation='relu'))
-        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(MaxPooling2D((2, 2), strides=(1, 1)))
 
         # Add Fully Connected Layer
         model.add(Flatten())
