@@ -78,7 +78,7 @@ class AGNet():
         num_classes = 7
 
         model = Sequential()
-        model.add(ZeroPadding2D((1, 1), input_shape=(channel, img_rows, img_cols)))
+        model.add(ZeroPadding2D((1, 1), input_shape=(img_rows, img_cols, channel)))
         model.add(Convolution2D(64, 3, 3, activation='relu'))
         model.add(ZeroPadding2D((1, 1)))
         model.add(Convolution2D(64, 3, 3, activation='relu'))
