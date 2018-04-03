@@ -114,6 +114,10 @@ class AGNet():
         model.add(Convolution2D(512, 3, 3, activation='relu'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
+        # Loads ImageNet pre-trained data
+        model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
+
+        # Truncate and replace softmax layer for transfer learning
         # Add Fully Connected Layer
         model.add(Flatten())
         model.add(Dense(4096, activation='relu'))
@@ -129,11 +133,6 @@ class AGNet():
         model.add(Dense(num_classes, activation='softmax'))
 
         print(model.summary())
-        # Loads ImageNet pre-trained data
-        model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
-
-        # Truncate and replace softmax layer for transfer learning
-     
 
         # Uncomment below to set the first 10 layers to non-trainable (weights will not be updated)
         for layer in model.layers[:10]:
