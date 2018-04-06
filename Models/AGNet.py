@@ -59,9 +59,9 @@ class AGNet():
         
         model.add(Flatten())
         model.add(Dense(1024, activation='relu'))
-        model.add(Dense(6, activation='softmax'))
+        model.add(Dense(6, activation='sigmoid'))
 
-        model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
         
         print(model.summary())
         return model
