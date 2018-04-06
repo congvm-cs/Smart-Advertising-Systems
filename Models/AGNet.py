@@ -59,9 +59,6 @@ class AGNet():
         
         model.add(Flatten())
         model.add(Dense(1024, activation='relu'))
-
-
-        age_model = Merge()
         model.add(Dense(6, activation='softmax'))
 
         model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
