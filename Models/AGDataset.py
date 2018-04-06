@@ -63,26 +63,27 @@ class AGDataset():
     def categorize_labels(self, file_name):
         # File name: A1-G1-0-1025296488_4712c26a4f_1160_96603368@N00-Fam2a.jpg
         num_age = file_name.split('-')[0][1:]
-        gender = file_name.split('-')[1][1:]
+        # gender = file_name.split('-')[1][1:]
 
-        labels = [0, 0, 0, 0, 0, 0, 0]
+        # labels = [0, 0, 0, 0, 0, 0, 0]
+        labels = [0, 0, 0, 0, 0, 0]
         age = int(num_age)
 
-        if gender == '1':
-            labels[0] = 1   # Female
-        else:
-            labels[0] = 0   # Male
+        # if gender == '1':
+        #     labels[0] = 1   # Female
+        # else:
+        #     labels[0] = 0   # Male
 
         if 0 < age and age < 12:
-            labels[1] = 1
+            labels[0] = 1
         elif 13 < age and age < 19:
-            labels[2] = 1
+            labels[1] = 1
         elif 20 < age and age < 36:
-            labels[3] = 1
+            labels[2] = 1
         elif 37 < age and age < 65:
-            labels[4] = 1
+            labels[3] = 1
         elif age > 66:
-            labels[5] = 1
+            labels[4] = 1
         return labels
 
 

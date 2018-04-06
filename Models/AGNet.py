@@ -1,5 +1,5 @@
 from keras.models import Sequential, load_model
-from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, AveragePooling2D, Flatten, BatchNormalization, ZeroPadding2D, Convolution2D
+from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, AveragePooling2D, Flatten, BatchNormalization, ZeroPadding2D, Convolution2D, Merge
 from keras.callbacks import ModelCheckpoint, TensorBoard
 from keras.optimizers import SGD
 import AGNetConfig
@@ -59,7 +59,10 @@ class AGNet():
         
         model.add(Flatten())
         model.add(Dense(1024, activation='relu'))
-        model.add(Dense(7, activation='softmax'))
+
+
+        age_model = Merge()
+        model.add(Dense(6, activation='softmax'))
 
         model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
         
