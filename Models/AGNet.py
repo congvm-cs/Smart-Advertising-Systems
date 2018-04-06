@@ -34,27 +34,27 @@ class AGNet():
         model = Sequential()
         model.add(Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu',
                         input_shape=AGNetConfig.props['INPUT_SHAPE']))
-        model.add(BatchNormalization())
+        model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))                        
         
         model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu'))   
-        model.add(BatchNormalization())      
+        model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
-        model.add(BatchNormalization())
+        model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu'))
-        model.add(BatchNormalization())
+        model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(filters=1024, kernel_size=(3, 3), padding='same', activation='relu'))
-        model.add(BatchNormalization())
+        model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
         
         model.add(Conv2D(filters=2048, kernel_size=(3, 3), padding='same', activation='relu'))
-        model.add(BatchNormalization())
+        model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
         
         model.add(Flatten())

@@ -62,28 +62,28 @@ class AGDataset():
 
     def categorize_labels(self, file_name):
         # File name: A1-G1-0-1025296488_4712c26a4f_1160_96603368@N00-Fam2a.jpg
-        num_age = file_name.split('-')[0][1:]
-        # gender = file_name.split('-')[1][1:]
+        num_age = file_name.split('_')[0]
+        gender = file_name.split('_')[1]
 
-        # labels = [0, 0, 0, 0, 0, 0, 0]
         labels = [0, 0, 0, 0, 0, 0]
+        # labels = [0, 0, 0, 0, 0, 0]
         age = int(num_age)
 
-        # if gender == '1':
-        #     labels[0] = 1   # Female
-        # else:
-        #     labels[0] = 0   # Male
+        if gender == '1':
+            labels[0] = 1   # Female
+        else:
+            labels[0] = 0   # Male
 
-        if 0 < age and age < 12:
-            labels[0] = 1
-        elif 13 < age and age < 19:
+        if 0 <= age and age <= 18:
             labels[1] = 1
-        elif 20 < age and age < 36:
+        elif 18 < age and age <= 25:
             labels[2] = 1
-        elif 37 < age and age < 65:
+        elif 25 < age and age <= 35:
             labels[3] = 1
-        elif age > 66:
+        elif 36 < age and age <= 50:
             labels[4] = 1
+        elif age > 50:
+            labels[5] = 1
         return labels
 
 
@@ -148,7 +148,7 @@ class AGDataset():
                     else:   
                         face_crop = cv2.cvtColor(face_crop, cv2.COLOR_RGB2GRAY)
                         resized_face = cv2.resize(face_crop, (image_size, image_size))
-                        cv2.imwrite(os.path.join(output_data_dir, filename), resized_face)
+                        cv2.imwrite(os.path.join(output_data_dir, file_name), resized_face)
 
 
 def main(args):
