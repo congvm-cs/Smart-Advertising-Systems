@@ -75,7 +75,7 @@ class AGNet():
         num_classes - number of categories for our classification task
         """
         (channel, img_rows, img_cols) = (3, 64, 64)
-        num_classes = 7
+        num_classes = 6
 
         model = Sequential()
         model.add(ZeroPadding2D((1, 1), input_shape=(img_rows, img_cols, channel)))
@@ -122,14 +122,11 @@ class AGNet():
         model.add(Flatten())
         model.add(Dense(4096, activation='relu'))
         model.add(Dropout(0.5))
-        # model.add(Dense(4096, activation='relu'))
-        # model.add(Dropout(0.5))
-        # model.add(Dense(1000, activation='softmax'))
         
         model.layers.pop()
         model.outputs = [model.layers[-1].output]
         model.layers[-1].outbound_nodes = []
-        model.add(Dense(num_classes, activation='softmax'))
+        model.add(Dense(num_classes, activation='sigmoid'))
 
         print(model.summary())
 
@@ -138,14 +135,16 @@ class AGNet():
             layer.trainable = False
 
         # Learning rate is changed to 0.001
-        # sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
-        model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
+        model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
 
         return model
 
 
     def train(self, X_train, y_train, X_dev, y_dev):
-        self._model = self.__reference__()
+
+        self._model = load_model('./AGNet_models/AGNet_weights-improvement-04-0.32-0.85.hdf5')
+        # self._model = self.__reference__()
         # self._model = self.__vgg16_model__()
         self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
                                 epochs=AGNetConfig.props['EPOCHS'],
