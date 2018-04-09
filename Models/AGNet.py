@@ -154,12 +154,12 @@ class AGNet():
 
     def train(self, X_train, y_train, X_dev, y_dev):
         # self._model = load_model('./AGNet_models/AGNet_weights-improvement-04-0.32-0.85.hdf5')
-        self._model = self.__reference__()
-        # self._model = self.__vgg16_model__()
+        # self._model = self.__reference__()
+        self._model = self.__vgg16_model__()
         # for layer in self._model.layers[:10]:
         #     layer.trainable = True
 
-        self._model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
+        # self._model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
 
         self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
                                 epochs=AGNetConfig.props['EPOCHS'],
