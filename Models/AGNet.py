@@ -85,12 +85,14 @@ class AGNet():
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=64, kernel_size=(3, 3), activation='relu'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=128, kernel_size=(3, 3), activation='relu'))
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=128, kernel_size=(3, 3), activation='relu'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=256, kernel_size=(3, 3), activation='relu'))
@@ -99,6 +101,7 @@ class AGNet():
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=256, kernel_size=(3, 3), activation='relu'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=512, kernel_size=(3, 3), activation='relu'))
@@ -107,6 +110,7 @@ class AGNet():
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=512, kernel_size=(3, 3), activation='relu'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=512, kernel_size=(3, 3), activation='relu'))
@@ -115,6 +119,7 @@ class AGNet():
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=512, kernel_size=(3, 3), activation='relu'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Dropout(0.2))
 
         # Loads ImageNet pre-trained data
         model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
@@ -123,8 +128,10 @@ class AGNet():
         # Add Fully Connected Layer
         model.add(Flatten())
         model.add(Dense(4096, activation='relu'))
-        model.add(Dropout(0.5))
-        
+        model.add(Dropout(0.2))
+        model.add(Dense(4096, activation='relu'))
+        model.add(Dropout(0.2))
+
         model.layers.pop()
         model.outputs = [model.layers[-1].output]
         model.layers[-1].outbound_nodes = []
@@ -137,19 +144,18 @@ class AGNet():
             layer.trainable = True
 
         # Learning rate is changed to 0.001
-        sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
+        sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
         model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
 
         return model
 
 
     def train(self, X_train, y_train, X_dev, y_dev):
-
-        self._model = load_model('./AGNet_models/AGNet_weights-improvement-04-0.32-0.85.hdf5')
+        # self._model = load_model('./AGNet_models/AGNet_weights-improvement-04-0.32-0.85.hdf5')
         # self._model = self.__reference__()
-        # self._model = self.__vgg16_model__()
-        for layer in self._model.layers[:10]:
-            layer.trainable = True
+        self._model = self.__vgg16_model__()
+        # for layer in self._model.layers[:10]:
+        #     layer.trainable = True
 
         self._model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
 
