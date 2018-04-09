@@ -111,7 +111,7 @@ class AGDataset():
             for batch in datagen.flow(origin_I_train, batch_size=1,
                                 save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
                 i += 1
-                if i > 20:
+                if i > 6:
                     break  # otherwise the generator would loop indefinitely
 
 
