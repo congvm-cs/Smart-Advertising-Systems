@@ -124,7 +124,7 @@ class AGNet():
         model.add(Dropout(0.2))
 
         # Loads ImageNet pre-trained data
-        model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
+        # model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
 
         # Truncate and replace softmax layer for transfer learning
         # Add Fully Connected Layer
@@ -134,16 +134,16 @@ class AGNet():
         model.add(Dense(4096, activation='relu'))
         model.add(Dropout(0.2))
 
-        model.layers.pop()
-        model.outputs = [model.layers[-1].output]
-        model.layers[-1].outbound_nodes = []
+        # model.layers.pop()
+        # model.outputs = [model.layers[-1].output]
+        # model.layers[-1].outbound_nodes = []
         model.add(Dense(num_classes, activation='sigmoid'))
 
         print(model.summary())
 
         # Uncomment below to set the first 10 layers to non-trainable (weights will not be updated)
-        for layer in model.layers[:10]:
-            layer.trainable = True
+        # for layer in model.layers[:10]:
+        #     layer.trainable = True
 
         # Learning rate is changed to 0.001
         sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
