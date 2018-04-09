@@ -63,7 +63,7 @@ class AGDataset():
         
         return [X_train, X_test, y_train, y_test]   
 
-    def data_augment(self):
+    def data_augment(self, args):
         train_dir = args.train_dir
         test_dir = args.test_dir
         
