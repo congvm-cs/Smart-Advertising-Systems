@@ -62,6 +62,7 @@ class AGDataset():
         # X_test = X_test/255.0
         
         return [X_train, X_test, y_train, y_test]   
+        
 
     def data_augment(self, args):
         train_dir = args.train_dir
@@ -77,23 +78,31 @@ class AGDataset():
                 horizontal_flip=True,
                 fill_mode='nearest')
 
-        # for file_name in os.listdir(train_dir):
-        #     file_path = os.path.join(train_dir, file_name)
+        for file_name in os.listdir(train_dir):
+            file_path = os.path.join(train_dir, file_name)
             
-        #     origin_I_train = cv2.imread(str(file_path))
-        #     origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2RGB)
-        #     origin_I_train = origin_I_train.reshape((1,) + origin_I_train.shape)  # this is a Numpy array with shape (1, 3, 150, 150
+            origin_I_train = cv2.imread(str(file_path))
+            origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2RGB)
+            origin_I_train = origin_I_train.reshape((1,) + origin_I_train.shape)  # this is a Numpy array with shape (1, 3, 150, 150
 
 
-        #     if int(self._IMAGE_DEPTH) == 1:
-        #         origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
-            
-        #     i = 0
-        #     for batch in datagen.flow(origin_I_train, batch_size=1,
-        #                         save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
-        #         i += 1
-        #         if i > 20:
-        #             break  # otherwise the generator would loop indefinitely
+            if int(self._IMAGE_DEPTH) == 1:
+                origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+
+            if num_age == str(26):
+                i = 0
+                for batch in datagen.flow(origin_I_train, batch_size=1,
+                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                    i += 1
+                    if i > 3:
+                        break  # otherwise the generator would loop indefinitely
+            else:
+                i = 0
+                for batch in datagen.flow(origin_I_train, batch_size=1,
+                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                    i += 1
+                    if i > 4:
+                        break  # otherwise the generator would loop indefinitely
 
 
         for file_name in os.listdir(test_dir):
@@ -103,16 +112,24 @@ class AGDataset():
             origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2RGB)
             origin_I_train = origin_I_train.reshape((1,) + origin_I_train.shape)  # this is a Numpy array with shape (1, 3, 150, 150
 
-
             if int(self._IMAGE_DEPTH) == 1:
                 origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
-            
-            i = 0
-            for batch in datagen.flow(origin_I_train, batch_size=1,
-                                save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
-                i += 1
-                if i > 6:
-                    break  # otherwise the generator would loop indefinitely
+            num_age = file_name.split('_')[0]
+
+            if num_age == str(26):
+                i = 0
+                for batch in datagen.flow(origin_I_train, batch_size=1,
+                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                    i += 1
+                    if i > 3:
+                        break  # otherwise the generator would loop indefinitely
+            else:
+                i = 0
+                for batch in datagen.flow(origin_I_train, batch_size=1,
+                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                    i += 1
+                    if i > 4:
+                        break  # otherwise the generator would loop indefinitely
 
 
     def categorize_labels(self, file_name):
