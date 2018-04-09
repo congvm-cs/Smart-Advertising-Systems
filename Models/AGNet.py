@@ -178,7 +178,7 @@ class AGNet():
         #                         callbacks=self._callback_list)
         self._model.fit_generator(
                 train_generator,
-                batch_size=500,
+                # batch_size=500,
                 epochs=100,
                 verbose=1,
                 validation_data=validation_generator,
