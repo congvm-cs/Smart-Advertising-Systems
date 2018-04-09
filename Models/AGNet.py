@@ -151,6 +151,8 @@ class AGNet():
         for layer in self._model.layers[:10]:
             layer.trainable = True
 
+        model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
+
         self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
                                 epochs=AGNetConfig.props['EPOCHS'],
                                 validation_data=(X_dev, y_dev),
