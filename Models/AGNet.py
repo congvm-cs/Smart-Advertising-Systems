@@ -133,8 +133,8 @@ class AGNet():
         model.add(Dropout(0.2))
         model.add(Dense(4096, activation='relu'))
         model.add(Dropout(0.2))
-        model.add(Dense(4096, activation='relu'))
-        model.add(Dropout(0.2))
+        # model.add(Dense(4096, activation='relu'))
+        # model.add(Dropout(0.2))
         # model.layers.pop()
         # model.outputs = [model.layers[-1].output]
         # model.layers[-1].outbound_nodes = []
