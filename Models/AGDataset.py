@@ -58,8 +58,8 @@ class AGDataset():
 
 
         # Normalize
-        X_train = X_train/255.0
-        X_test = X_test/255.0
+        # X_train = X_train/255.0
+        # X_test = X_test/255.0
         
         return [X_train, X_test, y_train, y_test]   
 
