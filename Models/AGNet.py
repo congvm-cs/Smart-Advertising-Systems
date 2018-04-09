@@ -134,7 +134,7 @@ class AGNet():
 
         # Uncomment below to set the first 10 layers to non-trainable (weights will not be updated)
         for layer in model.layers[:10]:
-            layer.trainable = False
+            layer.trainable = True
 
         # Learning rate is changed to 0.001
         sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
@@ -148,6 +148,8 @@ class AGNet():
         self._model = load_model('./AGNet_models/AGNet_weights-improvement-04-0.32-0.85.hdf5')
         # self._model = self.__reference__()
         # self._model = self.__vgg16_model__()
+        for layer in self._model.layers[:10]:
+            layer.trainable = True
 
         self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
                                 epochs=AGNetConfig.props['EPOCHS'],
