@@ -143,12 +143,25 @@ class AGNet():
         return model
 
 
-    def train(self):
+    def train(self, X_train, y_train, X_test, y_test):
 
         self._model = load_model('./AGNet_models/AGNet_weights-improvement-04-0.32-0.85.hdf5')
         # self._model = self.__reference__()
         # self._model = self.__vgg16_model__()
 
+        self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
+                                epochs=AGNetConfig.props['EPOCHS'],
+                                validation_data=(X_dev, y_dev),
+                                callbacks=self._callback_list)
+        # self._model.fit_generator(
+        #         train_generator,
+        #         # batch_size=500,
+        #         epochs=100,
+        #         verbose=1,
+        #         validation_data=validation_generator,
+        #         callbacks=self._callback_list)
+
+    def data_augment(self):
         datagen = ImageDataGenerator(
                 rotation_range=30,
                 width_shift_range=0.2,
@@ -158,32 +171,13 @@ class AGNet():
                 zoom_range=0.2,
                 horizontal_flip=True,
                 fill_mode='nearest')
-
-
-        train_generator = datagen.flow_from_directory(
-                '/home/vmc/UTKFace_gc/train',  # this is the target directory
-                target_size=(64, 64),  # all images will be resized to 150x150
-                batch_size=500,
-                class_mode='binary')  # since we use binary_crossentropy loss, we need binary labels
-
-        validation_generator = datagen.flow_from_directory(
-                '/home/vmc/UTKFace_gc/test',
-                target_size=(64, 64),
-                batch_size=500,
-                class_mode='binary')
-
-        # self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
-        #                         epochs=AGNetConfig.props['EPOCHS'],
-        #                         validation_data=(X_dev, y_dev),
-        #                         callbacks=self._callback_list)
-        self._model.fit_generator(
-                train_generator,
-                # batch_size=500,
-                epochs=100,
-                verbose=1,
-                validation_data=validation_generator,
-                callbacks=self._callback_list)
-
+        
+        i = 0
+        for batch in datagen.flow(x, batch_size=1,
+                                save_to_dir='preview', save_prefix='cat', save_format='jpeg'):
+            i += 1
+            if i > 20:
+                break  # otherwise the generator would loop indefinitely
 
     def __evaluate__(self):
         pass
