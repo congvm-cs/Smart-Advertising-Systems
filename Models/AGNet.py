@@ -55,9 +55,9 @@ class AGNet():
         model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
         
-        model.add(Conv2D(filters=2048, kernel_size=(3, 3), padding='same', activation='relu'))
-        model.add(Dropout(0.2))
-        model.add(AveragePooling2D(pool_size=(2, 2)))
+        # model.add(Conv2D(filters=2048, kernel_size=(3, 3), padding='same', activation='relu'))
+        # model.add(Dropout(0.2))
+        # model.add(AveragePooling2D(pool_size=(2, 2)))
         
         model.add(Flatten())
         model.add(Dense(1024, activation='relu'))
@@ -152,8 +152,8 @@ class AGNet():
 
     def train(self, X_train, y_train, X_dev, y_dev):
         # self._model = load_model('./AGNet_models/AGNet_weights-improvement-04-0.32-0.85.hdf5')
-        # self._model = self.__reference__()
-        self._model = self.__vgg16_model__()
+        self._model = self.__reference__()
+        # self._model = self.__vgg16_model__()
         # for layer in self._model.layers[:10]:
         #     layer.trainable = True
 
