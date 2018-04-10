@@ -155,7 +155,7 @@ class AGNet():
 
 
     def train(self, X_train, y_train, X_dev, y_dev):
-        #self._model = load_model('/content/Smart-Advertising-Systems/Models/AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
+        self._model = load_model('/content/Smart-Advertising-Systems/Models/AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
         # self._model = self.__reference__()
 
         # session_config = tf.ConfigProto(log_device_placement=False, allow_soft_placement=True)    
@@ -163,7 +163,7 @@ class AGNet():
         # session_config.gpu_options.per_process_gpu_memory_fraction=0.90
         # sess = tf.Session(config=session_config)
 
-        self._model = self.__vgg16_model__()
+        # self._model = self.__vgg16_model__()
         # for layer in self._model.layers[:10]:
         #     layer.trainable = True
 
