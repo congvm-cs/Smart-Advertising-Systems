@@ -15,6 +15,7 @@ def main(args):
     
     print("Training ...")
     agNet.train(X_train, y_train, X_test, y_test)
+    # agNet.train()
 
 
 if __name__ == '__main__':

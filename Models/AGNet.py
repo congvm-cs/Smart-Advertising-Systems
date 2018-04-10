@@ -6,6 +6,8 @@ import AGNetConfig
 import os
 from keras.applications.vgg16 import VGG16
 from keras import Model
+from keras.preprocessing.image import ImageDataGenerator
+import tensorflow as tf
 
 class AGNet():
     # pass
@@ -34,31 +36,33 @@ class AGNet():
         model = Sequential()
         model.add(Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu',
                         input_shape=AGNetConfig.props['INPUT_SHAPE']))
-        model.add(Dropout(0.2))
+        # model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))                        
         
         model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu'))   
-        model.add(Dropout(0.2))
+        # model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
-        model.add(Dropout(0.2))
+        # model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu'))
-        model.add(Dropout(0.2))
+        # model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(filters=1024, kernel_size=(3, 3), padding='same', activation='relu'))
-        model.add(Dropout(0.2))
+        # model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
         
         model.add(Conv2D(filters=2048, kernel_size=(3, 3), padding='same', activation='relu'))
-        model.add(Dropout(0.2))
+        # model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
         
         model.add(Flatten())
+        model.add(Dropout(0.2))
         model.add(Dense(1024, activation='relu'))
+        model.add(Dropout(0.2))
         model.add(Dense(6, activation='sigmoid'))
 
         model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
@@ -83,12 +87,14 @@ class AGNet():
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=64, kernel_size=(3, 3), activation='relu'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=128, kernel_size=(3, 3), activation='relu'))
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=128, kernel_size=(3, 3), activation='relu'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=256, kernel_size=(3, 3), activation='relu'))
@@ -97,6 +103,7 @@ class AGNet():
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=256, kernel_size=(3, 3), activation='relu'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=512, kernel_size=(3, 3), activation='relu'))
@@ -105,6 +112,7 @@ class AGNet():
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=512, kernel_size=(3, 3), activation='relu'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=512, kernel_size=(3, 3), activation='relu'))
@@ -113,39 +121,52 @@ class AGNet():
         model.add(ZeroPadding2D((1, 1)))
         model.add(Conv2D(filters=512, kernel_size=(3, 3), activation='relu'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Dropout(0.2))
 
         # Loads ImageNet pre-trained data
-        model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
+        # model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
 
         # Truncate and replace softmax layer for transfer learning
         # Add Fully Connected Layer
         model.add(Flatten())
         model.add(Dense(4096, activation='relu'))
-        model.add(Dropout(0.5))
-        
-        model.layers.pop()
-        model.outputs = [model.layers[-1].output]
-        model.layers[-1].outbound_nodes = []
+        model.add(Dropout(0.2))
+        model.add(Dense(4096, activation='relu'))
+        model.add(Dropout(0.2))
+        # model.add(Dense(4096, activation='relu'))
+        # model.add(Dropout(0.2))
+        # model.layers.pop()
+        # model.outputs = [model.layers[-1].output]
+        # model.layers[-1].outbound_nodes = []
         model.add(Dense(num_classes, activation='sigmoid'))
 
         print(model.summary())
 
         # Uncomment below to set the first 10 layers to non-trainable (weights will not be updated)
-        for layer in model.layers[:10]:
-            layer.trainable = False
+        # for layer in model.layers[:10]:
+        #     layer.trainable = True
 
         # Learning rate is changed to 0.001
-        sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
+        sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
         model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
 
         return model
 
 
     def train(self, X_train, y_train, X_dev, y_dev):
-
-        self._model = load_model('./AGNet_models/AGNet_weights-improvement-04-0.32-0.85.hdf5')
+        # self._model = load_model('./AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
         # self._model = self.__reference__()
-        # self._model = self.__vgg16_model__()
+
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
+        sess = tf.Session(config = config)
+        self._model = self.__vgg16_model__()
+        self._model.load_weights('./AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
+        # for layer in self._model.layers[:10]:
+        #     layer.trainable = True
+
+        # self._model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
+
         self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
                                 epochs=AGNetConfig.props['EPOCHS'],
                                 validation_data=(X_dev, y_dev),

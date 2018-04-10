@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import AGNetConfig
 from MTCNN import MTCNN
-
+from keras.preprocessing.image import ImageDataGenerator
 class AGDataset():
 
     def __init__(self):
@@ -18,6 +18,7 @@ class AGDataset():
 
 
     def load_dataset(self, args):
+        print('Load data..')
         train_dir = args.train_dir
         test_dir = args.test_dir
 
@@ -58,10 +59,78 @@ class AGDataset():
 
 
         # Normalize
-        X_train = X_train/255.0
-        X_test = X_test/255.0
+        # X_train = X_train/255.0
+        # X_test = X_test/255.0
         
         return [X_train, X_test, y_train, y_test]   
+        
+
+    def data_augment(self, args):
+        train_dir = args.train_dir
+        test_dir = args.test_dir
+        
+        datagen = ImageDataGenerator(
+                rotation_range=30,
+                width_shift_range=0.2,
+                height_shift_range=0.2,
+                # rescale=1./255,
+                shear_range=0.2,
+                zoom_range=0.2,
+                horizontal_flip=True,
+                fill_mode='nearest')
+
+        for file_name in os.listdir(train_dir):
+            file_path = os.path.join(train_dir, file_name)
+            
+            origin_I_train = cv2.imread(str(file_path))
+            origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2RGB)
+            origin_I_train = origin_I_train.reshape((1,) + origin_I_train.shape)  # this is a Numpy array with shape (1, 3, 150, 150
+
+
+            if int(self._IMAGE_DEPTH) == 1:
+                origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+
+            if num_age == str(26):
+                i = 0
+                for batch in datagen.flow(origin_I_train, batch_size=1,
+                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                    i += 1
+                    if i > 3:
+                        break  # otherwise the generator would loop indefinitely
+            else:
+                i = 0
+                for batch in datagen.flow(origin_I_train, batch_size=1,
+                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                    i += 1
+                    if i > 4:
+                        break  # otherwise the generator would loop indefinitely
+
+
+        for file_name in os.listdir(test_dir):
+            file_path = os.path.join(test_dir, file_name)
+            
+            origin_I_train = cv2.imread(str(file_path))
+            origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2RGB)
+            origin_I_train = origin_I_train.reshape((1,) + origin_I_train.shape)  # this is a Numpy array with shape (1, 3, 150, 150
+
+            if int(self._IMAGE_DEPTH) == 1:
+                origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+            num_age = file_name.split('_')[0]
+
+            if num_age == str(26):
+                i = 0
+                for batch in datagen.flow(origin_I_train, batch_size=1,
+                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                    i += 1
+                    if i > 3:
+                        break  # otherwise the generator would loop indefinitely
+            else:
+                i = 0
+                for batch in datagen.flow(origin_I_train, batch_size=1,
+                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                    i += 1
+                    if i > 4:
+                        break  # otherwise the generator would loop indefinitely
 
 
     def categorize_labels(self, file_name):
@@ -158,7 +227,8 @@ class AGDataset():
 def main(args):
     fgdata = AGDataset()
     # fgdata.crop_face_from_image(args)
-    fgdata.split_train_test(args)
+    # fgdata.split_train_test(args)
+    fgdata.data_augment(args)
 
 
 if __name__ == '__main__':
