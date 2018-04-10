@@ -157,9 +157,11 @@ class AGNet():
         # self._model = load_model('./AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
         # self._model = self.__reference__()
 
-        config = tf.ConfigProto()
-        config.gpu_options.allow_growth = True
-        sess = tf.Session(config = config)
+        session_config = tf.ConfigProto(log_device_placement=False, allow_soft_placement=True)    
+        # please do not use the totality of the GPU memory
+        session_config.gpu_options.per_process_gpu_memory_fraction=0.90
+        sess = tf.Session(config=session_config)
+
         self._model = self.__vgg16_model__()
         self._model.load_weights('./AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
         # for layer in self._model.layers[:10]:
