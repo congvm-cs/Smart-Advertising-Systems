@@ -18,6 +18,7 @@ class AGDataset():
 
 
     def load_dataset(self, args):
+        print('Load data..')
         train_dir = args.train_dir
         test_dir = args.test_dir
 
