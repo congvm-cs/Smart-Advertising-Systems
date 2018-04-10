@@ -7,8 +7,8 @@ import os
 from keras.applications.vgg16 import VGG16
 from keras import Model
 from keras.preprocessing.image import ImageDataGenerator
+import tensorflow as tf
 
-        
 class AGNet():
     # pass
 
@@ -156,6 +156,10 @@ class AGNet():
     def train(self, X_train, y_train, X_dev, y_dev):
         # self._model = load_model('./AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
         # self._model = self.__reference__()
+
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
+        sess = tf.Session(config = config)
         self._model = self.__vgg16_model__()
         self._model.load_weights('./AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
         # for layer in self._model.layers[:10]:
