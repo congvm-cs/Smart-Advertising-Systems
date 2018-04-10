@@ -5,21 +5,11 @@ import cv2
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
 from imutils.face_utils import rect_to_bb, FaceAligner
-from keras.preprocessing.image import ImageDataGenerator
 
-datagen = ImageDataGenerator(
-        rotation_range=40,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        rescale=1./255,
-        shear_range=0.2,
-        zoom_range=0.2,
-        horizontal_flip=True,
-        fill_mode='nearest')
 
 print('Load model...')
 # model_path = '/mnt/e/Smart-Advertising-Systems-master/Models/weights-improvement-23-0.23-0.92.hdf5'
-model_path = '/home/vmc/Desktop/AGNet_weights-improvement-10-0.28-0.87.hdf5'
+model_path = '/home/vmc/Downloads/AGNet_weights_1-improvement-30-0.22-0.90.hdf5'
 align_predictor_path = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems/dlib_face_landmarks_model/shape_predictor_68_face_landmarks.dat'
 
 # Camera Streaming
@@ -46,7 +36,7 @@ while fps._numFrames < NUM_FRAMES:
     for (i, rect) in enumerate(rects):
         (x, y, h, w) = rect_to_bb(rect)             # Positions of rectangle contains face
 
-        offset = int(0.2*x) 
+        offset = int(0.05*x) 
         x = x - offset
         y = y - offset
         h = h + 2*offset
@@ -58,8 +48,8 @@ while fps._numFrames < NUM_FRAMES:
         face_rect_resized = cv2.resize(face, (64, 64))
         
         # cv2.imshow('after aligned #{}'.format(str(i)), face_rect_resized)
-        face_rect_normalized = face_rect_resized * 1./255
-        face_rect_reshape = np.reshape(face_rect_normalized, newshape=(1, 64, 64, 3))
+        # face_rect_normalized = face_rect_resized * 1./255
+        face_rect_reshape = np.reshape(face_rect_resized, newshape=(1, 64, 64, 3))
         y_pred = model.predict(face_rect_reshape)
 
         y_pred = np.array(y_pred)

@@ -58,9 +58,9 @@ class AGDataset():
         X_test = np.reshape(X_test, newshape=(len(X_test), self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
 
 
-        # Normalize
-        # X_train = X_train/255.0
-        # X_test = X_test/255.0
+        #Normalize
+        X_train = X_train/255.0
+        X_test = X_test/255.0
         
         return [X_train, X_test, y_train, y_test]   
         
