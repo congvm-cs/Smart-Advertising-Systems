@@ -139,7 +139,7 @@ class AGNet():
         # model.outputs = [model.layers[-1].output]
         # model.layers[-1].outbound_nodes = []
         model.add(Dense(num_classes, activation='sigmoid'))
-        model.load_weights('./AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
+        model.load_weights('/content/Smart-Advertising-Systems/Models/AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
 
         print(model.summary())
 
