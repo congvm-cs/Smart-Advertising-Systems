@@ -163,7 +163,7 @@ class AGNet():
         sess = tf.Session(config=session_config)
 
         self._model = self.__vgg16_model__()
-        self._model.load_weights('./AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
+        # self._model.load_weights('./AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
         # for layer in self._model.layers[:10]:
         #     layer.trainable = True
 
