@@ -36,6 +36,8 @@ def train_on_batch(args):
     train_file_name  = np.array(os.listdir(train_dir))
     test_file_name = np.array(os.listdir(test_dir))
     
+    print(type(train_file_name))
+    
     # Test phase
     # Load test data
     for i, file_name in enumerate(test_file_name):
