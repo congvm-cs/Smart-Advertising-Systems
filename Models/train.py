@@ -27,6 +27,7 @@ def train_on_batch(args):
     
     # Init model
     agNet = AGNet()
+    agNet.init()
     agdata = AGDataset()
 
     X_train = []
@@ -63,7 +64,7 @@ def train_on_batch(args):
     
     for epoch in range(100):
         print('Epochs: {}'.format(epoch))
-        
+
         for index, batch in enumerate(train_batches_arr):
             print('--> Batch #{}'.format(index))
             X_train = []
