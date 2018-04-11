@@ -31,6 +31,8 @@ class AGNet():
                                         write_images=True)
         self._callback_list = [self._model_checkpoint, self._tensor_board]
 
+        self._model = load_model('/content/Smart-Advertising-Systems/Models/AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
+
 
     def __reference__(self):
         model = Sequential()
@@ -155,7 +157,7 @@ class AGNet():
 
 
     def train(self, X_train, y_train, X_dev, y_dev):
-        self._model = load_model('/content/Smart-Advertising-Systems/Models/AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
+        
         # self._model = self.__reference__()
 
         # session_config = tf.ConfigProto(log_device_placement=False, allow_soft_placement=True)    
