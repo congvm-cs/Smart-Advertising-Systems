@@ -24,9 +24,9 @@ def train_on_batch(args):
         print('Load data..')
         train_dir = args.train_dir
         test_dir = args.test_dir
-        batch_size = args.batch_size
         
         agNet = AGNet()
+        agdata = AGDataset()
 
         X_train = []
         X_test = []
@@ -43,14 +43,11 @@ def train_on_batch(args):
             
             origin_I = cv2.imread(str(file_path))
 
-            if int(self._IMAGE_DEPTH) == 1:
-                origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
-
             X_test.append(origin_I)
-            y_test.append(self.categorize_labels(file_name))
+            y_test.append(agdata.categorize_labels(file_name))
 
         X_test = np.array(X_test)
-        X_test = np.reshape(X_test, newshape=(len(X_test), self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
+        X_test = np.reshape(X_test, newshape=(len(X_test), 64, 64, 3))
         X_test = X_test/255.0
         y_test = np.array(y_test)
         
@@ -68,18 +65,16 @@ def train_on_batch(args):
                     
                     origin_I_train = cv2.imread(str(file_path))
 
-                    if int(self._IMAGE_DEPTH) == 1:
-                        origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
-
                     X_train.append(origin_I_train)
-                    y_train.append(self.categorize_labels(file_name))
+                    y_train.append(agdata.categorize_labels(file_name))
 
                 X_train = np.array(X_train)
-                X_train = np.reshape(X_train, newshape=(len(X_train), self._IMAGE_SIZE, self._IMAGE_SIZE, self._IMAGE_DEPTH))
+                X_train = np.reshape(X_train, newshape=(len(X_train), 64, 64, 3))
                 # Normalize
                 X_train = X_train/255.0
                 y_train = np.array(y_train)
                 agNet.train(X_train, y_train, X_test, y_test)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
