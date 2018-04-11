@@ -33,8 +33,8 @@ def train_on_batch(args):
     y_train = []
     y_test = []
 
-    train_file_name  = np.array(os.listdir(train_dir))
-    test_file_name = np.array(os.listdir(test_dir))
+    train_file_name  = os.listdir(train_dir)
+    test_file_name = os.listdir(test_dir)
     
 
     # Test phase
@@ -49,6 +49,8 @@ def train_on_batch(args):
 
     X_test = np.array(X_test)
     X_test = np.reshape(X_test, newshape=(len(X_test), 64, 64, 3))
+    
+    # Normalize
     X_test = X_test/255.0
     y_test = np.array(y_test)
     
@@ -61,9 +63,11 @@ def train_on_batch(args):
     
     for _ in range(100):
         for batch in train_batches_arr:
+            X_train = []
+            y_train = []
+
             for i, file_name in enumerate(batch):
                 file_path = os.path.join(train_dir, file_name)
-                
                 origin_I_train = cv2.imread(str(file_path))
 
                 X_train.append(origin_I_train)
