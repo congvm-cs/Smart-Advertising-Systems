@@ -31,7 +31,7 @@ class AGNet():
                                         write_images=True)
         self._callback_list = [self._model_checkpoint, self._tensor_board]
 
-        self._model = load_model('/content/Smart-Advertising-Systems/Models/AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
+        # self._model = load_model('/content/Smart-Advertising-Systems/Models/AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
 
 
     def __reference__(self):
@@ -126,7 +126,7 @@ class AGNet():
         model.add(Dropout(0.2))
 
         # Loads ImageNet pre-trained data
-        # model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
+        model.load_weights('/content/Smart-Advertising-Systems/Models/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
 
         # Truncate and replace softmax layer for transfer learning
         # Add Fully Connected Layer
@@ -159,7 +159,7 @@ class AGNet():
     def train(self, X_train, y_train, X_dev, y_dev):
         
         # self._model = self.__reference__()
-
+        self._model = self.__vgg16_model__()
         # session_config = tf.ConfigProto(log_device_placement=False, allow_soft_placement=True)    
         # # please do not use the totality of the GPU memory
         # session_config.gpu_options.per_process_gpu_memory_fraction=0.90
