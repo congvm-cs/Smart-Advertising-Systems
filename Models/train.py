@@ -25,6 +25,7 @@ def train_on_batch(args):
     train_dir = args.train_dir
     test_dir = args.test_dir
     
+    # Init model
     agNet = AGNet()
     agdata = AGDataset()
 
@@ -36,7 +37,6 @@ def train_on_batch(args):
     train_file_name  = np.array(os.listdir(train_dir))
     test_file_name = np.array(os.listdir(test_dir))
     
-
     # Test phase
     # Load test data
     for i, file_name in enumerate(test_file_name):
@@ -61,8 +61,11 @@ def train_on_batch(args):
     # Split data into every single batch
     train_batches_arr = np.split(train_file_name, 10)
     
-    for _ in range(100):
-        for batch in train_batches_arr:
+    for epoch in range(100):
+        print('Epochs: {}'.format(epoch))
+        
+        for index, batch in enumerate(train_batches_arr):
+            print('--> Batch #{}'.format(index))
             X_train = []
             y_train = []
 
