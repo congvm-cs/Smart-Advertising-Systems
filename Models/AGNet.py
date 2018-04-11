@@ -156,10 +156,14 @@ class AGNet():
         return model
 
 
+    def init(self):
+        self._model = self.__vgg16_model__()
+
+
     def train(self, X_train, y_train, X_dev, y_dev):
         
         # self._model = self.__reference__()
-        self._model = self.__vgg16_model__()
+        
         # session_config = tf.ConfigProto(log_device_placement=False, allow_soft_placement=True)    
         # # please do not use the totality of the GPU memory
         # session_config.gpu_options.per_process_gpu_memory_fraction=0.90
