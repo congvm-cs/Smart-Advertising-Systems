@@ -33,8 +33,8 @@ def train_on_batch(args):
     y_train = []
     y_test = []
 
-    train_file_name  = os.listdir(train_dir)
-    test_file_name = os.listdir(test_dir)
+    train_file_name  = np.array(os.listdir(train_dir))
+    test_file_name = np.array(os.listdir(test_dir))
     
 
     # Test phase
