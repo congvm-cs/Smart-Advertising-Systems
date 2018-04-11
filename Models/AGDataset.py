@@ -10,6 +10,9 @@ import numpy as np
 import AGNetConfig
 from MTCNN import MTCNN
 from keras.preprocessing.image import ImageDataGenerator
+import pandas as pd
+
+
 class AGDataset():
 
     def __init__(self):
@@ -63,6 +66,34 @@ class AGDataset():
         X_test = X_test/255.0
         
         return [X_train, X_test, y_train, y_test]   
+
+
+    def statistic_dataset(self, args):
+        print('Load data..')
+        train_dir = args.train_dir
+        test_dir = args.test_dir
+
+        # X_train = []
+        # X_test = []
+        y_train = []
+        y_test = []
+
+        for file_name in os.listdir(train_dir):
+            file_path = os.path.join(train_dir, file_name)
+            
+            y_train.append(self.categorize_labels(file_name))
+
+        for file_name in os.listdir(test_dir):
+            file_path = os.path.join(test_dir, file_name)
+            
+            y_test.append(self.categorize_labels(file_name))
+
+        train_data = pd.DataFrame(y_train, columns=['age', '1-18', '19-25', '26-35', '36-50', '>50'])
+        print(train_data.describe())
+
+
+        test_data = pd.DataFrame(y_test, columns=['age', '1-18', '19-25', '26-35', '36-50', '>50'])
+        print(test_data.describe())
         
 
     def data_augment(self, args):
@@ -77,44 +108,47 @@ class AGDataset():
                 shear_range=0.2,
                 zoom_range=0.2,
                 horizontal_flip=True,
-                fill_mode='nearest')
+                fill_mode='nearest',
+                brightness_range=[0, 20])
 
         for file_name in os.listdir(train_dir):
             file_path = os.path.join(train_dir, file_name)
-            
+            print('--> {}'.format(file_path))
             origin_I_train = cv2.imread(str(file_path))
             origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2RGB)
-            origin_I_train = origin_I_train.reshape((1,) + origin_I_train.shape)  # this is a Numpy array with shape (1, 3, 150, 150
+            origin_I_train = np.reshape(origin_I_train, (1, origin_I_train.shape[0], origin_I_train.shape[1], 3)) # this is a Numpy array with shape (1, 3, 150, 150
 
-
-            if int(self._IMAGE_DEPTH) == 1:
-                origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+            # if int(self._IMAGE_DEPTH) == 1:
+            #     origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+            
+            num_age = file_name.split('_')[0]
 
             if num_age == str(26):
                 i = 0
                 for batch in datagen.flow(origin_I_train, batch_size=1,
                                     save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
                     i += 1
-                    if i > 3:
+                    if i > 4:
                         break  # otherwise the generator would loop indefinitely
             else:
                 i = 0
                 for batch in datagen.flow(origin_I_train, batch_size=1,
                                     save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
                     i += 1
-                    if i > 4:
+                    if i > 5:
                         break  # otherwise the generator would loop indefinitely
 
 
         for file_name in os.listdir(test_dir):
             file_path = os.path.join(test_dir, file_name)
-            
+            print('--> {}'.format(file_path))
             origin_I_train = cv2.imread(str(file_path))
             origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2RGB)
-            origin_I_train = origin_I_train.reshape((1,) + origin_I_train.shape)  # this is a Numpy array with shape (1, 3, 150, 150
+            origin_I_train = np.reshape(origin_I_train, (1, origin_I_train.shape[0], origin_I_train.shape[1], 3))  # this is a Numpy array with shape (1, 3, 150, 150
+
 
             if int(self._IMAGE_DEPTH) == 1:
-                origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+                origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_RGB2GRAY)
             num_age = file_name.split('_')[0]
 
             if num_age == str(26):
@@ -229,6 +263,7 @@ def main(args):
     # fgdata.crop_face_from_image(args)
     # fgdata.split_train_test(args)
     fgdata.data_augment(args)
+    # fgdata.statistic_dataset(args)
 
 
 if __name__ == '__main__':

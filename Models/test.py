@@ -14,7 +14,7 @@ align_predictor_path = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems/dl
 
 # Camera Streaming
 # cap = cv2.VideoCapture(0)
-cap = WebcamVideoStream(src=0).start()
+cap = WebcamVideoStream(src=1).start()
 fps = FPS().start()
 
 detector = dlib.get_frontal_face_detector()
@@ -36,11 +36,11 @@ while fps._numFrames < NUM_FRAMES:
     for (i, rect) in enumerate(rects):
         (x, y, h, w) = rect_to_bb(rect)             # Positions of rectangle contains face
 
-        offset = int(0.05*x) 
-        x = x - offset
-        y = y - offset
-        h = h + 2*offset
-        w = w + 2*offset
+            # offset = int(0.05*x) 
+            # x = x - offset
+            # y = y - offset
+            # h = h + 2*offset
+            # w = w + 2*offset
 
         face = image[x:x+w, y:y+h]
         # faceAligned = fa.align(image, gray, rect)   # Aligned face image 
