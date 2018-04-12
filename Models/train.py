@@ -60,13 +60,23 @@ def train_on_batch(args):
     np.random.shuffle(train_file_name)
     
     # Split data into every single batch
-    train_batches_arr = np.split(train_file_name, 10)
+    num_batches = 10
+    range_index = int(len(train_file_name)/10)                             
+    train_batches_arr = []
+
+    for i in range(10):                                                       
+        if (i + range_index) < len(train_file_name):                                          
+            train_batches_arr.append(train_file_name[i*range_index:i*range_index + range_index])
+        else:
+            train_batches_arr.append(train_file_name[i*range_index:len(train_file_name)])
     
+
     for epoch in range(100):
         print('Epochs: {}'.format(epoch))
-
+        print('-------------------------------------------------------')
         for index, batch in enumerate(train_batches_arr):
             print('--> Batch #{}'.format(index))
+            print('-------------------------------------------------------')
             X_train = []
             y_train = []
 

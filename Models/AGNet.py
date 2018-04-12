@@ -43,7 +43,6 @@ class AGNet():
         
         model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu')) 
         model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu'))   
-
         model.add(AveragePooling2D(pool_size=(2, 2)))
 
         model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
