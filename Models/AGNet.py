@@ -40,18 +40,22 @@ class AGNet():
                         input_shape=AGNetConfig.props['INPUT_SHAPE']))
         model.add(Conv2D(filters=64, kernel_size=(3, 3), activation='relu'))
         model.add(AveragePooling2D(pool_size=(2, 2)))                        
-        
+        model.add(Dropout(0.2))
+
         model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu')) 
         model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu'))   
         model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
         model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
         model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu'))
         model.add(Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu'))
         model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
 
         # model.add(Conv2D(filters=1024, kernel_size=(3, 3), padding='same', activation='relu'))
         # # model.add(Dropout(0.2))
@@ -157,8 +161,8 @@ class AGNet():
 
 
     def init(self):
-        # self._model = self.__vgg16_model__()
-        self._model = self.__reference__()
+        self._model = self.__vgg16_model__()
+        # self._model = self.__reference__()
 
 
     def train(self, X_train, y_train, X_dev, y_dev):
