@@ -110,7 +110,9 @@ class AGDataset():
                 horizontal_flip=True,
                 fill_mode='constant')
 
-        for file_name in os.listdir(train_dir):
+        train_file_name = os.listdir(train_dir)
+
+        for file_name in train_file_name:
             file_path = os.path.join(train_dir, file_name)
             print('--> {}'.format(file_path))
             origin_I_train = cv2.imread(str(file_path))
@@ -121,7 +123,7 @@ class AGDataset():
 
             if num_age >= 26 and num_age <= 35:
                 i = 0
-                for batch in datagen.flow(origin_I_train, batch_size=1,
+                for _ in datagen.flow(origin_I_train, batch_size=1,
                                     save_to_dir=train_dir, save_prefix=file_name, save_format='jpg'):
                     i += 1
                     if i > 2:
@@ -135,31 +137,32 @@ class AGDataset():
                         break  # otherwise the generator would loop indefinitely
 
 
-        for file_name in os.listdir(test_dir):
+        test_file_name = os.listdir(test_dir)
+        for file_name in test_file_name:
             file_path = os.path.join(test_dir, file_name)
             print('--> {}'.format(file_path))
-            origin_I_train = cv2.imread(str(file_path))
-            origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2RGB)
-            origin_I_train = np.reshape(origin_I_train, (1, origin_I_train.shape[0], origin_I_train.shape[1], 3))  # this is a Numpy array with shape (1, 3, 150, 150
+            origin_I = cv2.imread(str(file_path))
+            origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2RGB)
+            origin_I = np.reshape(origin_I, (1, origin_I.shape[0], origin_I.shape[1], 3))  # this is a Numpy array with shape (1, 3, 150, 150
 
 
             if int(self._IMAGE_DEPTH) == 1:
                 origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_RGB2GRAY)
-            num_age = file_name.split('_')[0]
+            num_age = int(file_name.split('_')[0])
 
-            if num_age == str(26):
+            if num_age >= 26 and num_age <= 35:
                 i = 0
-                for batch in datagen.flow(origin_I_train, batch_size=1,
-                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                for _ in datagen.flow(origin_I, batch_size=1,
+                                    save_to_dir=test_dir, save_prefix=file_name, save_format='jpg'):
                     i += 1
-                    if i > 3:
+                    if i > 2:
                         break  # otherwise the generator would loop indefinitely
             else:
                 i = 0
-                for batch in datagen.flow(origin_I_train, batch_size=1,
-                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                for _ in datagen.flow(origin_I, batch_size=1,
+                                    save_to_dir=test_dir, save_prefix=file_name, save_format='jpg'):
                     i += 1
-                    if i > 4:
+                    if i > 3:
                         break  # otherwise the generator would loop indefinitely
 
 
