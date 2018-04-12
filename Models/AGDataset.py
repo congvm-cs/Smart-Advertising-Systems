@@ -101,15 +101,14 @@ class AGDataset():
         test_dir = args.test_dir
         
         datagen = ImageDataGenerator(
-                rotation_range=30,
+                rotation_range=35,
                 width_shift_range=0.2,
                 height_shift_range=0.2,
                 # rescale=1./255,
-                shear_range=0.2,
-                zoom_range=0.2,
+                # shear_range=0.2,
+                zoom_range=0.1,
                 horizontal_flip=True,
-                fill_mode='nearest',
-                brightness_range=[0, 20])
+                fill_mode='constant')
 
         for file_name in os.listdir(train_dir):
             file_path = os.path.join(train_dir, file_name)
@@ -117,25 +116,22 @@ class AGDataset():
             origin_I_train = cv2.imread(str(file_path))
             origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2RGB)
             origin_I_train = np.reshape(origin_I_train, (1, origin_I_train.shape[0], origin_I_train.shape[1], 3)) # this is a Numpy array with shape (1, 3, 150, 150
-
-            # if int(self._IMAGE_DEPTH) == 1:
-            #     origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
             
-            num_age = file_name.split('_')[0]
+            num_age = int(file_name.split('_')[0])
 
-            if num_age == str(26):
+            if num_age >= 26 and num_age <= 35:
                 i = 0
                 for batch in datagen.flow(origin_I_train, batch_size=1,
-                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpg'):
                     i += 1
-                    if i > 4:
+                    if i > 2:
                         break  # otherwise the generator would loop indefinitely
             else:
                 i = 0
                 for batch in datagen.flow(origin_I_train, batch_size=1,
-                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpeg'):
+                                    save_to_dir=train_dir, save_prefix=file_name, save_format='jpg'):
                     i += 1
-                    if i > 5:
+                    if i > 3:
                         break  # otherwise the generator would loop indefinitely
 
 
@@ -258,12 +254,35 @@ class AGDataset():
                         cv2.imwrite(os.path.join(output_data_dir, file_name), resized_face)
 
 
+    def rename(self, args):
+        input_data_dir = args.input_data_dir
+
+        print('Loading image from: {}'.format(input_data_dir))
+
+        index = 0
+
+        for folder_name in os.listdir(input_data_dir):
+            folder_path = os.path.join(input_data_dir, folder_name)
+            print('>>> Loading image from folder: {}'.format(folder_name))
+            
+            for file_name in os.listdir(folder_path):
+                file_path = os.path.join(folder_path, file_name)
+
+                attribution_arr = file_name.split('_')
+                new_name = '{:03d}_{}_{:08d}.jpg'.format(int(attribution_arr[0]), attribution_arr[1], index)
+                
+                new_file_path = os.path.join(folder_path, new_name)
+                os.rename(file_path, new_file_path)
+                index += 1
+
+
 def main(args):
-    fgdata = AGDataset()
+    fgData = AGDataset()
     # fgdata.crop_face_from_image(args)
     # fgdata.split_train_test(args)
-    fgdata.data_augment(args)
+    fgData.data_augment(args)
     # fgdata.statistic_dataset(args)
+    # fgData.rename(args)
 
 
 if __name__ == '__main__':
