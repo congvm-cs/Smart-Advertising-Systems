@@ -97,6 +97,8 @@ def train_on_batch(args):
             # Normalize
             X_train = X_train/255.0
             y_train = np.array(y_train)
+
+            # Training
             agNet.train(X_train, y_train, X_test, y_test)
 
 
