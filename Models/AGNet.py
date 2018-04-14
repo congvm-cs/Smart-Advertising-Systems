@@ -168,7 +168,7 @@ class AGNet():
         # self._model = self.__reference__()
 
 
-    def train(self, X_train, y_train, X_dev, y_dev, epochs=AGNetConfig.props['EPOCHS']):
+    def train(self, X_train, y_train, X_dev, y_dev):
         
         # self._model = self.__reference__()
         
@@ -184,7 +184,7 @@ class AGNet():
         # self._model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
 
         self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
-                                epochs=epochs],
+                                epochs=AGNetConfig.props['EPOCHS'],
                                 validation_data=(X_dev, y_dev),
                                 callbacks=self._callback_list)
 
