@@ -164,8 +164,8 @@ class AGNet():
 
 
     def init(self):
-        # self._model = self.__vgg16_model__()
-        self._model = self.__reference__()
+        self._model = self.__vgg16_model__()
+        # self._model = self.__reference__()
 
 
     def train(self, X_train, y_train, X_dev, y_dev):
