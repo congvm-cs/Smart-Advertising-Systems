@@ -49,9 +49,11 @@ class AGNet():
 
         model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
         model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
+        model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
         model.add(AveragePooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
 
+        model.add(Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu'))
         model.add(Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu'))
         model.add(Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu'))
         model.add(AveragePooling2D(pool_size=(2, 2)))
@@ -70,8 +72,9 @@ class AGNet():
         model.add(Dense(4069, activation='relu'))
         model.add(Dropout(0.2))
         model.add(Dense(6, activation='sigmoid'))
+        sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.99, nesterov=True)
 
-        model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
+        model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
         
         print(model.summary())
         return model
@@ -154,7 +157,7 @@ class AGNet():
         #     layer.trainable = True
 
         # Learning rate is changed to 0.001
-        sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
+        sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.99, nesterov=True)
         model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
 
         return model
