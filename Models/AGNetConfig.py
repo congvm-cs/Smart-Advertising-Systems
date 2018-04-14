@@ -9,6 +9,6 @@ props = {
     'INPUT_SHAPE': (64, 64, 3),
 
     # Training
-    'EPOCHS': 1,
-    'BATCH_SIZE': 500
+    'EPOCHS': 100,
+    'BATCH_SIZE': 200
 }

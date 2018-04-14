@@ -7,6 +7,8 @@ import os
 
 def main(args):
     agNet = AGNet()
+    agNet.init()
+    
     agdataset = AGDataset()
 
     [X_train, X_test, y_train, y_test] = agdataset.load_dataset(args)
