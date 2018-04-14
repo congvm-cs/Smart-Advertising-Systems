@@ -168,7 +168,7 @@ class AGNet():
         # self._model = self.__reference__()
 
 
-    def train(self, X_train, y_train, X_dev, y_dev, epochs=AGNetConfig.props['EPOCHS'):
+    def train(self, X_train, y_train, X_dev, y_dev, epochs=AGNetConfig.props['EPOCHS']):
         
         # self._model = self.__reference__()
         
