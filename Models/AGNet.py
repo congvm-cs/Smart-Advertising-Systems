@@ -169,8 +169,8 @@ class AGNet():
 
     def _multi_labels_accuracy(self, y_true, y_pred):
         acc = K.equal(y_true, y_pred)
-        acc = K.cast(acc, tf.bool)
-        return K.mean(K.all(acc, axis=-1) == True)
+        acc = K.cast(acc, tf.float32)
+        return K.mean(K.all(acc, axis=-1) == 1)
     
     
     def init(self):
