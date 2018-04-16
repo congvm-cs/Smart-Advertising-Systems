@@ -9,6 +9,10 @@ from keras import Model
 from keras.preprocessing.image import ImageDataGenerator
 import tensorflow as tf
 import keras.backend as K
+
+import numpy as np
+import tensorflow as tf
+
 class AGNet():
     # pass
 
@@ -165,6 +169,7 @@ class AGNet():
 
     def _multi_labels_accuracy(self, y_true, y_pred):
         acc = K.equal(y_true, y_pred)
+        acc = K.cast(acc, tf.bool)
         return K.mean(K.all(acc, axis=-1) == True)
     
     
