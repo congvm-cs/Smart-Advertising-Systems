@@ -169,10 +169,15 @@ class AGNet():
 
     def _multi_labels_accuracy(self, y_true, y_pred):
         acc = K.equal(y_true, y_pred)
-        acc = (K.all(acc, axis=-1) == 1)
+        acc = (K.all(acc, axis=-1))
         acc = K.cast(acc, tf.float32)
         return K.mean(acc)
-    
+    # acc = tf.equal(y, tf.round(pred))
+    # acc = (tf.reduce_all(acc, axis=-1))
+    # acc = tf.cast(acc, tf.float32)
+    # acc = tf.reduce_mean(acc)
+
+
     
     def init(self):
         self._model = self.__vgg16_model__()
