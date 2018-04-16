@@ -162,7 +162,7 @@ class AGNet():
 
         # Learning rate is changed to 0.001
         # sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.99, nesterov=True)
-        model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=[self._multi_labels_accuracy])
+        model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=[self._multi_labels_accuracy])
 
         return model
 
