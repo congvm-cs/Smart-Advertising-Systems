@@ -158,11 +158,16 @@ class AGNet():
 
         # Learning rate is changed to 0.001
         # sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.99, nesterov=True)
-        model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=[self._multi_labels_accuracy])
 
         return model
 
 
+    def _multi_labels_accuracy(self, y_true, y_pred):
+        acc = K.equal(y_true, y_pred)
+        return K.mean(K.all(acc, axis=-1) == True)
+    
+    
     def init(self):
         self._model = self.__vgg16_model__()
         # self._model = self.__reference__()
