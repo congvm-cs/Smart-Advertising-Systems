@@ -8,7 +8,7 @@ from keras.applications.vgg16 import VGG16
 from keras import Model
 from keras.preprocessing.image import ImageDataGenerator
 import tensorflow as tf
-
+import keras.backend as K
 class AGNet():
     # pass
 
