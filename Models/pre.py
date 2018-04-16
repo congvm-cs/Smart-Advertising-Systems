@@ -60,13 +60,14 @@ for image_path in image_paths:
 
         if y_pred[0, 0] < 0.5:         
             new_name = '00_{}'.format(file_name)
-            new_path = os.path.join(new_folder, new_name)         
+            new_path = os.path.join(folder_path, new_name)         
         else: 
             new_name = '01_{}'.format(file_name)
-            new_path = os.path.join(new_folder, new_name)
+            new_path = os.path.join(folder_path, new_name)
 
-        copy(image_path, new_folder)
+        # copy(image_path, new_folder)
 
-        new_old_path = os.path.join(new_folder, file_name)  
-        rename(new_old_path, new_path)
+        # new_old_path = os.path.join(new_folder, file_name)  
+        rename(image_path, new_path)
         print(new_path)
+        break
