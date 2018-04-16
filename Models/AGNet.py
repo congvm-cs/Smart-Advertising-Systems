@@ -162,7 +162,7 @@ class AGNet():
 
         # Learning rate is changed to 0.001
         # sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.99, nesterov=True)
-        model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=[self._multi_labels_accuracy])
+        model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=[self._multi_labels_accuracy])
 
         return model
 
@@ -170,11 +170,7 @@ class AGNet():
     def _multi_labels_accuracy(self, y_true, y_pred):
         acc = K.equal(y_true, K.round(y_pred))
         acc = (K.all(acc, axis=-1))
-        # acc = K.cast(acc, K.floatx)
         acc = K.mean(acc)
-        # acc = np.equal(y_true, np.round(y_pred))
-        # acc = np.all(acc, axis=-1)
-        # # acc = tf.cast(acc, tf.float32
         return acc
     
     def init(self):
@@ -199,8 +195,8 @@ class AGNet():
 
         self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
                                 epochs=AGNetConfig.props['EPOCHS'],
-                                validation_data=(X_dev, y_dev),
-                                callbacks=self._callback_list)
+                                validation_data=(X_dev, y_dev))
+                                # callbacks=self._callback_list)
 
 
     def __evaluate__(self):
