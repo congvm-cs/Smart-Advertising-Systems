@@ -91,7 +91,6 @@ class AGDataset():
         train_data = pd.DataFrame(y_train, columns=['age', '1-18', '19-25', '26-35', '36-50', '>50'])
         print(train_data.describe())
 
-
         test_data = pd.DataFrame(y_test, columns=['age', '1-18', '19-25', '26-35', '36-50', '>50'])
         print(test_data.describe())
         

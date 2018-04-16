@@ -109,5 +109,5 @@ if __name__ == '__main__':
     parser.add_argument('--train_dir', help='train data directory', default=None, type=str)
     parser.add_argument('--test_dir', help='test data directory', default=None, type=str)
     args = parser.parse_args()
-    # train_on_batch(args)
-    main(args)
+    train_on_batch(args)
+    # main(args)

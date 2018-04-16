@@ -157,8 +157,8 @@ class AGNet():
         #     layer.trainable = True
 
         # Learning rate is changed to 0.001
-        sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.99, nesterov=True)
-        model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
+        # sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.99, nesterov=True)
+        model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
         return model
 
