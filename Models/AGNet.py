@@ -79,7 +79,7 @@ class AGNet():
         print(model.summary())
         model.compile(optimizer='Adam', 
                     loss=['binary_crossentropy', 'categorical_crossentropy'], 
-                    metrics=['accuracy', 'accuracy'],
+                    metrics=['accuracy'],
                     loss_weights=[1.0, 1.0])
 
         return model
