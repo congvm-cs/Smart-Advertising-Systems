@@ -61,7 +61,7 @@ def train_on_batch(args):
                 
             for file_name in os.listdir(subfolder_path1):
                 file_path = os.path.join(subfolder_path1, file_name)
-                print(file_path)
+                # print(file_path)
                 origin_I = cv2.imread(str(file_path))
 
                 # if int(self._IMAGE_DEPTH) == 1:
@@ -79,7 +79,7 @@ def train_on_batch(args):
     #     y_test.append(agdata.categorize_labels(file_name))
 
     X_test = np.array(X_test)
-    X_test = np.reshape(X_test, newshape=(len(X_test), 64, 64, 3))
+    X_test = np.reshape(X_test, newshape=(len(X_test), 64, 64, ))
     
     # Normalize
     X_test = X_test/255.0
@@ -138,7 +138,7 @@ def train_on_batch(args):
             #         y_train.append(agdata.categorize_labels(file_name))
 
             X_train = np.array(X_train)
-            X_train = np.reshape(X_train, newshape=(len(X_train), 64, 64, 3))
+            X_train = np.reshape(X_train, newshape=(len(X_train), 64, 64, 1))
             # Normalize
             X_train = X_train/255.0
             y_train = np.array(y_train)
