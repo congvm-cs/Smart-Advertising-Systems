@@ -69,11 +69,11 @@ class AGNet():
         x = Dropout(0.2)(x)
         # x = Dense(4096)(x)
 
-        x = Dense(4096,activation='relu')(x)
+        x = Dense(4096, activation='relu')(x)
         l_output = Dropout(0.2)(x)
 
         gender_output = Dense(1, activation='sigmoid')(l_output)
-        age_output = Dense(5)(l_output, activation='softmax')
+        age_output = Dense(5, activation='softmax')(l_output)
         model = Model(inputs=l_input, outputs=[gender_output, age_output])
 
         print(model.summary())
