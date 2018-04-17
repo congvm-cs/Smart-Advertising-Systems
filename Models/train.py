@@ -119,7 +119,7 @@ def train_on_batch(args):
                 # file_path = os.path.join(train_dir, file_name)
                 origin_I_train = cv2.imread(str(file_path))
 
-                file_name = os.path.split(file_path)
+                file_name = os.path.split(file_path)[1]
                 X_train.append(origin_I_train)
                 y_train.append(agdata.categorize_labels(file_name))
 
