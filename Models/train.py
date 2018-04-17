@@ -54,7 +54,7 @@ def train_on_batch(args):
     # Load test data
 
     for subfolder_name in os.listdir(test_dir):
-        subfolder_path = os.path.join(train_dir, subfolder_name)
+        subfolder_path = os.path.join(test_dir, subfolder_name)
 
         for subfolder_name1 in os.listdir(subfolder_path):
             subfolder_path1 = os.path.join(subfolder_path, subfolder_name1)
