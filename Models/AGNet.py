@@ -40,7 +40,7 @@ class AGNet():
 
     def _new_model(self):
         # New model
-        l_input = Input([64, 64, 1])
+        l_input = Input([64, 64, 3])
         x = Conv2D(64, (3, 3), activation='relu', padding='same')(l_input)
         x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
         # x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
