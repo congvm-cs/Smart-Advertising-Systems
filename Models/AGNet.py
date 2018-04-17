@@ -209,7 +209,9 @@ class AGNet():
 
         # Learning rate is changed to 0.001
         # sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.99, nesterov=True)
-        model.compile(optimizer='Adam', loss=['binary_crossentropy', 'categorical_crossentropy'], metrics=['accuracy'])
+        model.compile(optimizer='Adam', 
+                    loss=['binary_crossentropy', 'categorical_crossentropy'], 
+                    metrics=['accuracy', 'accuracy'])
 
         return model
 
@@ -242,8 +244,8 @@ class AGNet():
         # print(y_train.shape)
         self._model.fit(x=X_train, y=[y_train[:, 0], y_train[:, 1::]], 
                         batch_size=AGNetConfig.props['BATCH_SIZE'], 
-                        epochs=AGNetConfig.props['EPOCHS'])
-                        # validation_data=(X_dev, [y_dev[:, 0], y_dev[:, 1::]]))
+                        epochs=AGNetConfig.props['EPOCHS'],
+                        validation_data=(X_dev, [y_dev[:, 0], y_dev[:, 1::]]))
                                 # callbacks=self._callback_list)
 
 
