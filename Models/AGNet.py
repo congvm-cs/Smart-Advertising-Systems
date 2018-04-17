@@ -51,23 +51,25 @@ class AGNet():
         x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
         # x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D(strides=(2, 2))(x)
-        x = Dropout(0.2)(x)
+        # x = Dropout(0.2)(x)
 
         x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
         x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
         x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D(strides=(2, 2))(x)
-        x = Dropout(0.2)(x)
+        # x = Dropout(0.2)(x)
 
         x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
         x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
         x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D(strides=(2, 2))(x)
-        x = Dropout(0.2)(x)
+        # x = Dropout(0.2)(x)
 
         x = Flatten()(x)
         x = Dropout(0.2)(x)
         # x = Dense(4096)(x)
+        x = Dense(4096, activation='relu')(x)
+        x = Dropout(0.2)(x)
 
         x = Dense(4096, activation='relu')(x)
         l_output = Dropout(0.2)(x)
