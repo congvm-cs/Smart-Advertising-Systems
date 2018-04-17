@@ -77,10 +77,10 @@ class AGNet():
         model = Model(inputs=l_input, outputs=[gender_output, age_output])
 
         print(model.summary())
-        model.compile(loss=['binary_crossentropy', 'categorical_crossentropy'], 
-                    optimizer='Adam',
-                    etrics=['accuracy'],
-                loss_weights=[1.0, 1.0])
+        model.compile(optimizer='Adam', 
+                    loss=['binary_crossentropy', 'categorical_crossentropy'], 
+                    metrics=['accuracy', 'accuracy'],
+                    loss_weights=[1.0, 1.0])
 
         return model
 
