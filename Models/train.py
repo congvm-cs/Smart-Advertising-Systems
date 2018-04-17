@@ -37,18 +37,40 @@ def train_on_batch(args):
     y_train = []
     y_test = []
 
-    train_file_name  = np.array(os.listdir(train_dir))
+    train_file_name  = []
     test_file_name = np.array(os.listdir(test_dir))
     
+
+    for subfolder_name in os.listdir(train_dir):
+        subfolder_path = os.path.join(train_dir, subfolder_name)
+
+        for file_name in os.listdir(subfolder_path):
+            file_path = os.path.join(subfolder_path, file_name)
+            train_file_name.append(file_path)
     # Test phase
     # Load test data
-    for i, file_name in enumerate(test_file_name):
-        file_path = os.path.join(test_dir, file_name)
-        
-        origin_I = cv2.imread(str(file_path))
 
-        X_test.append(origin_I)
-        y_test.append(agdata.categorize_labels(file_name))
+    for subfolder_name in os.listdir(test_dir):
+            subfolder_path = os.path.join(train_dir, subfolder_name)
+
+            for file_name in os.listdir(subfolder_path):
+                file_path = os.path.join(subfolder_path, file_name)
+                print(file_path)
+                origin_I = cv2.imread(str(file_path))
+
+                # if int(self._IMAGE_DEPTH) == 1:
+                origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
+
+                X_test.append(origin_I)
+                y_test.append(agdata.categorize_labels(file_name))
+
+    # for i, file_name in enumerate(test_file_name):
+    #     file_path = os.path.join(test_dir, file_name)
+        
+    #     origin_I = cv2.imread(str(file_path))
+
+    #     X_test.append(origin_I)
+    #     y_test.append(agdata.categorize_labels(file_name))
 
     X_test = np.array(X_test)
     X_test = np.reshape(X_test, newshape=(len(X_test), 64, 64, 3))
@@ -87,12 +109,27 @@ def train_on_batch(args):
             X_train = []
             y_train = []
 
-            for i, file_name in enumerate(batch):
-                file_path = os.path.join(train_dir, file_name)
+            for i, file_path in enumerate(batch):
+                # file_path = os.path.join(train_dir, file_name)
                 origin_I_train = cv2.imread(str(file_path))
 
+                file_name = os.path.split(file_path)
                 X_train.append(origin_I_train)
                 y_train.append(agdata.categorize_labels(file_name))
+
+            # for subfolder_name in batch:
+            #     subfolder_path = os.path.join(train_dir, subfolder_name)
+
+            #     for file_name in os.listdir(subfolder_path):
+            #         file_path = os.path.join(subfolder_path, file_name)
+            #         # print(file_path)
+            #         origin_I = cv2.imread(str(file_path))
+
+            #         # if int(self._IMAGE_DEPTH) == 1:
+            #         origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
+
+            #         X_train.append(origin_I)
+            #         y_train.append(agdata.categorize_labels(file_name))
 
             X_train = np.array(X_train)
             X_train = np.reshape(X_train, newshape=(len(X_train), 64, 64, 3))
