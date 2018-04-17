@@ -1,5 +1,5 @@
 from keras.models import Sequential, load_model
-from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, AveragePooling2D, Flatten, BatchNormalization, ZeroPadding2D, Convolution2D, Merge
+from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, AveragePooling2D, Flatten, BatchNormalization, ZeroPadding2D, Convolution2D, Merge, Input
 from keras.callbacks import ModelCheckpoint, TensorBoard
 from keras.optimizers import SGD
 import AGNetConfig
@@ -7,6 +7,10 @@ import os
 from keras.applications.vgg16 import VGG16
 from keras import Model
 from keras.preprocessing.image import ImageDataGenerator
+import tensorflow as tf
+import keras.backend as K
+
+import numpy as np
 import tensorflow as tf
 
 class AGNet():
@@ -31,41 +35,97 @@ class AGNet():
                                         write_images=True)
         self._callback_list = [self._model_checkpoint, self._tensor_board]
 
+        # self._model = load_model('/content/Smart-Advertising-Systems/Models/AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
+
+
+    def _new_model(self):
+        # New model
+        l_input = Input([64, 64, 1])
+        x = Conv2D(32, (3, 3), activation='relu', padding='same')(l_input)
+        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D(strides=(2, 2))(x)
+        x = Dropout(0.2)(x)
+
+        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D(strides=(2, 2))(x)
+        x = Dropout(0.2)(x)
+
+        x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D(strides=(2, 2))(x)
+        x = Dropout(0.2)(x)
+
+        x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D(strides=(2, 2))(x)
+        x = Dropout(0.2)(x)
+
+        x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D(strides=(2, 2))(x)
+        x = Dropout(0.2)(x)
+
+        x = Flatten()(x)
+        x = Dropout(0.2)(x)
+        x = Dense(1024)(x)
+        l_output = Dropout(0.2)(x)
+
+        gender_output = Dense(1)(l_output)
+        age_output = Dense(5)(l_output)
+        model = Model(inputs=l_input, outputs=[gender_output, age_output])
+
+        print(model.summary())
+        model.compile(loss=['binary_crossentropy', 'categorical_crossentropy'], 
+                    optimizer='Adam',
+                    etrics=['accuracy'],
+                loss_weights=[1.0, 1.0])
+
+        return model
+
 
     def __reference__(self):
         model = Sequential()
         model.add(Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu',
                         input_shape=AGNetConfig.props['INPUT_SHAPE']))
-        # model.add(Dropout(0.2))
+        model.add(Conv2D(filters=64, kernel_size=(3, 3), activation='relu'))
         model.add(AveragePooling2D(pool_size=(2, 2)))                        
-        
+        model.add(Dropout(0.2))
+
+        model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu')) 
         model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu'))   
-        # model.add(Dropout(0.2))
         model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
-        # model.add(Dropout(0.2))
+        model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
+        model.add(Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu'))
         model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
 
         model.add(Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu'))
-        # model.add(Dropout(0.2))
+        model.add(Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu'))
+        model.add(Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu'))
         model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
 
-        model.add(Conv2D(filters=1024, kernel_size=(3, 3), padding='same', activation='relu'))
-        # model.add(Dropout(0.2))
-        model.add(AveragePooling2D(pool_size=(2, 2)))
+        # model.add(Conv2D(filters=1024, kernel_size=(3, 3), padding='same', activation='relu'))
+        # # model.add(Dropout(0.2))
+        # model.add(AveragePooling2D(pool_size=(2, 2)))
         
-        model.add(Conv2D(filters=2048, kernel_size=(3, 3), padding='same', activation='relu'))
-        # model.add(Dropout(0.2))
-        model.add(AveragePooling2D(pool_size=(2, 2)))
+        # model.add(Conv2D(filters=2048, kernel_size=(3, 3), padding='same', activation='relu'))
+        # # model.add(Dropout(0.2))
+        # model.add(AveragePooling2D(pool_size=(2, 2)))
         
         model.add(Flatten())
         model.add(Dropout(0.2))
-        model.add(Dense(1024, activation='relu'))
+        model.add(Dense(4069, activation='relu'))
         model.add(Dropout(0.2))
         model.add(Dense(6, activation='sigmoid'))
+        sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.99, nesterov=True)
 
-        model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
+        model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
         
         print(model.summary())
         return model
@@ -124,7 +184,7 @@ class AGNet():
         model.add(Dropout(0.2))
 
         # Loads ImageNet pre-trained data
-        # model.load_weights('/home/vmc/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
+        model.load_weights('/content/Smart-Advertising-Systems/Models/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
 
         # Truncate and replace softmax layer for transfer learning
         # Add Fully Connected Layer
@@ -139,6 +199,7 @@ class AGNet():
         # model.outputs = [model.layers[-1].output]
         # model.layers[-1].outbound_nodes = []
         model.add(Dense(num_classes, activation='sigmoid'))
+        # model.load_weights('/content/Smart-Advertising-Systems/Models/AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
 
         print(model.summary())
 
@@ -147,32 +208,42 @@ class AGNet():
         #     layer.trainable = True
 
         # Learning rate is changed to 0.001
-        sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
-        model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
+        # sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.99, nesterov=True)
+        model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=[self._multi_labels_accuracy])
 
         return model
 
 
-    def train(self, X_train, y_train, X_dev, y_dev):
-        # self._model = load_model('./AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
+    def _multi_labels_accuracy(self, y_true, y_pred):
+        acc = K.equal(y_true, K.round(y_pred))
+        acc = (K.all(acc, axis=-1))
+        acc = K.mean(acc)
+        return acc
+    
+    def init(self):
+        self._model = self._new_model()
         # self._model = self.__reference__()
 
-        session_config = tf.ConfigProto(log_device_placement=False, allow_soft_placement=True)    
-        # please do not use the totality of the GPU memory
-        session_config.gpu_options.per_process_gpu_memory_fraction=0.90
-        sess = tf.Session(config=session_config)
 
-        self._model = self.__vgg16_model__()
-        # self._model.load_weights('./AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
+    def train(self, X_train, y_train, X_dev, y_dev):
+        
+        # self._model = self.__reference__()
+        
+        # session_config = tf.ConfigProto(log_device_placement=False, allow_soft_placement=True)    
+        # # please do not use the totality of the GPU memory
+        # session_config.gpu_options.per_process_gpu_memory_fraction=0.90
+        # sess = tf.Session(config=session_config)
+
+        # self._model = self.__vgg16_model__()
         # for layer in self._model.layers[:10]:
         #     layer.trainable = True
 
         # self._model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-        self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
+        self._model.fit(x=X_train, y=[y_train[:, 0], y_train[:, 1::]], batch_size=AGNetConfig.props['BATCH_SIZE'], 
                                 epochs=AGNetConfig.props['EPOCHS'],
-                                validation_data=(X_dev, y_dev),
-                                callbacks=self._callback_list)
+                                validation_data=(X_dev, y_dev))
+                                # callbacks=self._callback_list)
 
 
     def __evaluate__(self):
