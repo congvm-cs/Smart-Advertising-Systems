@@ -1,5 +1,5 @@
 from keras.models import Sequential, load_model
-from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, AveragePooling2D, Flatten, BatchNormalization, ZeroPadding2D, Convolution2D, Merge
+from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, AveragePooling2D, Flatten, BatchNormalization, ZeroPadding2D, Convolution2D, Merge, Input
 from keras.callbacks import ModelCheckpoint, TensorBoard
 from keras.optimizers import SGD
 import AGNetConfig
@@ -36,6 +36,53 @@ class AGNet():
         self._callback_list = [self._model_checkpoint, self._tensor_board]
 
         # self._model = load_model('/content/Smart-Advertising-Systems/Models/AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
+
+        
+    def _new_model(self):
+        # New model
+        l_input = Input([64, 64, 1])
+        x = Conv2D(32, (3, 3), activation='relu', padding='same')(l_input)
+        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D(strides=(2, 2))(x)
+        x = Dropout(0.2)(x)
+
+        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D(strides=(2, 2))(x)
+        x = Dropout(0.2)(x)
+
+        x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D(strides=(2, 2))(x)
+        x = Dropout(0.2)(x)
+
+        x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D(strides=(2, 2))(x)
+        x = Dropout(0.2)(x)
+
+        x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D(strides=(2, 2))(x)
+        x = Dropout(0.2)(x)
+
+        x = Flatten()(x)
+        x = Dropout(0.2)(x)
+        x = Dense(1024)(x)
+        l_output = Dropout(0.2)(x)
+
+        gender_output = Dense(1)(l_output)
+        age_output = Dense(5)(l_output)
+        model = Model(inputs=l_input, outputs=[gender_output, age_output])
+
+        print(model.summary())
+        model.compile(loss=['binary_crossentropy', 'categorical_crossentropy'], 
+                    optimizer='Adam',
+                    etrics=['accuracy'],
+                loss_weights=[1.0, 1.0])
+
+        return model
 
 
     def __reference__(self):
@@ -174,7 +221,7 @@ class AGNet():
         return acc
     
     def init(self):
-        self._model = self.__vgg16_model__()
+        self._model = self._new_model()
         # self._model = self.__reference__()
 
 
