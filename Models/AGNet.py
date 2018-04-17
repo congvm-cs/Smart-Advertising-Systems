@@ -239,10 +239,10 @@ class AGNet():
         #     layer.trainable = True
 
         # self._model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
-        print(y_train.shape)
+        # print(y_train.shape)
         self._model.fit(x=X_train, y=[y_train[:, 0], y_train[:, 1::]], batch_size=AGNetConfig.props['BATCH_SIZE'], 
                                 epochs=AGNetConfig.props['EPOCHS'],
-                                validation_data=(X_dev, y_dev))
+                                validation_data=(X_dev, [y_dev[:, 0], y_dev[:, 1::]]))
                                 # callbacks=self._callback_list)
 
 
