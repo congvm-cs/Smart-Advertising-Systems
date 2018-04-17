@@ -41,27 +41,25 @@ class AGNet():
     def _new_model(self):
         # New model
         l_input = Input([64, 64, 1])
-        x = Conv2D(32, (3, 3), activation='relu', padding='same')(l_input)
-        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
-        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
-        x = MaxPooling2D(strides=(2, 2))(x)
-        x = Dropout(0.2)(x)
-
+        x = Conv2D(64, (3, 3), activation='relu', padding='same')(l_input)
         x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+        # x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D(strides=(2, 2))(x)
         x = Dropout(0.2)(x)
 
         x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
         x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+        # x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D(strides=(2, 2))(x)
         x = Dropout(0.2)(x)
 
         x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
         x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D(strides=(2, 2))(x)
         x = Dropout(0.2)(x)
 
+        x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
         x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
         x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D(strides=(2, 2))(x)
@@ -69,7 +67,9 @@ class AGNet():
 
         x = Flatten()(x)
         x = Dropout(0.2)(x)
-        x = Dense(1024)(x)
+        # x = Dense(4096)(x)
+
+        x = Dense(4096)(x)
         l_output = Dropout(0.2)(x)
 
         gender_output = Dense(1)(l_output)
