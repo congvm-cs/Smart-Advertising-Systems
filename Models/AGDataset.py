@@ -63,6 +63,7 @@ class AGDataset():
 
             for file_name in os.listdir(subfolder_path):
                 file_path = os.path.join(subfolder_path, file_name)
+                print(file_path)
                 origin_I = cv2.imread(str(file_path))
 
                 if int(self._IMAGE_DEPTH) == 1:
