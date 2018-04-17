@@ -37,7 +37,7 @@ class AGNet():
 
         # self._model = load_model('/content/Smart-Advertising-Systems/Models/AGNet_weights_1-improvement-30-0.22-0.90.hdf5')
 
-        
+
     def _new_model(self):
         # New model
         l_input = Input([64, 64, 1])
@@ -240,7 +240,7 @@ class AGNet():
 
         # self._model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-        self._model.fit(x=X_train, y=y_train, batch_size=AGNetConfig.props['BATCH_SIZE'], 
+        self._model.fit(x=X_train, y=[y_train[:, 0], y_train[:, 1::]], batch_size=AGNetConfig.props['BATCH_SIZE'], 
                                 epochs=AGNetConfig.props['EPOCHS'],
                                 validation_data=(X_dev, y_dev))
                                 # callbacks=self._callback_list)
