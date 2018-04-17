@@ -117,10 +117,10 @@ def train_on_batch(args):
 
             for i, file_path in enumerate(batch):
                 # file_path = os.path.join(train_dir, file_name)
-                origin_I_train = cv2.imread(str(file_path))
-
+                origin_I = cv2.imread(str(file_path))
+                origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
                 file_name = os.path.split(file_path)[1]
-                X_train.append(origin_I_train)
+                X_train.append(origin_I)
                 y_train.append(agdata.categorize_labels(file_name))
 
             # for subfolder_name in batch:
