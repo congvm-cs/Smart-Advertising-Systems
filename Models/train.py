@@ -44,17 +44,23 @@ def train_on_batch(args):
     for subfolder_name in os.listdir(train_dir):
         subfolder_path = os.path.join(train_dir, subfolder_name)
 
-        for file_name in os.listdir(subfolder_path):
-            file_path = os.path.join(subfolder_path, file_name)
-            train_file_name.append(file_path)
+        for subfolder_name1 in os.listdir(subfolder_path):
+            subfolder_path1 = os.path.join(subfolder_path, subfolder_name1)
+                
+            for file_name in os.listdir(subfolder_path1):
+                file_path = os.path.join(subfolder_path1, file_name)
+                train_file_name.append(file_path)
     # Test phase
     # Load test data
 
     for subfolder_name in os.listdir(test_dir):
-            subfolder_path = os.path.join(train_dir, subfolder_name)
+        subfolder_path = os.path.join(train_dir, subfolder_name)
 
-            for file_name in os.listdir(subfolder_path):
-                file_path = os.path.join(subfolder_path, file_name)
+        for subfolder_name1 in os.listdir(subfolder_path):
+            subfolder_path1 = os.path.join(subfolder_path, subfolder_name1)
+                
+            for file_name in os.listdir(subfolder_path1):
+                file_path = os.path.join(subfolder_path1, file_name)
                 print(file_path)
                 origin_I = cv2.imread(str(file_path))
 

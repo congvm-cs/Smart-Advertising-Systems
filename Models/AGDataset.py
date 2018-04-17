@@ -61,26 +61,33 @@ class AGDataset():
         for subfolder_name in os.listdir(train_dir):
             subfolder_path = os.path.join(train_dir, subfolder_name)
 
-            for file_name in os.listdir(subfolder_path):
-                file_path = os.path.join(subfolder_path, file_name)
-                print(file_path)
-                origin_I = cv2.imread(str(file_path))
+            for subfolder_name1 in os.listdir(subfolder_path):
+                subfolder_path1 = os.path.join(subfolder_path, subfolder_name1)
 
-                if int(self._IMAGE_DEPTH) == 1:
-                    origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
+                for file_name in os.listdir(subfolder_path1):
+                    file_path = os.path.join(subfolder_path1, file_name)
+                    print(file_path)
+                    origin_I = cv2.imread(str(file_path))
 
-                X_train.append(origin_I)
-                y_train.append(self.categorize_labels(file_name))
+                    if int(self._IMAGE_DEPTH) == 1:
+                        origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
+
+                    X_train.append(origin_I)
+                    y_train.append(self.categorize_labels(file_name))
 
         for subfolder_name in os.listdir(test_dir):
             subfolder_path = os.path.join(test_dir, subfolder_name)
 
-            for file_name in os.listdir(subfolder_path):
-                file_path = os.path.join(subfolder_path, file_name)
-                origin_I = cv2.imread(str(file_path))
+            for subfolder_name1 in os.listdir(subfolder_path):
+                subfolder_path1 = os.path.join(subfolder_path, subfolder_name1)
+                
+                for file_name in os.listdir(subfolder_path1):
+                    file_path = os.path.join(subfolder_path1, file_name)
+                    print(file_path)
+                    origin_I = cv2.imread(str(file_path))
 
-                if int(self._IMAGE_DEPTH) == 1:
-                    origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
+                    if int(self._IMAGE_DEPTH) == 1:
+                        origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
 
                 X_test.append(origin_I)
                 y_test.append(self.categorize_labels(file_name))
