@@ -21,6 +21,34 @@ class AGDataset():
 
 
     def load_dataset(self, args):
+
+        """Data structure:
+            Root_Folder
+            |       Train_Folder           
+            |       |        SubFolder_1
+            |       |        |       Classified_Folder_1
+            |       |        |       Classified_Folder_2
+            |       |        |                ...
+            |       |        |       Classified_Folder_n
+            |       |        SubFolder_2
+            |       |        |       Classified_Folder_1
+            |       |        |       Classified_Folder_2
+            |       |        |                ...
+            |       |        |       Classified_Folder_n
+            |
+            |       Test_Folder           
+            |       |        SubFolder_1
+            |       |        |       Classified_Folder_1
+            |       |        |       Classified_Folder_2
+            |       |        |                ...
+            |       |        |       Classified_Folder_n
+            |       |        SubFolder_2
+            |       |        |       Classified_Folder_1
+            |       |        |       Classified_Folder_2
+            |       |        |                ...
+            |       |        |       Classified_Folder_n
+            
+        """
         print('Load data..')
         train_dir = args.train_dir
         test_dir = args.test_dir
@@ -30,27 +58,31 @@ class AGDataset():
         y_train = []
         y_test = []
 
-        for file_name in os.listdir(train_dir):
-            file_path = os.path.join(train_dir, file_name)
-            
-            origin_I_train = cv2.imread(str(file_path))
+        for subfolder_name in os.listdir(train_dir):
+            subfolder_path = os.path.join(train_dir, subfolder_name)
 
-            if int(self._IMAGE_DEPTH) == 1:
-                origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+            for file_name in os.listdir(subfolder_path):
+                file_path = os.path.join(subfolder_path, file_name)
+                origin_I = cv2.imread(str(file_path))
 
-            X_train.append(origin_I_train)
-            y_train.append(self.categorize_labels(file_name))
+                if int(self._IMAGE_DEPTH) == 1:
+                    origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
 
-        for file_name in os.listdir(test_dir):
-            file_path = os.path.join(test_dir, file_name)
-            
-            origin_I_train = cv2.imread(str(file_path))
-            
-            if int(self._IMAGE_DEPTH) == 1:
-                origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2GRAY)
+                X_train.append(origin_I)
+                y_train.append(self.categorize_labels(file_name))
 
-            X_test.append(origin_I_train)
-            y_test.append(self.categorize_labels(file_name))
+        for subfolder_name in os.listdir(test_dir):
+            subfolder_path = os.path.join(test_dir, subfolder_name)
+
+            for file_name in os.listdir(subfolder_path):
+                file_path = os.path.join(subfolder_path, file_name)
+                origin_I = cv2.imread(str(file_path))
+
+                if int(self._IMAGE_DEPTH) == 1:
+                    origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2GRAY)
+
+                X_test.append(origin_I)
+                y_test.append(self.categorize_labels(file_name))
 
         X_train = np.array(X_train)
         X_test = np.array(X_test)
