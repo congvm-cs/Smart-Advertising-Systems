@@ -79,7 +79,7 @@ def train_on_batch(args):
     #     y_test.append(agdata.categorize_labels(file_name))
 
     X_test = np.array(X_test)
-    X_test = np.reshape(X_test, newshape=(len(X_test), 64, 64, ))
+    X_test = np.reshape(X_test, newshape=(len(X_test), 64, 64, 1))
     
     # Normalize
     X_test = X_test/255.0
