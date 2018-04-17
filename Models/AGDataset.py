@@ -229,7 +229,7 @@ class AGDataset():
             labels[4] = 1
         elif age > 50:
             labels[5] = 1
-        return [labels[0], labels[1::]]
+        return labels
 
 
     def split_train_test(self, args):
