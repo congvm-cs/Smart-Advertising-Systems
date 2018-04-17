@@ -140,29 +140,50 @@ class AGDataset():
         test_dir = args.test_dir
         
         datagen = ImageDataGenerator(
+<<<<<<< Updated upstream
                 rotation_range=35,
                 width_shift_range=0.2,
                 height_shift_range=0.2,
+=======
+                rotation_range=30,
+                width_shift_range=0.1,
+                height_shift_range=0.1,
+>>>>>>> Stashed changes
                 # rescale=1./255,
                 # shear_range=0.2,
                 zoom_range=0.1,
                 horizontal_flip=True,
+<<<<<<< Updated upstream
                 fill_mode='constant')
+=======
+                fill_mode='nearest'
+                )
+>>>>>>> Stashed changes
 
         train_file_name = os.listdir(train_dir)
 
         for file_name in train_file_name:
             file_path = os.path.join(train_dir, file_name)
+<<<<<<< Updated upstream
             print('--> {}'.format(file_path))
+=======
+            num_age = file_name.split('_')[0]
+>>>>>>> Stashed changes
             origin_I_train = cv2.imread(str(file_path))
             origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_BGR2RGB)
             origin_I_train = np.reshape(origin_I_train, (1, origin_I_train.shape[0], origin_I_train.shape[1], 3)) # this is a Numpy array with shape (1, 3, 150, 150
             
             num_age = int(file_name.split('_')[0])
 
+<<<<<<< Updated upstream
             if num_age >= 26 and num_age <= 35:
                 i = 0
                 for _ in datagen.flow(origin_I_train, batch_size=1,
+=======
+            if int(num_age) < 30:
+                i = 0
+                for batch in datagen.flow(origin_I_train, batch_size=1,
+>>>>>>> Stashed changes
                                     save_to_dir=train_dir, save_prefix=file_name, save_format='jpg'):
                     i += 1
                     if i > 2:
@@ -179,6 +200,7 @@ class AGDataset():
         test_file_name = os.listdir(test_dir)
         for file_name in test_file_name:
             file_path = os.path.join(test_dir, file_name)
+<<<<<<< Updated upstream
             print('--> {}'.format(file_path))
             origin_I = cv2.imread(str(file_path))
             origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2RGB)
@@ -192,13 +214,31 @@ class AGDataset():
             if num_age >= 26 and num_age <= 35:
                 i = 0
                 for _ in datagen.flow(origin_I, batch_size=1,
+=======
+            num_age = file_name.split('_')[0]
+            origin_I_test = cv2.imread(str(file_path))
+            origin_I_test = cv2.cvtColor(origin_I_test, cv2.COLOR_BGR2RGB)
+            origin_I_test = origin_I_test.reshape((1,) + origin_I_test.shape)  # this is a Numpy array with shape (1, 3, 150, 150
+
+            if int(self._IMAGE_DEPTH) == 1:
+                origin_I_test = cv2.cvtColor(origin_I_test, cv2.COLOR_BGR2GRAY)
+            num_age = file_name.split('_')[0]
+
+            if int(num_age) < 30:
+                i = 0
+                for batch in datagen.flow(origin_I_test, batch_size=1,
+>>>>>>> Stashed changes
                                     save_to_dir=test_dir, save_prefix=file_name, save_format='jpg'):
                     i += 1
                     if i > 2:
                         break  # otherwise the generator would loop indefinitely
             else:
                 i = 0
+<<<<<<< Updated upstream
                 for _ in datagen.flow(origin_I, batch_size=1,
+=======
+                for batch in datagen.flow(origin_I_test, batch_size=1,
+>>>>>>> Stashed changes
                                     save_to_dir=test_dir, save_prefix=file_name, save_format='jpg'):
                     i += 1
                     if i > 3:
@@ -319,12 +359,19 @@ class AGDataset():
 
 
 def main(args):
+<<<<<<< Updated upstream
     fgData = AGDataset()
     # fgdata.crop_face_from_image(args)
     # fgdata.split_train_test(args)
     # fgData.data_augment(args)
     # fgdata.statistic_dataset(args)
     # fgData.rename(args)
+=======
+    fgdata = AGDataset()
+    #fgdata.crop_face_from_image(args)
+    #fgdata.split_train_test(args)
+    fgdata.data_augment(args)
+>>>>>>> Stashed changes
 
 
 if __name__ == '__main__':
