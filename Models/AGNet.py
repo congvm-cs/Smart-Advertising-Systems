@@ -82,8 +82,8 @@ class AGNet():
         model.compile(optimizer='Adam', 
                     loss=['binary_crossentropy', 'categorical_crossentropy'], 
                     metrics=['accuracy'],
-                    loss_weights=[0.3, 1.0],
-                    callbacks=self._callback_list)
+                    loss_weights=[0.3, 1.0])
+                    # callbacks=self._callback_list)
 
         return model
 
@@ -248,8 +248,8 @@ class AGNet():
         self._model.fit(x=X_train, y=[y_train[:, 0], y_train[:, 1::]], 
                         batch_size=AGNetConfig.props['BATCH_SIZE'], 
                         epochs=AGNetConfig.props['EPOCHS'],
-                        validation_data=(X_dev, [y_dev[:, 0], y_dev[:, 1::]]))
-                                # callbacks=self._callback_list)
+                        validation_data=(X_dev, [y_dev[:, 0], y_dev[:, 1::]]),
+                        callbacks=self._callback_list)
 
 
     def __evaluate__(self):
