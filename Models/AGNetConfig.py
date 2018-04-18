@@ -3,7 +3,7 @@
 props = {
     'LOG_PATH': './AGNet_logs',
     'MODEL_PATH': './AGNet_models',
-    'WEIGHT_NAME': 'AGNet-weights-improvement-{epoch:02d}-{val_loss:.2f}-{val_acc:.2f}.hdf5',
+    'WEIGHT_NAME': 'AGNet-weights-improvement-{epoch:02d}-{val_loss:.2f}.hdf5',
     'IMAGE_SIZE':  64,
     'IMAGE_DEPTH':  3,
     'INPUT_SHAPE': (64, 64, 3),

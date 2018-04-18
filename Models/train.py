@@ -89,7 +89,7 @@ def train_on_batch(args):
     # Training Phase
 
     # Split data into every single batch
-    num_batches = 10
+    num_batches = 5
     range_index = int(len(train_file_name)/num_batches)                             
     train_batches_arr = []
 
@@ -100,7 +100,7 @@ def train_on_batch(args):
         # Split data into every single batch                         
         train_batches_arr = []
 
-        for i in range(10):                                                       
+        for i in range(num_batches):                                                       
             if (i + range_index) < len(train_file_name):                                          
                 train_batches_arr.append(train_file_name[i*range_index:i*range_index + range_index])
             else:
