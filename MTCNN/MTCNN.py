@@ -8,8 +8,8 @@ class MTCNN():
     def __init__(self, mtcnn_model_dir):
         # mtcnn parameters
         self._minsize = 10                      # minimum size of face
-        self._threshold = [0.3, 0.4, 0.5]       # three steps's threshold
-        self._factor = 0.3                      # scale factor
+        self._threshold = [0.4, 0.5, 0.6]       # three steps's threshold
+        self._factor = 0.8                      # scale factor
         self._sess = tf.Session()
         self._pnet, self._rnet, self._onet = detect_face.create_mtcnn(self._sess, mtcnn_model_dir)
 

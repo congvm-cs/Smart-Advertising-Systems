@@ -6,8 +6,7 @@ import numpy as np
 from os import rename
 import os
 from shutil import copy, move
-
-
+import glob
 
 # print('Load model...')
 # # model_path = '/mnt/e/Smart-Advertising-Systems-master/Models/weights-improvement-23-0.23-0.92.hdf5'
@@ -18,7 +17,7 @@ from shutil import copy, move
 # model = load_model(model_path)
 # predictor = dlib.shape_predictor(align_predictor_path)
 
-output_folder = '/home/vmc/Downloads/UTKFace_gc/test/'
+output_folder = '/mnt/Data/Dataset/Face_Data/Output'
 def load_data(direcs):
     paths = []
     for file_name in os.listdir(direcs):
@@ -27,8 +26,10 @@ def load_data(direcs):
     return paths
 
 # new_folder = '/home/vmc/Downloads/Output_CACD2000/'
-image_paths = load_data('/home/vmc/Downloads/UTKFace_gc/test/1')
+image_paths = load_data('/mnt/Data/Dataset/Face_Data/Output')
 print('No. Images: {}'.format(len(image_paths)))
+
+# image_paths = glob.glob('/mnt/Data/Dataset/Face_Data/Output/*/*.jpg')
 
 for image_path in image_paths:
     # image = cv2.imread(image_path)
@@ -97,7 +98,7 @@ for image_path in image_paths:
     #     # print(file1)
     #     # print('---------------------------------------------')
     #     file1_path = os.path.join(image_path, file1)
-    #     move(file1_path, output_folder)
+    # move(image_path, output_folder)
 
 
 # def _move_()
@@ -114,7 +115,7 @@ for image_path in image_paths:
 
 # Move file
     folder_path = os.path.split(image_path)[0]
-    age = file_name.split('_')[0]
+    age = file_name.split('-')[0][1::]
 
     age_path = os.path.join(folder_path, age)
 
