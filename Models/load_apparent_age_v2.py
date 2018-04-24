@@ -3,10 +3,11 @@ import pandas as pd
 import os
 import sys
 sys.path.append('..')
-
+import numpy as np
 from shutil import move
 from MTCNN.MTCNN import MTCNN
 import cv2
+from keras.models import load_model
 
 
 def classify_into_subfolder():
@@ -86,4 +87,58 @@ def crop_face():
     
     print('Success rate: {}/{}'.format(len(image_path_arr), num_success_crop))   
 
-crop_face()
+
+def predict_gender():
+    print('load model')
+    model = load_model('/home/vmc/Downloads/lastest-train-weights-improvement-0.3139-0.2-1.0.hdf5')
+
+    print('load dataset')
+    image_path_arr = glob.glob('/home/vmc/Desktop/*.png')
+    based_folder_path = '/home/vmc/Downloads/Apparent_Age_Dataset_Output'
+    index = 1
+
+    # for image_path in image_path_arr:
+    img = cv2.imread('/home/vmc/Desktop/11.png')
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    img = np.reshape(img, (1, 64, 64, 3))
+    pred = model.predict(img)
+    # print(image_path)
+    gender = int(np.round(pred[0]))
+    print(gender)
+    print(pred[0])
+    # [phase_subfolder, age_number, _] = _split_info_by_path(image_path)
+
+    # new_name = '{}_{}_{:05}.jpg'.format(age_number, gender, index)
+    # new_path =  '{}/{}/{}/{}'.format(based_folder_path, phase_subfolder, age_number, new_name)
+
+    # os.rename(image_path, new_path)
+
+    # print('{} --> {}'.format(image_path, new_path))
+    # index += 1
+
+# crop_face()
+
+def fix_gender_notation():
+    path = '/home/vmc/Downloads/Apparent_Age_Dataset_Output/Train/23/0'
+
+    desired_gender = 0
+    # gender = 0
+
+    for image_path in os.listdir(path):
+        file_name = image_path.split('/')[-1]    
+        old_path =  '{}/{}'.format(path,  file_name)
+
+
+        [age, gender, index] = file_name.split('_')
+
+        # print(age, gender, index)
+        new_name = '{}_{}_{}'.format(age, desired_gender, index)
+        new_path =  '{}/{}'.format(path,  new_name)
+
+        print(old_path)
+        print('-----------------------------------')
+        print(new_path)
+
+        os.rename(old_path, new_path)
+fix_gender_notation()

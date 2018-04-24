@@ -135,14 +135,14 @@ class AGDataset():
         print(test_data.describe())
         
 
-    def data_augment(self, args):
-        train_dir = args.train_dir
-        test_dir = args.test_dir
+    def data_augment(self, train_dir, test_dir):
+        # train_dir = train_dir
+        # test_dir = test_dir
         
         datagen = ImageDataGenerator(
-                rotation_range=35,
-                width_shift_range=0.2,
-                height_shift_range=0.2,
+                rotation_range=20,
+                width_shift_range=0.1,
+                height_shift_range=0.1,
                 # rescale=1./255,
                 # shear_range=0.2,
                 zoom_range=0.1,
@@ -160,7 +160,7 @@ class AGDataset():
             
             num_age = int(file_name.split('_')[0])
 
-            if num_age >= 26 and num_age <= 35:
+            if num_age >= 20 and num_age <= 35:
                 i = 0
                 for _ in datagen.flow(origin_I_train, batch_size=1,
                                     save_to_dir=train_dir, save_prefix=file_name, save_format='jpg'):
@@ -176,33 +176,33 @@ class AGDataset():
                         break  # otherwise the generator would loop indefinitely
 
 
-        test_file_name = os.listdir(test_dir)
-        for file_name in test_file_name:
-            file_path = os.path.join(test_dir, file_name)
-            print('--> {}'.format(file_path))
-            origin_I = cv2.imread(str(file_path))
-            origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2RGB)
-            origin_I = np.reshape(origin_I, (1, origin_I.shape[0], origin_I.shape[1], 3))  # this is a Numpy array with shape (1, 3, 150, 150
+        # test_file_name = os.listdir(test_dir)
+        # for file_name in test_file_name:
+        #     file_path = os.path.join(test_dir, file_name)
+        #     print('--> {}'.format(file_path))
+        #     origin_I = cv2.imread(str(file_path))
+        #     origin_I = cv2.cvtColor(origin_I, cv2.COLOR_BGR2RGB)
+        #     origin_I = np.reshape(origin_I, (1, origin_I.shape[0], origin_I.shape[1], 3))  # this is a Numpy array with shape (1, 3, 150, 150
 
 
-            if int(self._IMAGE_DEPTH) == 1:
-                origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_RGB2GRAY)
-            num_age = int(file_name.split('_')[0])
+        #     if int(self._IMAGE_DEPTH) == 1:
+        #         origin_I_train = cv2.cvtColor(origin_I_train, cv2.COLOR_RGB2GRAY)
+        #     num_age = int(file_name.split('_')[0])
 
-            if num_age >= 26 and num_age <= 35:
-                i = 0
-                for _ in datagen.flow(origin_I, batch_size=1,
-                                    save_to_dir=test_dir, save_prefix=file_name, save_format='jpg'):
-                    i += 1
-                    if i > 2:
-                        break  # otherwise the generator would loop indefinitely
-            else:
-                i = 0
-                for _ in datagen.flow(origin_I, batch_size=1,
-                                    save_to_dir=test_dir, save_prefix=file_name, save_format='jpg'):
-                    i += 1
-                    if i > 3:
-                        break  # otherwise the generator would loop indefinitely
+        #     if num_age >= 26 and num_age <= 35:
+        #         i = 0
+        #         for _ in datagen.flow(origin_I, batch_size=1,
+        #                             save_to_dir=test_dir, save_prefix=file_name, save_format='jpg'):
+        #             i += 1
+        #             if i > 2:
+        #                 break  # otherwise the generator would loop indefinitely
+        #     else:
+        #         i = 0
+        #         for _ in datagen.flow(origin_I, batch_size=1,
+        #                             save_to_dir=test_dir, save_prefix=file_name, save_format='jpg'):
+        #             i += 1
+        #             if i > 3:
+        #                 break  # otherwise the generator would loop indefinitely
 
 
     def categorize_labels(self, file_name):
@@ -322,7 +322,17 @@ def main(args):
     fgData = AGDataset()
     # fgdata.crop_face_from_image(args)
     # fgdata.split_train_test(args)
-    # fgData.data_augment(args)
+    import glob
+
+    folder_in_train = glob.glob('/home/vmc/Downloads/Apparent_Age_Dataset_Output/Train/*')
+    test_in_train = glob.glob('/home/vmc/Downloads/Apparent_Age_Dataset_Output/Validation/*')
+
+    for i in folder_in_train:
+        fgData.data_augment(i, test_in_train)
+    
+    for i in test_in_train:
+        fgData.data_augment(i, test_in_train)
+        
     # fgdata.statistic_dataset(args)
     # fgData.rename(args)
 
