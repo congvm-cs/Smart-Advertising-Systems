@@ -74,7 +74,6 @@ cap = cv2.VideoCapture(0)
 
 detector = dlib.get_frontal_face_detector()
 model = contruct_model()
-
 model.load_weights('/home/vmc/Downloads/train-weights-model-lastest(2).h5')
 
 face_id = []
@@ -83,32 +82,33 @@ index = 0
 y_gen = 0
 gender = ''
 
-while 1:
-    ret, frame = cap.read()
-    # frame = cap.read()
-    # image = frame.copy()
+image_paths = glob.glob('/home/vmc/Desktop/*.jpg')
+
+print(len(image_paths))
+
+for p in image_paths:
+    frame = cv2.imread(p)
     image = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     rects = detector(gray, 1)
+
     img_clone = image.copy()
-
-    index += 1
-
 
     for (i, rect) in enumerate(rects):
         (x1, y1, w, h) = rect_to_bb(rect)             # Positions of rectangle contains face
-        x2 = x1 + w
-        y2 = y1 + h
+        x2 = x1 + h
+        y2 = y1 + w
 
-        offset = int(0.15*w) 
+        # offset = int(0.15*w) 
+        offset = 0
         x1 = (x1 - offset) if (x1 - offset) > 0 else 0 
         y1 = (y1 - offset) if (y1 - offset) > 0 else 0
-        y2 = (y2 + offset) if (y2 + offset) < image.shape[0] else image.shape[0]
-        x2 = x2 + offset if (x2 + offset) < image.shape[1] else image.shape[1]
+        y2 = (y2 + offset) if (y2 + offset) < image.shape[1] else image.shape[1]
+        x2 = x2 + offset if (x2 + offset) < image.shape[0] else image.shape[0]
         crop_im = image[y1:y2, x1:x2, :]
 
-        cv2.imshow('face crop', crop_im)
-
+        cv2.imshow('detect', crop_im)
+        cv2.waitKey(0)
         face_rect_resized = cv2.resize(crop_im, (64, 64))
         
         # cv2.imshow('after aligned #{}'.format(str(i)), face_rect_resized)
@@ -120,19 +120,13 @@ while 1:
 
         [y_gender_pred, y_age_pred] = model.predict(face_rect_reshape)
 
-        if index < 10:
-            y_gen += y_gender_pred[-1]
-            # print(y_gen)
-        else:
-            y_gen = y_gen/10
+    
+        y_gen = y_gender_pred[-1]
 
-            if y_gen < 0.5:
-                gender = 'Nam'
-            else: 
-                gender = 'Nu'
-
-            y_gen = 0
-            index = 0
+        if y_gen < 0.5:
+            gender = 'Nam'
+        else: 
+            gender = 'Nu'
 
         print(y_age_pred)
         age_pred = np.argmax(y_age_pred)
@@ -144,8 +138,4 @@ while 1:
         cv2.rectangle(img_clone, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
     cv2.imshow('detect', img_clone)
-    key = cv2.waitKey(1)
-    if key == 27:
-        break
-
-cv2.destroyAllWindows() 
+    cv2.waitKey(0)

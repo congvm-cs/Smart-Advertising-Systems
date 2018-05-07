@@ -27,24 +27,25 @@ def main(args):
         #     os.mkdir(output_folder_path)
 
         print('>>> Loading image from folder: {}'.format(folder_name))
-        
+        print('New file')
+
         for file_name in os.listdir(folder_path):
             # print(str(file_name).split('.')[1])
             
-            if str(file_name)[-3:] == 'JPG':
-                file_path = os.path.join(folder_path, file_name)
+            # if str(file_name)[-3:] == 'JPG':
+            file_path = os.path.join(folder_path, file_name)
 
-                print('#File: {}'.format(file_path))
+            print('#File: {}'.format(file_path))
 
-                img_origin = cv2.imread(str(file_path))
-                face_crop, ret = mtcnn.single_face_crop(img_origin)
-            
-                if ret == False:
-                    continue
-                else:            
-                    face_crop = cv2.cvtColor(face_crop, cv2.COLOR_RGB2GRAY)
-                    resized_face = cv2.resize(face_crop, (image_size, image_size))
-                    cv2.imwrite(os.path.join(output_data_dir, file_name), resized_face)
+            img_origin = cv2.imread(str(file_path))
+            face_crop, ret = mtcnn.single_face_crop(img_origin)
+        
+            if ret == False:
+                continue
+            else:            
+                face_crop = cv2.cvtColor(face_crop, cv2.COLOR_BGR2RGB)
+                resized_face = cv2.resize(face_crop, (image_size, image_size))
+                cv2.imwrite(os.path.join(output_data_dir, file_name), resized_face)
 
 
 if __name__ == '__main__':
