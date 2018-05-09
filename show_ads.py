@@ -7,9 +7,11 @@
 # give Tkinter a namespace to avoid conflicts with PIL
 # (they both have a class named Image)
 import sys
-python_ver = sys.version.split(' ')[0].split('.')[0]
+import threading
 
-if python_ver == 2:
+PYTHON_VERSION = sys.version_info[0]
+
+if PYTHON_VERSION == 2:
     import Tkinter as tk
     from ttk import Frame, Button
 else:
@@ -21,6 +23,8 @@ from PIL import ImageTk
 
 import time
 import glob
+
+import cv2
 
 
 class SmartAds():
@@ -75,7 +79,10 @@ class SmartAds():
     def __update_image(self):
         '''This function to show Images consequencely
         '''
-        self.index += 1 if (self.index + 1) <= len(self.image_paths) else 0
+        if (self.index + 1) <= (len(self.image_paths) - 1):
+            self.index += 1  
+        else:
+            self.index = 0
 
         print("Display image", self.index)
         self.current_image = self.__read_images(self.image_paths[self.index])
@@ -89,10 +96,32 @@ class SmartAds():
 
 
 
+def show(cap):
+    while True:
+         # Start timer
+        timer = cv2.getTickCount()
+
+        _, frame = cap.read()
+
+
+        # Display FPS on frame
+        fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
+        cv2.putText(frame, "FPS : " + str(int(fps)), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
+
+        cv2.imshow('hello', frame)
+        cv2.waitKey(1)
+
+
 def main():
+
+    cap = cv2.VideoCapture(0)
     image_paths = './Ads_images/*/*.jpg'
+    t = threading.Thread(target=show, args=[cap])
+    t.start()
+
     SmartAds(image_paths)
 
+    
 
 if __name__ == '__main__':
     main()
