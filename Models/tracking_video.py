@@ -188,7 +188,7 @@ def detectAndTrackMultipleFaces():
     model = contruct_model()
 
     #Open the first webcame device
-    capture = cv2.VideoCapture(1)
+    capture = cv2.VideoCapture(0)
 
     #Create two opencv named windows
     # cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
@@ -196,7 +196,7 @@ def detectAndTrackMultipleFaces():
 
     #Position the windows next to eachother
     # cv2.moveWindow("base-image", 0, 100)
-    cv2.moveWindow("result-image", 400, 100)
+    # cv2.moveWindow("result-image", 400, 100)
 
     #Start the window thread for the two windows we are using
     cv2.startWindowThread()
@@ -218,11 +218,6 @@ def detectAndTrackMultipleFaces():
     #indicated the quality was not good enough
 
     fidsToDelete = []
-
-    fidsToCreate = []
-    
-    keepList = []
-
     fps = 0
     fps_print = 0
 
@@ -235,13 +230,17 @@ def detectAndTrackMultipleFaces():
             #Retrieve the latest image from the webcam
             rc, fullSizeBaseImage = capture.read()
 
+            # Calculate Frames per second (FPS)
+            fps += cv2.getTickFrequency() / (cv2.getTickCount() - timer)
+
+
             #Resize the image to 320x240
-            baseImage = cv2.resize( fullSizeBaseImage, ( 320, 240))
+            baseImage = cv2.resize( fullSizeBaseImage, ( 0, 0), fx=0.7, fy=0.7)
 
             
             #Check if a key was pressed and if it was Q, then break
             #from the infinite loop
-            pressedKey = cv2.waitKey(2)
+            pressedKey = cv2.waitKey(1)
             if pressedKey == ord('q'):
                 break
 
@@ -268,65 +267,14 @@ def detectAndTrackMultipleFaces():
             #Increase the framecounter
             frameCounter += 1
 
-
-            # Update faceTrackers
-
-            # for fid in faceTrackers.keys():
-            #     matched = False
-
-            #     for keepFid in keepList:
-                    
-            #         if fid is keepFid:
-            #             matched = True
-            #             break
-
-            #     if not matched:
-            #         fidsToDelete.append(fid)
-
-
-            # Delete expired person
             for fid in fidsToDelete:
                 print("Removing fid " + str(fid) + " from list of trackers")
                 faceTrackers.pop(fid , None )
                 numEveryFaceInDict.pop(fid, None)
                 faceArr.pop(fid, None)
                 faceNames.pop(fid, None)
-            
             fidsToDelete.clear()
 
-            # Create new person
-            for face in fidsToCreate:
-
-                bbox = rect_to_bb(face)
-                print("Creating new tracker " + str(currentFaceID))
-
-                if int(minor_ver) < 3:
-                    tracker = cv2.Tracker_create(TRACKER_STYLE)
-                else:
-                    if TRACKER_STYLE == 'BOOSTING':
-                        tracker = cv2.TrackerBoosting_create()
-                    if TRACKER_STYLE == 'MIL':
-                        tracker = cv2.TrackerMIL_create()
-                    if TRACKER_STYLE == 'KCF':
-                        tracker = cv2.TrackerKCF_create()
-                    if TRACKER_STYLE == 'TLD':
-                        tracker = cv2.TrackerTLD_create()
-                    if TRACKER_STYLE == 'MEDIANFLOW':
-                        tracker = cv2.TrackerMedianFlow_create()
-                    if TRACKER_STYLE == 'GOTURN':
-                        tracker = cv2.TrackerGOTURN_create()
-
-                ok = tracker.init(baseImage, bbox)
-
-                faceTrackers[ currentFaceID ] = tracker
-
-                faceArr[currentFaceID] = []
-                numEveryFaceInDict[currentFaceID] = 0
-            
-                #Increase the currentFaceID counter
-                currentFaceID += 1
-
-            fidsToCreate.clear()
 
             for fid in faceTrackers.keys():
                 # trackingQuality = faceTrackers[ fid ].update(baseImage)
@@ -335,7 +283,7 @@ def detectAndTrackMultipleFaces():
                 #If the tracking quality is not good enough, we must delete
                 #this tracker
                 if not ok:
-                    fidsToDelete.append(fid)
+                    fidsToDelete.append( fid )
 
                 ok, bbox = faceTrackers[fid].update(baseImage)
 
@@ -358,7 +306,12 @@ def detectAndTrackMultipleFaces():
                                 0.5, (255, 255, 255), 2)
 
                 if numEveryFaceInDict[fid] < 15:
+                    # tracked_position = faceTrackers[fid].get_position()
 
+                    # t_x = saturation(int(tracked_position.left()), 0, baseImage.shape[1])
+                    # t_y = saturation(int(tracked_position.top()), 0, baseImage.shape[0])
+                    # t_w = int(tracked_position.width())
+                    # t_h = int(tracked_position.height())
                     crop_image = baseImage[t_y:t_y+t_h, t_x:t_x+t_w, :]
 
                     faceArr[fid].extend([crop_image])
@@ -370,6 +323,9 @@ def detectAndTrackMultipleFaces():
 
                     t.start()
                     numEveryFaceInDict[fid] = 16  # Stop predict
+
+
+
 
             #Every 10 frames, we will have to determine which faces
             #are present in the frame
@@ -397,12 +353,14 @@ def detectAndTrackMultipleFaces():
                 #requirement of the dlib tracker. If we omit the cast to
                 #int here, you will get cast errors since the detector
                 #returns numpy.int32 and the tracker requires an int
-            
+                
 
                 print('--------------------------------------------')
+                matched_faceTrackers = []
 
                 for face in faces:
                     (x, y, w, h) = rect_to_bb(face)  
+
 
                     #calculate the centerpoint
                     x_bar = x + 0.5 * w
@@ -415,16 +373,24 @@ def detectAndTrackMultipleFaces():
                     #Now loop over all the trackers and check if the 
                     #centerpoint of the face is within the box of a 
                     #tracker
+                    # print(temp_faceTrackers)
 
                     for fid in faceTrackers.keys():
                         # tracked_position = faceTrackers[fid].get_position()
-                        print('check {}'.format(fid))
+                        # print('check {}'.format(fid))
+
                         ok, bbox = faceTrackers[fid].update(baseImage)
 
                         t_x = int(bbox[0]) 
                         t_y = int(bbox[1])
                         t_w = int(bbox[2])
                         t_h = int(bbox[3])
+
+
+                        # t_x = int(tracked_position.left())
+                        # t_y = int(tracked_position.top())
+                        # t_w = int(tracked_position.width())
+                        # t_h = int(tracked_position.height())
 
                         #calculate the centerpoint
                         t_x_bar = t_x + 0.5 * t_w
@@ -441,15 +407,62 @@ def detectAndTrackMultipleFaces():
                              ( x    <= t_x_bar <= (x + w)) and 
                              ( y    <= t_y_bar <= (y + h))):
                             matchedFid = fid
-                            # keepList.append(fid)
-                            # print(len(keepList))
+                            # matched_faceTrackers.append(fid)
+
+                        else:
+                            pass
+                            # for matched_fid in matched_faceTrackers:
+                            #     if matched_fid == fid:
+                            #         break
+
+                            # print('delete {}'.format(fid))
+                            # fidsToDelete.append(fid)
+                            # temp_faceTrackers.remove(fid)
+
                         # Keep prediction on fid
                         # If bound has no face --> remove
                         
                     #If no matched fid, then we have to create a new tracker
                     if matchedFid is None:
-                        print('Create new face')
-                        fidsToCreate.append(face)
+
+                        print("Creating new tracker " + str(currentFaceID))
+                        # temp_faceTrackers.append(currentFaceID)
+                        #Create and store the tracker 
+                        # dlib.track
+
+                        if int(minor_ver) < 3:
+                            tracker = cv2.Tracker_create(TRACKER_STYLE)
+                        else:
+                            if TRACKER_STYLE == 'BOOSTING':
+                                tracker = cv2.TrackerBoosting_create()
+                            if TRACKER_STYLE == 'MIL':
+                                tracker = cv2.TrackerMIL_create()
+                            if TRACKER_STYLE == 'KCF':
+                                tracker = cv2.TrackerKCF_create()
+                            if TRACKER_STYLE == 'TLD':
+                                tracker = cv2.TrackerTLD_create()
+                            if TRACKER_STYLE == 'MEDIANFLOW':
+                                tracker = cv2.TrackerMedianFlow_create()
+                            if TRACKER_STYLE == 'GOTURN':
+                                tracker = cv2.TrackerGOTURN_create()
+
+
+                        bbox = (x, y, w, h)
+                        ok = tracker.init(baseImage, bbox)
+                        # tracker = dlib.correlation_tracker()
+                        # tracker.start_track(baseImage,
+                        #                     dlib.rectangle( x-10,
+                        #                                     y-20,
+                        #                                     x+w+10,
+                        #                                     y+h+20))
+
+                        faceTrackers[ currentFaceID ] = tracker
+
+                        faceArr[currentFaceID] = []
+                        numEveryFaceInDict[currentFaceID] = 0
+                    
+                        #Increase the currentFaceID counter
+                        currentFaceID += 1
 
 
             #Now loop over all the trackers we have and draw the rectangle
@@ -457,7 +470,37 @@ def detectAndTrackMultipleFaces():
             #(i.e. the recognition thread is finished), we print the name
             #of the person, otherwise the message indicating we are detecting
             #the name of the person
-            
+            # for fid in faceTrackers.keys():
+            #     # tracked_position =  faceTrackers[fid].get_position()
+
+            #     # t_x = int(tracked_position.left())
+            #     # t_y = int(tracked_position.top())
+            #     # t_w = int(tracked_position.width())
+            #     # t_h = int(tracked_position.height())
+            #     ok, bbox = faceTrackers[fid].update(baseImage)
+
+            #     t_x = int(bbox[0]) 
+            #     t_y = int(bbox[1])
+            #     t_w = int(bbox[2])
+            #     t_h = int(bbox[3])
+
+                # cv2.rectangle(resultImage, (t_x, t_y),
+                #                         (t_x + t_w , t_y + t_h),
+                #                         rectangleColor ,2)
+                # draw_rectangle(resultImage, t_x, t_y, t_x + t_w, t_y + t_h, rectangleColor)
+ 
+                # if fid in faceNames.keys():
+                #     cv2.putText(resultImage, faceNames[fid] , 
+                #                 (int(t_x + t_w/2), int(t_y)), 
+                #                 cv2.FONT_HERSHEY_SIMPLEX,
+                #                 0.5, (255, 255, 255), 2)
+                # else:
+                #     cv2.putText(resultImage, "Detecting..." , 
+                #                 (int(t_x + t_w/2), int(t_y)), 
+                #                 cv2.FONT_HERSHEY_SIMPLEX,
+                #                 0.5, (255, 255, 255), 2)
+
+
             #Since we want to show something larger on the screen than the
             #original 320x240, we resize the image again
             #
@@ -465,10 +508,6 @@ def detectAndTrackMultipleFaces():
             #of the baseimage and make the result image a copy of this large
             #base image and use the scaling factor to draw the rectangle
             #at the right coordinates.
-
-            # Calculate Frames per second (FPS)
-            fps += cv2.getTickFrequency() / (cv2.getTickCount() - timer)
-
             largeResult = cv2.resize(resultImage,
                                      (OUTPUT_SIZE_WIDTH, OUTPUT_SIZE_HEIGHT))
 
