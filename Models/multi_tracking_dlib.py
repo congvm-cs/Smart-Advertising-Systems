@@ -174,7 +174,6 @@ def draw_rectangle(img, p1, p2, p3, p4, color):
 
 
 def check_new_face():
-    print('did?')
     global baseImage, faceTrackers, faceArr, numEveryFaceInDict, currentFaceID
 
     #For the face detection, we need to make use of a gray
@@ -380,8 +379,16 @@ def detectAndTrackMultipleFaces():
             #Every 10 frames, we will have to determine which faces
             #are present in the frame
             if (frameCounter % 10) == 0:
+
+                print(len(faceTrackers))
+                print(len(numEveryFaceInDict))
+                print(len(faceArr))
+                print(len(fidsToDelete))
+
+
                 t2 = threading.Thread(target=check_new_face)
                 t2.start()
+
             # Calculate Frames per second (FPS)
             fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
              # Display FPS on frame

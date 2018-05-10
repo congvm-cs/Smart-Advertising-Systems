@@ -109,41 +109,41 @@ def show():
     ad = 0.4
 
     while True:
-        t+=1
-         # Start timer
-        timer = cv2.getTickCount()
+        # t+=1
+        #  # Start timer
+        # timer = cv2.getTickCount()
 
         _, frame = cap.read()
-        frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-        img_h, img_w, _ = np.shape(frame)
+        # frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
+        # img_h, img_w, _ = np.shape(frame)
 
-        # Display FPS on frame
+        # # Display FPS on frame
         
         
-        if t % 10 == 0:
-            fps_print = fps/40
-            fps = 0
-            t = 0
+        # if t % 10 == 0:
+        #     fps_print = fps/40
+        #     fps = 0
+        #     t = 0
 
-        cv2.putText(frame, "FPS : " + str(int(fps_print)), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
+        # cv2.putText(frame, "FPS : " + str(int(fps_print)), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
         
-        detected = detector.detect_faces(frame)
-            # faces = np.empty((len(detected), img_size, img_size, 3))
+        # detected = detector.detect_faces(frame)
+        #     # faces = np.empty((len(detected), img_size, img_size, 3))
 
-        for i, d in enumerate(detected):
-            print(i)
-            print(d['confidence'])
-            if d['confidence'] > 0.95:
-                x1, y1, w, h = d['box']
-                x2 = x1 + w
-                y2 = y1 + h
-                xw1 = max(int(x1 - ad * w), 0)
-                yw1 = max(int(y1 - ad * h), 0)
-                xw2 = min(int(x2 + ad * w), img_w - 1)
-                yw2 = min(int(y2 + ad * h), img_h - 1)
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+        # for i, d in enumerate(detected):
+        #     print(i)
+        #     print(d['confidence'])
+        #     if d['confidence'] > 0.95:
+        #         x1, y1, w, h = d['box']
+        #         x2 = x1 + w
+        #         y2 = y1 + h
+        #         xw1 = max(int(x1 - ad * w), 0)
+        #         yw1 = max(int(y1 - ad * h), 0)
+        #         xw2 = min(int(x2 + ad * w), img_w - 1)
+        #         yw2 = min(int(y2 + ad * h), img_h - 1)
+        #         cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
 
-        fps += cv2.getTickFrequency() / (cv2.getTickCount() - timer)
+        # fps += cv2.getTickFrequency() / (cv2.getTickCount() - timer)
         cv2.imshow('hello', frame)
         cv2.waitKey(1)
 
