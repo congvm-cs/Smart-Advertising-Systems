@@ -21,8 +21,8 @@ import keras.backend as K
 #the OpenCV library
 #Make sure that you copy this file from the opencv project to the root of this
 #project folder
-# faceCascade = cv2.CascadeClassifier('../haarcascade_frontalface_default.xml')
-detector = dlib.get_frontal_face_detector()
+faceCascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
+# detector = dlib.get_frontal_face_detector()
 
 #The deisred output width and height
 OUTPUT_SIZE_WIDTH = 775
@@ -33,6 +33,16 @@ GENDER = ['Male', 'Female']
 AGE = ['0-18', '18-25', '25-35', '35-60', '>60']
 
 graph = None
+
+currentFaceID = 0
+
+#Variables holding the correlation trackers and the name per faceid
+faceTrackers = {}
+faceNames = {}
+faceArr = {}
+numEveryFaceInDict = {}
+baseImage = None
+lock = threading.Lock()
 
 
 def saturation(val, min_val, max_val):
@@ -163,13 +173,96 @@ def draw_rectangle(img, p1, p2, p3, p4, color):
     return img
 
 
+def check_new_face():
+    print('did?')
+    global baseImage, faceTrackers, faceArr, numEveryFaceInDict, currentFaceID
+
+    #For the face detection, we need to make use of a gray
+    #colored image so we will convert the baseImage to a
+    #gray-based image
+    gray = cv2.cvtColor(baseImage, cv2.COLOR_BGR2GRAY)
+    #Now use the haar cascade detector to find all faces
+    #in the image
+    faces = faceCascade.detectMultiScale(gray, 1.3, 6)
+    # faces = detector(gray, 1)
+
+
+    #Loop over all faces and check if the area for this
+    #face is the largest so far
+    #We need to convert it to int here because of the
+    #requirement of the dlib tracker. If we omit the cast to
+    #int here, you will get cast errors since the detector
+    #returns numpy.int32 and the tracker requires an int
+    for face in faces:
+        # (x, y, w, h) = rect_to_bb(face)  
+        (x, y, w, h) = face
+
+        #calculate the centerpoint
+        x_bar = x + 0.5 * w
+        y_bar = y + 0.5 * h
+
+        #Variable holding information which faceid we 
+        #matched with
+        matchedFid = None
+
+        #Now loop over all the trackers and check if the 
+        #centerpoint of the face is within the box of a 
+        #tracker
+        for fid in faceTrackers.keys():
+            tracked_position = faceTrackers[fid].get_position()
+
+            t_x = int(tracked_position.left())
+            t_y = int(tracked_position.top())
+            t_w = int(tracked_position.width())
+            t_h = int(tracked_position.height())
+
+            #calculate the centerpoint
+            t_x_bar = t_x + 0.5 * t_w
+            t_y_bar = t_y + 0.5 * t_h
+
+            #check if the centerpoint of the face is within the 
+            #rectangleof a tracker region. Also, the centerpoint
+            #of the tracker region must be within the region 
+            #detected as a face. If both of these conditions hold
+            #we have a match
+            if ( ( t_x <= x_bar   <= (t_x + t_w)) and 
+                    ( t_y <= y_bar   <= (t_y + t_h)) and 
+                    ( x   <= t_x_bar <= (x   + w  )) and 
+                    ( y   <= t_y_bar <= (y   + h  ))):
+                matchedFid = fid
+
+                # Keep prediction on fid
+
+
+        #If no matched fid, then we have to create a new tracker
+        if matchedFid is None:
+
+            print("Creating new tracker " + str(currentFaceID))
+
+            #Create and store the tracker 
+            tracker = dlib.correlation_tracker()
+            tracker.start_track(baseImage,
+                                dlib.rectangle( x-10,
+                                                y-20,
+                                                x+w+10,
+                                                y+h+20))
+
+            faceTrackers[ currentFaceID ] = tracker
+
+            faceArr[currentFaceID] = []
+            numEveryFaceInDict[currentFaceID] = 0
+            
+            #Increase the currentFaceID counter
+            currentFaceID += 1
+
 
 def detectAndTrackMultipleFaces():
+    global baseImage, faceTrackers, faceArr, numEveryFaceInDict, currentFaceID
     # load model
     model = contruct_model()
 
     #Open the first webcame device
-    capture = cv2.VideoCapture(1)
+    capture = cv2.VideoCapture(0)
 
     #Create two opencv named windows
     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
@@ -187,13 +280,7 @@ def detectAndTrackMultipleFaces():
 
     #variables holding the current frame number and the current faceid
     frameCounter = 0
-    currentFaceID = 0
 
-    #Variables holding the correlation trackers and the name per faceid
-    faceTrackers = {}
-    faceNames = {}
-    faceArr = {}
-    numEveryFaceInDict = {}
 
     try:
         while True:
@@ -293,86 +380,8 @@ def detectAndTrackMultipleFaces():
             #Every 10 frames, we will have to determine which faces
             #are present in the frame
             if (frameCounter % 10) == 0:
-
-                #For the face detection, we need to make use of a gray
-                #colored image so we will convert the baseImage to a
-                #gray-based image
-                gray = cv2.cvtColor(baseImage, cv2.COLOR_BGR2GRAY)
-                #Now use the haar cascade detector to find all faces
-                #in the image
-                #faces = faceCascade.detectMultiScale(gray, 1.3, 6)
-                faces = detector(gray, 1)
-
-
-                #Loop over all faces and check if the area for this
-                #face is the largest so far
-                #We need to convert it to int here because of the
-                #requirement of the dlib tracker. If we omit the cast to
-                #int here, you will get cast errors since the detector
-                #returns numpy.int32 and the tracker requires an int
-                for face in faces:
-                    (x, y, w, h) = rect_to_bb(face)  
-
-                    #calculate the centerpoint
-                    x_bar = x + 0.5 * w
-                    y_bar = y + 0.5 * h
-
-                    #Variable holding information which faceid we 
-                    #matched with
-                    matchedFid = None
-
-                    #Now loop over all the trackers and check if the 
-                    #centerpoint of the face is within the box of a 
-                    #tracker
-                    for fid in faceTrackers.keys():
-                        tracked_position = faceTrackers[fid].get_position()
-
-                        t_x = int(tracked_position.left())
-                        t_y = int(tracked_position.top())
-                        t_w = int(tracked_position.width())
-                        t_h = int(tracked_position.height())
-
-                        #calculate the centerpoint
-                        t_x_bar = t_x + 0.5 * t_w
-                        t_y_bar = t_y + 0.5 * t_h
-
-                        #check if the centerpoint of the face is within the 
-                        #rectangleof a tracker region. Also, the centerpoint
-                        #of the tracker region must be within the region 
-                        #detected as a face. If both of these conditions hold
-                        #we have a match
-                        if ( ( t_x <= x_bar   <= (t_x + t_w)) and 
-                             ( t_y <= y_bar   <= (t_y + t_h)) and 
-                             ( x   <= t_x_bar <= (x   + w  )) and 
-                             ( y   <= t_y_bar <= (y   + h  ))):
-                            matchedFid = fid
-
-                            # Keep prediction on fid
-
-
-                    #If no matched fid, then we have to create a new tracker
-                    if matchedFid is None:
-
-                        print("Creating new tracker " + str(currentFaceID))
-
-                        #Create and store the tracker 
-                        tracker = dlib.correlation_tracker()
-                        tracker.start_track(baseImage,
-                                            dlib.rectangle( x-10,
-                                                            y-20,
-                                                            x+w+10,
-                                                            y+h+20))
-
-                        faceTrackers[ currentFaceID ] = tracker
-
-                        faceArr[currentFaceID] = []
-                        numEveryFaceInDict[currentFaceID] = 0
-                        
-                        #Increase the currentFaceID counter
-                        currentFaceID += 1
-
-
-
+                t2 = threading.Thread(target=check_new_face)
+                t2.start()
             # Calculate Frames per second (FPS)
             fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
              # Display FPS on frame
@@ -405,7 +414,6 @@ def detectAndTrackMultipleFaces():
 
     #Destroy any OpenCV windows and exit the application
     cv2.destroyAllWindows()
-    # exit(0)
 
 
 if __name__ == '__main__':
