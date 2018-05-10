@@ -40,47 +40,50 @@ class AGNet():
 
     def _new_model(self):
         # New model
-        l_input = Input([64, 64, 1])
-        x = Conv2D(32, (3, 3), activation='relu', padding='same')(l_input)
-        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
-        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
-        x = MaxPooling2D(strides=(2, 2))(x)
-        x = Dropout(0.2)(x)
-
+        l_input = Input([64, 64, 3])
+        x = Conv2D(64, (3, 3), activation='relu', padding='same')(l_input)
         x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+        # x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D(strides=(2, 2))(x)
         x = Dropout(0.2)(x)
 
         x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
         x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+        # x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D(strides=(2, 2))(x)
-        x = Dropout(0.2)(x)
+        # x = Dropout(0.2)(x)
 
         x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
         x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D(strides=(2, 2))(x)
-        x = Dropout(0.2)(x)
+        # x = Dropout(0.2)(x)
 
         x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
         x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
+        x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D(strides=(2, 2))(x)
-        x = Dropout(0.2)(x)
+        # x = Dropout(0.2)(x)
 
         x = Flatten()(x)
         x = Dropout(0.2)(x)
-        x = Dense(1024)(x)
+        # x = Dense(4096)(x)
+        x = Dense(4096, activation='relu')(x)
+        x = Dropout(0.2)(x)
+
+        x = Dense(4096, activation='relu')(x)
         l_output = Dropout(0.2)(x)
 
-        gender_output = Dense(1)(l_output)
-        age_output = Dense(5)(l_output)
+        gender_output = Dense(1, activation='sigmoid')(l_output)
+        age_output = Dense(5, activation='softmax')(l_output)
         model = Model(inputs=l_input, outputs=[gender_output, age_output])
 
         print(model.summary())
-        model.compile(loss=['binary_crossentropy', 'categorical_crossentropy'], 
-                    optimizer='Adam',
-                    etrics=['accuracy'],
-                loss_weights=[1.0, 1.0])
+        model.compile(optimizer='Adam', 
+                    loss=['binary_crossentropy', 'categorical_crossentropy'], 
+                    metrics=['accuracy'],
+                    loss_weights=[0, 1.0])
+                    # callbacks=self._callback_list)
 
         return model
 
@@ -209,7 +212,9 @@ class AGNet():
 
         # Learning rate is changed to 0.001
         # sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.99, nesterov=True)
-        model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=[self._multi_labels_accuracy])
+        model.compile(optimizer='Adam', 
+                    loss=['binary_crossentropy', 'categorical_crossentropy'], 
+                    metrics=['accuracy', 'accuracy'])
 
         return model
 
@@ -239,11 +244,12 @@ class AGNet():
         #     layer.trainable = True
 
         # self._model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
-
-        self._model.fit(x=X_train, y=[y_train[:, 0], y_train[:, 1::]], batch_size=AGNetConfig.props['BATCH_SIZE'], 
-                                epochs=AGNetConfig.props['EPOCHS'],
-                                validation_data=(X_dev, y_dev))
-                                # callbacks=self._callback_list)
+        # print(y_train.shape)
+        self._model.fit(x=X_train, y=[y_train[:, 0], y_train[:, 1::]], 
+                        batch_size=AGNetConfig.props['BATCH_SIZE'], 
+                        epochs=AGNetConfig.props['EPOCHS'],
+                        validation_data=(X_dev, [y_dev[:, 0], y_dev[:, 1::]]),
+                        callbacks=self._callback_list)
 
 
     def __evaluate__(self):
