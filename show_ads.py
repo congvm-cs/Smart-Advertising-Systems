@@ -10,6 +10,7 @@ import numpy as np
 from Models.multi_tracking_dlib import *
 
 PYTHON_VERSION = sys.version_info[0]
+
 if PYTHON_VERSION == 2:
     import Tkinter as tk
     from ttk import Frame, Button

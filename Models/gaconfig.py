@@ -9,7 +9,8 @@ OUTPUT_GENDER = 1
 OUTPUT_AGE = 5
 
 # Pretrain Model
-WEIGHT_PATH = '/home/vmc/Downloads/train-weights-model-lastest.h5'
+WEIGHT_PATH = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems/train-weights-model-lastest.h5'
+MODEL_ARCHITECTURE_JSON = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems/model_archi.json'
 
 ''' Face Detection Method
         DLIB: HOG and SVM
