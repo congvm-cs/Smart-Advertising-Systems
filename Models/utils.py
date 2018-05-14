@@ -3,6 +3,7 @@
 import numpy as np
 import cv2
 
+
 def saturation(val, min_val, max_val):
         if val > max_val:
             val = max_val
@@ -32,7 +33,7 @@ def draw_rectangle(img, x1, y1, x2, y2, color=(0, 255, 0)):
             (x2, y2):   Bottom Right
             color:  Color of bounding box - default: (0, 255, 0)
     '''
-    
+
     offset = int((x2 - x1)/4)
     thickness_heavy_line = 3
     thickness_slim_line = 1

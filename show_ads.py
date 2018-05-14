@@ -1,11 +1,5 @@
 #!/usr/bin/python
 
-# use a Tkinter label as a panel/frame with a background image
-# note that Tkinter only reads gif and ppm images
-# use the Python Image Library (PIL) for other image formats
-# free from [url]http://www.pythonware.com/products/pil/index.htm[/url]
-# give Tkinter a namespace to avoid conflicts with PIL
-# (they both have a class named Image)
 import sys
 
 # for multi-processing
@@ -13,7 +7,7 @@ import threading
 from multiprocessing import Process
 
 import numpy as np
-
+from Models.multi_tracking_dlib import *
 
 PYTHON_VERSION = sys.version_info[0]
 if PYTHON_VERSION == 2:
@@ -102,23 +96,25 @@ class SmartAds():
 
 
 def show():
-    cap = cv2.VideoCapture(0)
+    # cap = cv2.VideoCapture(0)
 
-    while True:
-        ret, frame = cap.read()
+    # while True:
+    #     ret, frame = cap.read()
 
-        cv2.imshow('hello', frame)
-        cv2.waitKey(1)
+    #     cv2.imshow('hello', frame)
+    #     cv2.waitKey(1)
+
+    pass
 
 
 def main():
     image_paths = './Ads_images/*/*.jpg'
-    show_camera = Process(target=show)
-    show_camera.start()
+    # show_camera = Process(target=show)
+    # show_camera.start()
 
     show_ads = Process(target=SmartAds, args=[image_paths])
     show_ads.start()
-    
+    detectAndTrackMultipleFaces()
     
 
 if __name__ == '__main__':

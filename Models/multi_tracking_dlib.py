@@ -1,7 +1,7 @@
 #import the OpenCV and dlib libraries
 import sys
 sys.path.append('.')
-
+sys.path.append('./Models/')
 import cv2
 import dlib
 import tensorflow as tf
@@ -336,13 +336,6 @@ def detectAndTrackMultipleFaces():
             #Every 10 frames, we will have to determine which faces
             #are present in the frame
             if (frameCounter % 10) == 0:
-
-                print(len(faceTrackers))
-                print(len(numEveryFaceInDict))
-                print(len(faceArr))
-                print(len(fidsToDelete))
-
-
                 t2 = threading.Thread(target=check_new_face)
                 t2.start()
 
@@ -380,5 +373,5 @@ def detectAndTrackMultipleFaces():
     cv2.destroyAllWindows()
 
 
-if __name__ == '__main__':
-    detectAndTrackMultipleFaces()
+# if __name__ == '__main__':
+#     detectAndTrackMultipleFaces()
