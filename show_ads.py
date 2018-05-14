@@ -62,7 +62,7 @@ class SmartAds():
 
         print("Display image {}".format(self.index))
 
-        self.root.after(1000, self.__update_image)
+        self.root.after(3000, self.__update_image)
         self.root.mainloop()
 
 
@@ -90,7 +90,7 @@ class SmartAds():
         
         # if self.display == self.current_image:
         self.panel.configure(image=self.current_image)
-        self.root.after(1000, self.__update_image)       # Set to call again in 30 seconds
+        self.root.after(3000, self.__update_image)       # Set to call again in 30 seconds
 
         # TODO here
 
