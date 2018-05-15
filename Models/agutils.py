@@ -3,7 +3,7 @@
 import numpy as np
 import cv2
 from keras.models import model_from_json
-from Models import gaconfig 
+import agconfig 
 
 
 def saturation(val, min_val, max_val):

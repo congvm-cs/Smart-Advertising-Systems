@@ -1,4 +1,4 @@
-import Config
+import agconfig
 import cv2
 import dlib
 from imutils.face_utils import rect_to_bb
@@ -11,16 +11,16 @@ class FaceDetection():
         2 multi-face detector availabel now are HAAR and DLIB
     '''
     def __init__(self):
-        self.method = Config.DETECTION_METHOD
+        self.method = agconfig.DETECTION_METHOD
         self.detector = self.__get_detector()
 
 
     def __get_detector(self):
-        if Config.DETECTION_METHOD == 'DLIB':
+        if agconfig.DETECTION_METHOD == 'DLIB':
             return dlib.get_frontal_face_detector()
 
-        elif Config.DETECTION_METHOD == 'HAAR':
-            return cv2.CascadeClassifier(Config.HAAR_MODEL_PATH)
+        elif agconfig.DETECTION_METHOD == 'HAAR':
+            return cv2.CascadeClassifier(agconfig.HAAR_MODEL_PATH)
 
     
     def detectMultiFaces(self, gray):

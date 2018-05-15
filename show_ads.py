@@ -7,7 +7,6 @@ import threading
 from multiprocessing import Process
 
 import numpy as np
-from Models.multi_tracking_dlib import *
 
 PYTHON_VERSION = sys.version_info[0]
 
@@ -115,7 +114,6 @@ def main():
 
     show_ads = Process(target=SmartAds, args=[image_paths])
     show_ads.start()
-    detectAndTrackMultipleFaces()
     
 
 if __name__ == '__main__':

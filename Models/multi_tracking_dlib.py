@@ -19,8 +19,8 @@ from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
 import keras.backend as K
 
-import utils
-import Config
+import agutils
+import agconfig
 import FaceDetetion
 
 #Initialize a face cascade using the frontal face haar cascade provided with
@@ -59,7 +59,7 @@ def model_predict(images, model):
         face_rect_resized = cv2.resize(img, (64, 64))
 
         face_rect_reshape = np.reshape(face_rect_resized, newshape=(1, 64, 64, 3))
-        face_rect_reshape = utils.preprocess_image(face_rect_reshape)
+        face_rect_reshape = agutils.preprocess_image(face_rect_reshape)
 
         global graph
         with graph.as_default():
@@ -278,6 +278,7 @@ def detectAndTrackMultipleFaces():
             #Update all the trackers and remove the ones for which the update
             #indicated the quality was not good enough
             fidsToDelete = []
+            
             for fid in faceTrackers.keys():
 
                 #Now loop over all the trackers we have and draw the rectangle
@@ -287,12 +288,12 @@ def detectAndTrackMultipleFaces():
                 #the name of the person
                 tracked_position = faceTrackers[fid].get_position()
 
-                t_x = utils.saturation(int(tracked_position.left()), 0, baseImage.shape[1])
-                t_y = utils.saturation(int(tracked_position.top()), 0, baseImage.shape[0])
+                t_x = agutils.saturation(int(tracked_position.left()), 0, baseImage.shape[1])
+                t_y = agutils.saturation(int(tracked_position.top()), 0, baseImage.shape[0])
                 t_w = int(tracked_position.width())
                 t_h = int(tracked_position.height())
 
-                utils.draw_rectangle(resultImage, t_x, t_y, t_x + t_w, t_y + t_h, rectangleColor)
+                agutils.draw_rectangle(resultImage, t_x, t_y, t_x + t_w, t_y + t_h, rectangleColor)
 
                 if fid in faceNames.keys():
                     cv2.putText(resultImage, faceNames[fid] , 
@@ -327,11 +328,14 @@ def detectAndTrackMultipleFaces():
                     numEveryFaceInDict[fid] = 16  # Stop predict
 
 
+            
             for fid in fidsToDelete:
                 print("Removing fid " + str(fid) + " from list of trackers")
                 faceTrackers.pop(fid , None )
                 numEveryFaceInDict.pop(fid, None)
                 faceArr.pop(fid, None)
+
+            
 
             #Every 10 frames, we will have to determine which faces
             #are present in the frame
@@ -373,5 +377,5 @@ def detectAndTrackMultipleFaces():
     cv2.destroyAllWindows()
 
 
-# if __name__ == '__main__':
-#     detectAndTrackMultipleFaces()
+if __name__ == '__main__':
+    detectAndTrackMultipleFaces()
