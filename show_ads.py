@@ -26,7 +26,7 @@ import time
 import glob
 
 import cv2
-from Models.agutils import resize_with_ratio
+from agutils import resize_with_ratio
 
 class SmartAds():
     def __init__(self, image_paths):
