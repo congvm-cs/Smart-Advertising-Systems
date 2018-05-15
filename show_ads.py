@@ -7,6 +7,8 @@ import threading
 from multiprocessing import Process
 
 import numpy as np
+import cProfile
+import re
 
 PYTHON_VERSION = sys.version_info[0]
 
@@ -65,7 +67,7 @@ class SmartAds():
 
         print("Display image {}".format(self.index))
 
-        self.root.after(1, self.__update_image)
+        self.root.after(2000, self.__update_image)
         self.root.mainloop()
 
   
@@ -83,39 +85,50 @@ class SmartAds():
     def __update_image(self):
         '''This function to show Images consequencely
         '''
-        print("Display image", self.index)
+        print("Current image", self.index)
 
         # Get the current image
-        self.current_image = Image.open(self.image_paths[self.index])
-        self.current_image = self.current_image.resize((self.screen_width, self.screen_height), Image.ANTIALIAS)
+        self.current_image = cv2.imread(self.image_paths[self.index])
+        self.current_image = cv2.resize(self.current_image, (self.screen_width, self.screen_height))
         
         # Get the next image
         if self.index + 1 < len(self.image_paths):
-            self.next_image = Image.open(self.image_paths[self.index+1])
+            self.next_image = cv2.imread(self.image_paths[self.index + 1])
         else:
-            self.next_image = Image.open(self.image_paths[0])
-        self.next_image = self.next_image.resize((self.screen_width, self.screen_height), Image.ANTIALIAS)
+            self.next_image = cv2.imread(self.image_paths[0])
 
-        # self.next_image = self.__read_images(self.image_paths[self.index + 1])  if (self.index + 1) <= len(self.image_paths) else 0
-        self.showed_image = ImageTk.PhotoImage(Image.blend(self.current_image, self.next_image, self.alpha))
+        self.next_image = cv2.resize(self.next_image, (self.screen_width, self.screen_height))
+
+
+        self.showed_image = cv2.addWeighted(self.next_image, self.alpha, self.current_image, 1.0 - self.alpha, 0)
 
         # Show Image
-        self.panel.configure(image=self.showed_image)
+        # convert the images to PIL format...
+        simage = cv2.cvtColor(self.showed_image, cv2.COLOR_BGR2RGB)
+        simage = Image.fromarray(simage)
+ 
+		# ...and then to ImageTk format
+        simage = ImageTk.PhotoImage(simage)
         
+        self.panel.configure(image=simage)
+        self.panel.image = simage
+
+        # cProfile.run('re.compile("foo|bar")')
         # Update alpha and fading
         if self.alpha == 0:
             self.alpha += 0.05
             self.root.after(3000, self.__update_image)       # Set to call again in 3 seconds
         else:
             self.alpha += 0.05
-            
             # Update new index
             if self.alpha >= 1.0:
                 self.alpha = 0
+
                 if (self.index + 1) <= (len(self.image_paths) - 1):
                     self.index += 1  
                 else:
                     self.index = 0
+
             self.root.after(self.fade_time, self.__update_image)       # Set to call again in 1ms
             
         # TODO here
@@ -140,6 +153,9 @@ def main():
     # show_camera.start()
 
     show_ads = Process(target=SmartAds, args=[image_paths])
+    
+    # are.compile("foo|bar")
+    
     show_ads.start() 
     
 
