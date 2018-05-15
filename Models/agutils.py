@@ -4,6 +4,8 @@ import numpy as np
 import cv2
 from keras.models import model_from_json
 import agconfig 
+from PIL import Image
+from PIL import ImageTk
 
 
 def saturation(val, min_val, max_val):
@@ -72,10 +74,10 @@ def load_pretrain_model(is_printed=False):
         Parameter(s):
             is_printed: Show architecture of Model in console/terminal
     '''
-    with open(gaconfig.MODEL_ARCHITECTURE_JSON, 'r') as file:
+    with open(agconfig.MODEL_ARCHITECTURE_JSON, 'r') as file:
         json_arc = file.read()
         model = model_from_json(json_arc)
-        model.load_weights(gaconfig.WEIGHT_PATH)
+        model.load_weights(agconfig.WEIGHT_PATH)
 
         if is_printed:
             print(model.summary())
@@ -95,5 +97,13 @@ def save_trained_model(model, path):
     with open(path, 'w') as file:
         # json_arc = file.read()
         model.to_json(file)
-        model.save_weights(gaconfig.WEIGHT_PATH)
+        model.save_weights(agconfig.WEIGHT_PATH)
         return model
+
+
+def resize_with_ratio(PIL_img, screen_w, screen_h):
+    width, height = PIL_img.size
+    ratio = width/height
+    # Resize image height and keep ratio
+    return PIL_img.resize((int(screen_h*ratio), screen_h), Image.ANTIALIAS)
+    

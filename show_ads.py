@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys
-
+sys.path.append('./Models')
 # for multi-processing
 import threading
 from multiprocessing import Process
@@ -24,7 +24,7 @@ import time
 import glob
 
 import cv2
-
+from Models.agutils import resize_with_ratio
 
 class SmartAds():
     def __init__(self, image_paths):
@@ -71,7 +71,8 @@ class SmartAds():
 
     def __read_images(self, single_image_path):
         image = Image.open(single_image_path)
-        image = image.resize((self.screen_width, self.screen_height), Image.ANTIALIAS)
+        
+        image = resize_with_ratio(image, self.screen_width, self.screen_height)
         return ImageTk.PhotoImage(image)
 
 
@@ -113,7 +114,7 @@ def main():
     # show_camera.start()
 
     show_ads = Process(target=SmartAds, args=[image_paths])
-    show_ads.start()
+    show_ads.start() 
     
 
 if __name__ == '__main__':
