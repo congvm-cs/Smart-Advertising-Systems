@@ -105,5 +105,7 @@ def resize_with_ratio(PIL_img, screen_w, screen_h):
     width, height = PIL_img.size
     ratio = width/height
     # Resize image height and keep ratio
-    return PIL_img.resize((int(screen_h*ratio), screen_h), Image.ANTIALIAS)
-    
+    if width > height:
+        return PIL_img.resize((int(screen_h*ratio), screen_h), Image.ANTIALIAS)
+    else:
+        return PIL_img.resize((screen_w, int(screen_w*ratio)), Image.ANTIALIAS)
