@@ -1,16 +1,14 @@
 #!/usr/bin/python
 
-# use a Tkinter label as a panel/frame with a background image
-# note that Tkinter only reads gif and ppm images
-# use the Python Image Library (PIL) for other image formats
-# free from [url]http://www.pythonware.com/products/pil/index.htm[/url]
-# give Tkinter a namespace to avoid conflicts with PIL
-# (they both have a class named Image)
 import sys
+sys.path.append('./Models')
+# for multi-processing
 import threading
-from mtcnn.mtcnn import MTCNN
-import numpy as np
+from multiprocessing import Process
 
+import numpy as np
+import cProfile
+import re
 
 PYTHON_VERSION = sys.version_info[0]
 
@@ -28,13 +26,17 @@ import time
 import glob
 
 import cv2
-
+from agutils import resize_with_ratio
 
 class SmartAds():
     def __init__(self, image_paths):
         
         # Image current index to show
         self.index = 0
+        self.alpha = 0
+        self.fade_time = 1
+        self.curStep = 0
+
 
         self.root = tk.Tk()
         self.root.title('Smart Ads System')
@@ -65,16 +67,17 @@ class SmartAds():
 
         print("Display image {}".format(self.index))
 
-        self.root.after(1000, self.__update_image)
+        self.root.after(2000, self.__update_image)
         self.root.mainloop()
 
-
+  
     def __load_images(self, image_paths):
         return glob.glob(image_paths)
 
 
     def __read_images(self, single_image_path):
         image = Image.open(single_image_path)
+        # image = resize_with_ratio(image, self.screen_width, self.screen_height)
         image = image.resize((self.screen_width, self.screen_height), Image.ANTIALIAS)
         return ImageTk.PhotoImage(image)
 
@@ -82,79 +85,79 @@ class SmartAds():
     def __update_image(self):
         '''This function to show Images consequencely
         '''
-        if (self.index + 1) <= (len(self.image_paths) - 1):
-            self.index += 1  
-        else:
-            self.index = 0
+        print("Current image", self.index)
 
-        print("Display image", self.index)
-        self.current_image = self.__read_images(self.image_paths[self.index])
-        # self.next_image = self.__read_images(self.image_paths[self.index + 1])  if (self.index + 1) <= len(self.image_paths) else 0
+        # Get the current image
+        self.current_image = cv2.imread(self.image_paths[self.index])
+        self.current_image = cv2.resize(self.current_image, (self.screen_width, self.screen_height))
         
-        # if self.display == self.current_image:
-        self.panel.configure(image=self.current_image)
-        self.root.after(1000, self.__update_image)       # Set to call again in 30 seconds
+        # Get the next image
+        if self.index + 1 < len(self.image_paths):
+            self.next_image = cv2.imread(self.image_paths[self.index + 1])
+        else:
+            self.next_image = cv2.imread(self.image_paths[0])
 
+        self.next_image = cv2.resize(self.next_image, (self.screen_width, self.screen_height))
+
+
+        self.showed_image = cv2.addWeighted(self.next_image, self.alpha, self.current_image, 1.0 - self.alpha, 0)
+
+        # Show Image
+        # convert the images to PIL format...
+        simage = cv2.cvtColor(self.showed_image, cv2.COLOR_BGR2RGB)
+        simage = Image.fromarray(simage)
+ 
+		# ...and then to ImageTk format
+        simage = ImageTk.PhotoImage(simage)
+        
+        self.panel.configure(image=simage)
+        self.panel.image = simage
+
+        # cProfile.run('re.compile("foo|bar")')
+        # Update alpha and fading
+        if self.alpha == 0:
+            self.alpha += 0.05
+            self.root.after(3000, self.__update_image)       # Set to call again in 3 seconds
+        else:
+            self.alpha += 0.05
+            # Update new index
+            if self.alpha >= 1.0:
+                self.alpha = 0
+
+                if (self.index + 1) <= (len(self.image_paths) - 1):
+                    self.index += 1  
+                else:
+                    self.index = 0
+
+            self.root.after(self.fade_time, self.__update_image)       # Set to call again in 1ms
+            
         # TODO here
 
 
 
 def show():
-    cap = cv2.VideoCapture(0)
-    t = 0
-    fps = 0
-    fps_print = 0
+    # cap = cv2.VideoCapture(0)
 
-    detector = MTCNN()
-    ad = 0.4
+    # while True:
+    #     ret, frame = cap.read()
 
-    while True:
-        # t+=1
-        #  # Start timer
-        # timer = cv2.getTickCount()
+    #     cv2.imshow('hello', frame)
+    #     cv2.waitKey(1)
 
-        _, frame = cap.read()
-        # frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-        # img_h, img_w, _ = np.shape(frame)
-
-        # # Display FPS on frame
-        
-        
-        # if t % 10 == 0:
-        #     fps_print = fps/40
-        #     fps = 0
-        #     t = 0
-
-        # cv2.putText(frame, "FPS : " + str(int(fps_print)), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
-        
-        # detected = detector.detect_faces(frame)
-        #     # faces = np.empty((len(detected), img_size, img_size, 3))
-
-        # for i, d in enumerate(detected):
-        #     print(i)
-        #     print(d['confidence'])
-        #     if d['confidence'] > 0.95:
-        #         x1, y1, w, h = d['box']
-        #         x2 = x1 + w
-        #         y2 = y1 + h
-        #         xw1 = max(int(x1 - ad * w), 0)
-        #         yw1 = max(int(y1 - ad * h), 0)
-        #         xw2 = min(int(x2 + ad * w), img_w - 1)
-        #         yw2 = min(int(y2 + ad * h), img_h - 1)
-        #         cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
-
-        # fps += cv2.getTickFrequency() / (cv2.getTickCount() - timer)
-        cv2.imshow('hello', frame)
-        cv2.waitKey(1)
+    pass
 
 
 def main():
     image_paths = './Ads_images/*/*.jpg'
-    show_camera = threading.Thread(target=show)
-    show_camera.start()
+    # show_camera = Process(target=show)
+    # show_camera.start()
 
-    show_ads = threading.Thread(target=SmartAds, args=[image_paths])
-    show_ads.start()
+    show_ads = Process(target=SmartAds, args=[image_paths])
+    
+    # are.compile("foo|bar")
+    
+    show_ads.start() 
+    
 
 if __name__ == '__main__':
     main()

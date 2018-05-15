@@ -5,7 +5,7 @@ import tensorflow as tf
 
 class MTCNN():
 
-    def __init__(self, mtcnn_model_dir):
+    def __init__(self, mtcnn_model_dir='./Models/'):
         # mtcnn parameters
         self._minsize = 50                      # minimum size of face
         self._threshold = [0.4, 0.5, 0.6]       # three steps's threshold
