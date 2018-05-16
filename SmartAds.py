@@ -2,13 +2,7 @@
 
 import sys
 sys.path.append('./Models')
-# for multi-processing
-import threading
-from multiprocessing import Process
-
 import numpy as np
-import cProfile
-import re
 
 PYTHON_VERSION = sys.version_info[0]
 
@@ -27,6 +21,7 @@ import glob
 
 import cv2
 from agutils import resize_with_ratio
+
 
 class SmartAds():
     def __init__(self, image_paths):
@@ -67,7 +62,7 @@ class SmartAds():
 
         print("Display image {}".format(self.index))
 
-        self.root.after(2000, self.__update_image)
+        self.root.after(2000, self.__update_image_no_fading)
         self.root.mainloop()
 
   
@@ -82,7 +77,7 @@ class SmartAds():
         return ImageTk.PhotoImage(image)
 
 
-    def __update_image(self):
+    def __update_image_fading(self):
         '''This function to show Images consequencely
         '''
         print("Current image", self.index)
@@ -98,7 +93,6 @@ class SmartAds():
             self.next_image = cv2.imread(self.image_paths[0])
 
         self.next_image = cv2.resize(self.next_image, (self.screen_width, self.screen_height))
-
 
         self.showed_image = cv2.addWeighted(self.next_image, self.alpha, self.current_image, 1.0 - self.alpha, 0)
 
@@ -117,7 +111,7 @@ class SmartAds():
         # Update alpha and fading
         if self.alpha == 0:
             self.alpha += 0.05
-            self.root.after(3000, self.__update_image)       # Set to call again in 3 seconds
+            self.root.after(3000, self.__update_image_fading)       # Set to call again in 3 seconds
         else:
             self.alpha += 0.05
             # Update new index
@@ -129,35 +123,44 @@ class SmartAds():
                 else:
                     self.index = 0
 
-            self.root.after(self.fade_time, self.__update_image)       # Set to call again in 1ms
-            
-        # TODO here
+            self.root.after(self.fade_time, self.__update_image_fading)       # Set to call again in 1ms
 
 
+    def __update_image_no_fading(self):
+        '''This function to show Images consequencely
+        '''
 
-def show():
-    # cap = cv2.VideoCapture(0)
+        if (self.index + 1) <= (len(self.image_paths) - 1):
+            self.index += 1  
+        else:
+            self.index = 0
 
-    # while True:
-    #     ret, frame = cap.read()
+        print("Current image", self.index)
 
-    #     cv2.imshow('hello', frame)
-    #     cv2.waitKey(1)
+        # Get the current image
+        self.current_image = cv2.imread(self.image_paths[self.index])
+        self.current_image = cv2.resize(self.current_image, (self.screen_width, self.screen_height))
+        
+        # Show Image
+        # convert the images to PIL format...
+        simage = cv2.cvtColor(self.current_image, cv2.COLOR_BGR2RGB)
+        simage = Image.fromarray(simage)
+ 
+		# ...and then to ImageTk format
+        simage = ImageTk.PhotoImage(simage)
+        
+        self.panel.configure(image=simage)
+        self.panel.image = simage
 
-    pass
+        self.root.after(3000, self.__update_image_no_fading)       # Set to call again in 3 seconds
 
+
+# TEST
 
 def main():
-    image_paths = './Ads_images/*/*.jpg'
-    # show_camera = Process(target=show)
-    # show_camera.start()
-
-    show_ads = Process(target=SmartAds, args=[image_paths])
-    
-    # are.compile("foo|bar")
-    
-    show_ads.start() 
-    
+    file_paths = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems/Ads_images/*/*.jpg'
+    print(len(file_paths))
+    SmartAds(file_paths)
 
 if __name__ == '__main__':
     main()

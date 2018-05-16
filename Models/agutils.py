@@ -109,3 +109,12 @@ def resize_with_ratio(PIL_img, screen_w, screen_h):
         return PIL_img.resize((int(screen_h*ratio), screen_h), Image.ANTIALIAS)
     else:
         return PIL_img.resize((screen_w, int(screen_w*ratio)), Image.ANTIALIAS)
+
+
+def preprocess_image_for_test(img):  
+    face_rect_resized = cv2.resize(img, (64, 64))
+    face_rect_reshape = np.reshape(face_rect_resized, newshape=(1, 64, 64, 3))
+    face_rect_reshape = preprocess_image(face_rect_reshape)
+    return face_rect_reshape
+
+        

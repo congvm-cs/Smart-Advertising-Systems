@@ -29,6 +29,5 @@ class FaceDetection():
             faces = map(rect_to_bb, faces)
 
         elif self.method == 'HAAR':
-            faces = self.detector.detectMultiScale(gray, 1.3, 6)
-            
+            faces = self.detector.detectMultiScale(gray, 1.3, 6)  
         return faces

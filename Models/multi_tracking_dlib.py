@@ -217,7 +217,7 @@ def detectAndTrackMultipleFaces():
     model = contruct_model()
 
     #Open the first webcame device
-    capture = cv2.VideoCapture(0)
+    capture = cv2.VideoCapture(1)
 
     #Create two opencv named windows
     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
