@@ -49,11 +49,7 @@ faceNames = {}
 faceArr = {}
 numEveryFaceInDict = {}
 baseImage = None
-video_index = 1
 
-views_on_video = 0
-
-watching_time = 0
 
 
 def model_predict(images, model):
@@ -70,6 +66,7 @@ def model_predict(images, model):
         with graph.as_default():
             [y_gender_pred, y_age_pred] = model.predict(face_rect_reshape)
         
+        print(y_gender_pred)
         gender_sum += y_gender_pred[-1]
         age_sum += y_age_pred
 
@@ -127,7 +124,7 @@ def contruct_model():
     output_age = Dense(5, activation='softmax', name='age_output')(x)
 
     model = Model(input_x, [output_gender, output_age])
-    model.load_weights(WEIGHT_PATH)
+    model.load_weights(agconfig.WEIGHT_PATH)
     print(model.summary())
 
     graph = tf.get_default_graph()

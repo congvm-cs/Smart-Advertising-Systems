@@ -18,6 +18,6 @@ MODEL_ARCHITECTURE_JSON = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems
         
         HAAR: HAAR METHOD
 '''
-DETECTION_METHOD = 'DLIB' # DLIB or HAAR
+DETECTION_METHOD = 'HAAR' # DLIB or HAAR
 
 HAAR_MODEL_PATH = './haarcascade_frontalface_default.xml'

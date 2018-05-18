@@ -12,14 +12,21 @@ import agutils
 import agconfig
 import FaceDetetion
 import AGNet
+import Person
 
 class MultiTracking():
 
     def __init__(self):
-        
+
+        self.agModel = AGNet.AGNet(verbose=False)
+        self.detector = FaceDetetion.FaceDetection()    
+    
         self.OUTPUT_SIZE_WIDTH = 775
         self.OUTPUT_SIZE_HEIGHT = 600
+        self.rectangleColor = (0, 255, 0)
+        self.fps = 0
 
+        # Fixed Soon
         self.currentFaceID = 0
         self.faceTrackers = {}
         self.faceNames = {}
@@ -27,24 +34,19 @@ class MultiTracking():
         self.numEveryFaceInDict = {}
         self.baseImage = None
 
-        self.agModel = AGNet.AGNet(verbose=False)
-        self.detector = FaceDetetion.FaceDetection()    
 
-        #The color of the rectangle we draw around the face
-        self.rectangleColor = (0, 255, 0)
-
-        video_index = 1
-        views_on_video = 0
-        watching_time = 0
+        # New Class
+        self.PersonManager = []
 
 
-    def doRecognizePerson(self, faceNames, fid, images):
+    def doRecognizePerson(self, person):
         print('Start predict')
         # Predict gender and age here
         # collect 10 faces to predict exactly
-        [gender_pred, age_pred] = self.agModel.predict_with_array(images)
+        [gender_pred, age_pred] = self.agModel.predict_with_array(person.getCroppedFaceArr())
+        person.setGender(gender_pred)
+        person.setAge(age_pred)
 
-        self.faceNames[fid] = "Person {}: {} {}".format(str(fid), gender_pred, age_pred)
 
 
     def check_new_face(self):
@@ -56,26 +58,21 @@ class MultiTracking():
         #Now use the FaceDetection detector to find all faces
         faces = self.detector.detectMultiFaces(gray)
 
-        for face in faces:
-            (x, y, w, h) = face
+        for bbox in faces:
+            (x, y, w, h) = bbox
 
             #calculate the centerpoint
             x_bar = x + 0.5 * w
             y_bar = y + 0.5 * h
 
             #Variable holding information which faceid we matched with
-            matchedFid = None
+            matchedFid = False
 
             #Now loop over all the trackers and check if the 
             #centerpoint of the face is within the box of a 
             #tracker
-            for fid in self.faceTrackers.keys():
-                tracked_position = self.faceTrackers[fid].get_position()
-
-                t_x = int(tracked_position.left())
-                t_y = int(tracked_position.top())
-                t_w = int(tracked_position.width())
-                t_h = int(tracked_position.height())
+            for person in self.PersonManager:
+                [t_x, t_y, t_w, t_h] = person.getPosition()
 
                 #calculate the centerpoint
                 t_x_bar = t_x + 0.5 * t_w
@@ -90,33 +87,27 @@ class MultiTracking():
                     ( t_y <= y_bar   <= (t_y + t_h)) and 
                     ( x   <= t_x_bar <= (x   + w  )) and 
                     ( y   <= t_y_bar <= (y   + h  ))):
-                    matchedFid = fid
+                    matchedFid = True
                     # Keep prediction on fid
 
 
-            #If no matched fid, then we have to create a new tracker
-            if matchedFid is None:
+#===============================================CREATE NEW FACE========================================#
+
+            if matchedFid is False:
                 print("Creating new tracker " + str(self.currentFaceID))
 
-                #Create and store the tracker 
-                tracker = dlib.correlation_tracker()
+                #---------------------------------------------------------------------------------------#
+                person = Person.Person(self.currentFaceID)
+                person.startTrack(self.baseImage, bbox)
 
-                offset = int(0.15*w)
-                tracker.start_track(self.baseImage,
-                                    dlib.rectangle( x-offset, 
-                                                    y-offset, 
-                                                    x+w+offset, 
-                                                    y+h+offset))
+                self.PersonManager.append(person)
+                #---------------------------------------------------------------------------------------#
 
-                self.faceTrackers[self.currentFaceID] = tracker
-
-                self.faceArr[self.currentFaceID] = []
-                self.numEveryFaceInDict[self.currentFaceID] = 0
-                
                 #Increase the currentFaceID counter
                 self.currentFaceID += 1
 
 
+#=====================================================================================================#
     def detectAndTrackMultipleFaces(self):
         #Open the first webcame device
         capture = cv2.VideoCapture(1)
@@ -132,6 +123,7 @@ class MultiTracking():
         #variables holding the current frame number and the current faceid
         frameCounter = 0
 
+#=====================================================================================================#*
         try:
             while True:
                 # Start timer
@@ -142,6 +134,9 @@ class MultiTracking():
 
                 #Resize the image to 320x240
                 self.baseImage = cv2.resize(fullSizeBaseImage, (0, 0), fx=0.5, fy=0.5)
+                resultImage = self.baseImage.copy()
+
+                # self.baseImage = cv2.cvtColor(self.baseImage, cv2.COLOR_BGR2RGB)
 
                 #Check if a key was pressed and if it was Q, then break
                 #from the infinite loop
@@ -152,19 +147,7 @@ class MultiTracking():
                 #Result image is the image we will show the user, which is a
                 #combination of the original image from the webcam and the
                 #overlayed rectangle for the largest face
-                resultImage = self.baseImage.copy()
-
-                #STEPS:
-                # * Update all trackers and remove the ones that are not 
-                #   relevant anymore
-                # * Every 10 frames:
-                #       + Use face detection on the current frame and look
-                #         for faces. 
-                #       + For each found face, check if centerpoint is within
-                #         existing tracked box. If so, nothing to do
-                #       + If centerpoint is NOT in existing tracked box, then
-                #         we add a new tracker with a new face-id
-
+                
 
                 #Increase the framecounter
                 frameCounter += 1 
@@ -172,79 +155,78 @@ class MultiTracking():
                 #Update all the trackers and remove the ones for which the update
                 #indicated the quality was not good enough
                 fidsToDelete = []
-                
-                for fid in self.faceTrackers.keys():
 
-                    #Now loop over all the trackers we have and draw the rectangle
-                    #around the detected faces. If we 'know' the name for this person
-                    #(i.e. the recognition thread is finished), we print the name
-                    #of the person, otherwise the message indicating we are detecting
-                    #the name of the person
-                    tracked_position = self.faceTrackers[fid].get_position()
+#=====================================================================================================#*            
+                for person in self.PersonManager:
+                    [t_x, t_y, t_w, t_h] = person.getPosition()
 
-                    t_x = agutils.saturation(int(tracked_position.left()), 0, self.baseImage.shape[1])
-                    t_y = agutils.saturation(int(tracked_position.top()), 0, self.baseImage.shape[0])
-                    t_w = int(tracked_position.width())
-                    t_h = int(tracked_position.height())
+                    t_x = agutils.saturation(t_x, 0, self.baseImage.shape[1])
+                    t_y = agutils.saturation(t_y, 0, self.baseImage.shape[0])
+                    t_w = int(t_w)
+                    t_h = int(t_h)
 
                     agutils.draw_rectangle(resultImage, t_x, t_y, t_x + t_w, t_y + t_h, self.rectangleColor)
 
-                    if fid in self.faceNames.keys():
-                        cv2.putText(resultImage, self.faceNames[fid] , 
-                                    (int(t_x + t_w/2), int(t_y)), 
-                                    cv2.FONT_HERSHEY_SIMPLEX,
-                                    0.5, (0, 255, 255), 2)
-                    else:
-                        cv2.putText(resultImage, "Detecting..." , 
-                                    (int(t_x + t_w/2), int(t_y)), 
-                                    cv2.FONT_HERSHEY_SIMPLEX,
-                                    0.5, (0, 255, 255), 2)
+                    cv2.putText(resultImage, person.getFaceInfo() , 
+                                (int(t_x + t_w/2), int(t_y)), 
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                0.5, (0, 255, 255), 2)
 
-
+#=====================================================================================================#*
                     #If the tracking quality is not good enough, we must delete
                     #this tracker
-                    trackingQuality = self.faceTrackers[fid].update(self.baseImage)
+                    trackingQuality = person.updatePosition(self.baseImage)
 
                     if trackingQuality < 6:
-                        fidsToDelete.append(fid)
+                        fidsToDelete.append(person)
+                        
                     
-                    if self.numEveryFaceInDict[fid] < 15:
+                    if person.getNumFaceInArr() < 15:
                         crop_image = self.baseImage[t_y:t_y+t_h, 
                                                     t_x:t_x+t_w, :]
+                        
+                        
+                        crop_image_resized = cv2.resize(crop_image, (agconfig.IMAGE_WIDTH, agconfig.IMAGE_HEIGHT))
 
-                        self.faceArr[fid].extend([crop_image])
-                        self.numEveryFaceInDict[fid] += 1
+                        # if t_w > self.baseImage.shape[0]/3:
+                        #     crop_image_resized = cv2.blur(crop_image_resized, (3, 3))
+                        
+                        cv2.imshow('hi', crop_image_resized)
+                        person.addCroppedFaceArr(crop_image_resized)
+                        person.increase_num_face_in_arr()
 
-                    elif self.numEveryFaceInDict[fid] == 15:
+
+                    elif person.getNumFaceInArr() == 15:
                         t = threading.Thread(target = self.doRecognizePerson,
-                                             args=(self.faceNames, fid, self.faceArr[fid]))
+                                             args=([person]))
 
                         t.start()
+                        t.join()
 
-                        self.numEveryFaceInDict[fid] = 16  # Stop predict
+                        person.increase_num_face_in_arr()
 
 
-                
-                for fid in fidsToDelete:
-                    print("Removing fid " + str(fid) + " from list of trackers")
-                    self.faceTrackers.pop(fid , None )
-                    self.numEveryFaceInDict.pop(fid, None)
-                    self.faceArr.pop(fid, None)
+#=====================================================================================================#*    
+                for person in fidsToDelete:
+                    print("Removing fid " + str(person.getId()) + " from list of trackers")
+                    # self.faceTrackers.pop(fid , None )
+                    # self.numEveryFaceInDict.pop(fid, None)
+                    # self.faceArr.pop(fid, None)
+                    self.PersonManager.remove(person)
 
-                
+#=====================================================================================================#*
 
                 #Every 10 frames, we will have to determine which faces
                 #are present in the frame
                 if (frameCounter % 10) == 0:
                     t2 = threading.Thread(target=self.check_new_face)
                     t2.start()
-                    # t2.join()
 
-                # Calculate Frames per second (FPS)
-                fps = cv2.getTickFrequency()/(cv2.getTickCount() - timer)
+                    # Calculate Frames per second (FPS)
+                    self.fps = cv2.getTickFrequency()/(cv2.getTickCount() - timer)
                 
                 # Display FPS on frame
-                cv2.putText(resultImage, "FPS : " + str(int(fps)), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
+                cv2.putText(resultImage, "FPS : " + str(int(self.fps)), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
 
                 #Since we want to show something larger on the screen than the
                 #original 320x240, we resize the image again
@@ -254,6 +236,8 @@ class MultiTracking():
                 #base image and use the scaling factor to draw the rectangle
                 #at the right coordinates.
 
+
+#================================================Visualizing=====================================================#*
                 largeResult = cv2.resize(resultImage,
                                         (self.OUTPUT_SIZE_WIDTH, self.OUTPUT_SIZE_HEIGHT))
 
@@ -261,8 +245,6 @@ class MultiTracking():
                 cv2.imshow("base-image", self.baseImage)
                 cv2.imshow("result-image", largeResult)
 
-                # Calculate Frames per second (FPS)
-                fps += cv2.getTickFrequency() / (cv2.getTickCount() - timer)
 
 
         #To ensure we can also deal with the user pressing Ctrl-C in the console

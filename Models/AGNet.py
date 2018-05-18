@@ -86,19 +86,19 @@ class AGNet():
         age_sum = [0, 0, 0, 0, 0]
 
         for img in images:
-            face_rect_resized = cv2.resize(img, (agconfig.IMAGE_WIDTH, agconfig.IMAGE_HEIGHT))
-            face_rect_reshape = np.reshape(face_rect_resized, newshape=(1, agconfig.IMAGE_WIDTH, 
+            face_rect_reshape = np.reshape(img, newshape=(1, agconfig.IMAGE_WIDTH, 
                                                                         agconfig.IMAGE_HEIGHT, 
                                                                         agconfig.IMAGE_DEPTH))
-
             face_rect_reshape = agutils.preprocess_image(face_rect_reshape)
-
+            
             with self.graph.as_default():
                 [y_gender_pred, y_age_pred] = self.model.predict(face_rect_reshape)
             
+            print(y_gender_pred)
             gender_sum += y_gender_pred[-1]
             age_sum += y_age_pred
-
+        
+        # print(gender_sum/15)
         gender_pred = self.GENDER[int(np.round(gender_sum/15))]
         age_pred = self.AGE[np.argmax(y_age_pred)]
 
