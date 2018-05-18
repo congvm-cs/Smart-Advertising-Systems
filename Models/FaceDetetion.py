@@ -11,8 +11,10 @@ class FaceDetection():
         2 multi-face detector availabel now are HAAR and DLIB
     '''
     def __init__(self):
+        print('[LOGGING][FACE DETECTION] - Load Face Detection - Loading')
         self.method = agconfig.DETECTION_METHOD
         self.detector = self.__get_detector()
+        print('[LOGGING][FACE DETECTION] - Load Face Detection - Done')
 
 
     def __get_detector(self):
