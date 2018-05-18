@@ -1,4 +1,6 @@
-
+''' This is configuration for Smart Ads System
+    
+'''
 # Input layer
 IMAGE_WIDTH = 64
 IMAGE_HEIGHT = 64
@@ -21,3 +23,5 @@ MODEL_ARCHITECTURE_JSON = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems
 DETECTION_METHOD = 'HAAR' # DLIB or HAAR
 
 HAAR_MODEL_PATH = './haarcascade_frontalface_default.xml'
+
+NUM_IMG_STORED = 15

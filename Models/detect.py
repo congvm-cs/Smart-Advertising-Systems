@@ -1,4 +1,3 @@
-#import the OpenCV and dlib libraries
 import sys
 sys.path.append('.')
 sys.path.append('./Models/')
@@ -8,7 +7,6 @@ import tensorflow as tf
 import threading
 import time
 import numpy as np
-
 
 import keras.utils
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, load_img
@@ -22,12 +20,6 @@ import keras.backend as K
 import agutils
 import agconfig
 import FaceDetetion
-
-#Initialize a face cascade using the frontal face haar cascade provided with
-#the OpenCV library
-#Make sure that you copy this file from the opencv project to the root of this
-#project folder
-
 
 detector = FaceDetetion.FaceDetection()
     
@@ -51,14 +43,12 @@ numEveryFaceInDict = {}
 baseImage = None
 
 
-
 def model_predict(images, model):
     gender_sum = 0
     age_sum = [0, 0, 0, 0, 0]
 
     for img in images:
         face_rect_resized = cv2.resize(img, (64, 64))
-
         face_rect_reshape = np.reshape(face_rect_resized, newshape=(1, 64, 64, 3))
         face_rect_reshape = agutils.preprocess_image(face_rect_reshape)
 
@@ -72,22 +62,13 @@ def model_predict(images, model):
 
     gender_pred = GENDER[int(np.round(gender_sum/15))]
     age_pred = AGE[np.argmax(y_age_pred)]
-
     return [gender_pred, age_pred]
 
 
 #We are not doing really face recognition
 def doRecognizePerson(faceNames, fid, images, model):
-    # time.sleep(2
     print('Start predict 1')
     # Predict gender and age here
-
-    # collect 10 faces to predict exactly
-
-    # face_arr.append()
-    # if len(face_arr) == 10:
-    # while True:
-    #     pass
     [gender_pred, age_pred] = model_predict(images, model)
         
     faceNames[fid] = "Person {}: {} {}".format(str(fid), gender_pred, age_pred)
@@ -99,17 +80,14 @@ def contruct_model():
     x = Conv2D(filters=32, kernel_size=(3, 3), padding='same', activation='relu')(input_x)
     x = MaxPooling2D(strides=(2, 2))(x)
     x = BatchNormalization()(x)
-    # x = Dropout(0.2)(x)
 
     x = Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu')(x)
     x = MaxPooling2D(strides=(2, 2))(x)
     x = BatchNormalization()(x)
-    # x = Dropout(0.2)(x)
 
     x = Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu')(x)
     x = MaxPooling2D(strides=(2, 2))(x)
     x = BatchNormalization()(x)
-    # x = Dropout(0.2)(x)
 
     x = Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu')(x)
     x = MaxPooling2D(strides=(2, 2))(x)
@@ -151,10 +129,6 @@ def check_new_face():
     #int here, you will get cast errors since the detector
     #returns numpy.int32 and the tracker requires an int
     for face in faces:
-        # if Config.DETECTION_METHOD == 'DLIB':
-        #     (x, y, w, h) = rect_to_bb(face) 
-        # elif Config.DETECTION_METHOD == 'HAAR':
-        
         (x, y, w, h) = face
 
         #calculate the centerpoint
@@ -190,12 +164,12 @@ def check_new_face():
                 ( x   <= t_x_bar <= (x   + w  )) and 
                 ( y   <= t_y_bar <= (y   + h  ))):
                 matchedFid = fid
-                # Keep prediction on fid
 
 
         #If no matched fid, then we have to create a new tracker
         if matchedFid is None:
             print("Creating new tracker " + str(currentFaceID))
+
             #Create and store the tracker 
             tracker = dlib.correlation_tracker()
             offset = int(0.15*w)
@@ -312,7 +286,7 @@ def detectAndTrackMultipleFaces():
 
                 #If the tracking quality is not good enough, we must delete
                 #this tracker
-                trackingQuality = faceTrackers[ fid ].update(baseImage)
+                trackingQuality = faceTrackers[fid].update(baseImage)
 
                 if trackingQuality < 6:
                     fidsToDelete.append( fid )
@@ -331,7 +305,6 @@ def detectAndTrackMultipleFaces():
                     numEveryFaceInDict[fid] = 16  # Stop predict
 
 
-            
             for fid in fidsToDelete:
                 print("Removing fid " + str(fid) + " from list of trackers")
                 faceTrackers.pop(fid , None )

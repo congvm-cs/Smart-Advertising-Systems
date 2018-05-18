@@ -19,7 +19,7 @@ class AGNet():
         print('[LOGGING][AGNET] - Load AGModel - Loading')
         self.verbose = verbose
         self.graph = None
-        self.model = self.__model()
+        self.model = self.__contruct_model()
         self.__compile()
 
         self.GENDER = ['Male', 'Female']
@@ -29,9 +29,8 @@ class AGNet():
 
         print('[LOGGING][AGNET] - Load AGModel - Done')
 
-
-    def __model(self):
-        input_x = Input((agconfig.IMAGE_WIDTH, agconfig.IMAGE_HEIGHT, agconfig.IMAGE_DEPTH))
+    def __contruct_model(self):
+        input_x = Input((64, 64, 3))
         x = Conv2D(filters=32, kernel_size=(3, 3), padding='same', activation='relu')(input_x)
         x = MaxPooling2D(strides=(2, 2))(x)
         x = BatchNormalization()(x)
@@ -44,21 +43,26 @@ class AGNet():
         x = MaxPooling2D(strides=(2, 2))(x)
         x = BatchNormalization()(x)
 
-        x = Flatten()(x)
+        x = Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu')(x)
+        x = MaxPooling2D(strides=(2, 2))(x)
         x = BatchNormalization()(x)
+
+        x = Flatten()(x)
+        x = Dropout(0.2)(x)
 
         x = Dense(128, activation='relu')(x)
 
-        output_gender = Dense(agconfig.OUTPUT_GENDER, activation='sigmoid', name='gender_output')(x)
-        output_age = Dense(agconfig.OUTPUT_GENDER, activation='softmax', name='age_output')(x)
+        output_gender = Dense(1, activation='sigmoid', name='gender_output')(x)
+        output_age = Dense(5, activation='softmax', name='age_output')(x)
 
         model = Model(input_x, [output_gender, output_age])
-
-        # Construct a graph
-        self.graph = tf.get_default_graph()
+        model.load_weights(agconfig.WEIGHT_PATH)
 
         if self.verbose:
             print(model.summary())
+
+        self.graph = tf.get_default_graph()
+
         return model
 
     

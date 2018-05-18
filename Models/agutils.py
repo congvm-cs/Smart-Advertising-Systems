@@ -64,6 +64,8 @@ def draw_rectangle(img, x1, y1, x2, y2, color=(0, 255, 0)):
     cv2.line(img, (x1, y1), (x2, y1), color, thickness_slim_line)
     cv2.line(img, (x2, y2), (x1, y2), color, thickness_slim_line)
     cv2.line(img, (x2, y2), (x2, y1), color, thickness_slim_line)
+
+    # cv2.rectangle(img, (x1, y1 - int(offset)), (x2, y1), color, -1)
     return img
 
 

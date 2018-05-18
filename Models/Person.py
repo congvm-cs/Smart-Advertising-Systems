@@ -10,14 +10,16 @@ class Person():
         self.face_info = 'Detecting...'
         self.cropped_face_arr = []
         self.num_face_in_arr = 0
-        self.gender = None
-        self.age = None
+        self.gender = 'Predicting...'
+        self.age = 'Predicting...'
         self.watching_time = 0
         
+        self.view = 0  # View = 1 whether if person watch Ads in more than 3 seconds
+
         self.AGE_RANGE_ARR = ['0-18', '18-25', '25-35', '35-50', '>50']
         self.GENDER_ARR = ['Male', 'Female']
 
-        # self.t = time.time()    # Start the time whenever initialzing
+        self.t = time.time()    # Start the time whenever initialzing
 
 
     def getId(self):
@@ -29,10 +31,7 @@ class Person():
 
 
     def getFaceInfo(self):
-        if self.gender is None or self.age is None:
-            return 'Detecting...'
-        else:
-            return 'Person: {} #{} #{}'.format(self.person_id, self.gender, self.age)
+        return 'Person: {} #{} #{}'.format(self.person_id, self.gender, self.age)
 
 
     def getCroppedFaceArr(self):
@@ -45,10 +44,21 @@ class Person():
 
     def getGender(self):
         return self.gender
+    
+
+    def getViews(self):
+        if time.time() - self.t > 3:
+            self.view = 1    
+        return self.view
 
 
     def getAge(self):
         return self.age
+
+
+    def getWatchingTime(self):
+        self.watching_time = time.time() - self.t
+        return self.watching_time 
 
 
     def setId(self, person_id):
@@ -81,7 +91,7 @@ class Person():
 
     def startTrack(self, original_image, bbox):
         (x, y, w, h) = bbox
-        offset = int(0.07*w)
+        offset = int(0.05*w)
         # offset = 0
         self.face_tracker.start_track(original_image, dlib.rectangle(x-offset, 
                                                                      y-offset, 
@@ -95,7 +105,7 @@ class Person():
         t_y = int(self.bbox.top())
         t_w = int(self.bbox.width())
         t_h = int(self.bbox.height())
-        offset = int(0.07*t_w)
+        offset = int(0.05*t_w)
         t_x = t_x - offset
         t_y = t_y - offset
         t_w = t_w + 2*offset
@@ -107,3 +117,5 @@ class Person():
     def updatePosition(self, original_image):
         trackingQuality = self.face_tracker.update(original_image)
         return trackingQuality
+
+    
