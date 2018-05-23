@@ -1,6 +1,10 @@
 ''' This is configuration for Smart Ads System
     
 '''
+# import sys
+
+# sys.path.append('..')
+# sys.path.append('./Models/')
 # Input layer
 IMAGE_WIDTH = 64
 IMAGE_HEIGHT = 64
@@ -22,6 +26,6 @@ MODEL_ARCHITECTURE_JSON = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems
 '''
 DETECTION_METHOD = 'HAAR' # DLIB or HAAR
 
-HAAR_MODEL_PATH = './haarcascade_frontalface_default.xml'
+HAAR_MODEL_PATH = '/home/vmc/Desktop/Smart-Advertising-Systems/Models/haarcascade_frontalface_default.xml'
 
 NUM_IMG_STORED = 15

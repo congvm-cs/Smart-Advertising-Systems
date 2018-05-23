@@ -16,7 +16,7 @@ from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
 import keras.backend as K
 import utils
-import Config
+import agconfig
 
 class MultiTracking():
 

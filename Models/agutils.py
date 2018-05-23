@@ -1,9 +1,13 @@
 '''This is script for all of tools using in this project
 '''
+import sys
+sys.path.append('..')
+sys.path.append('./Models/')
+
 import numpy as np
 import cv2
 from keras.models import model_from_json
-import agconfig 
+from Models import agconfig 
 from PIL import Image
 from PIL import ImageTk
 

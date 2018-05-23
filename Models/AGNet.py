@@ -1,3 +1,7 @@
+import sys
+sys.path.append('..')
+sys.path.append('./Models/')
+
 import tensorflow as tf
 import keras.utils
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, load_img
@@ -7,9 +11,9 @@ from keras.layers import Conv2D, MaxPooling2D, BatchNormalization
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
 import keras.backend as K
-from FaceDetetion import FaceDetection
-import agconfig
-import agutils
+from Models.FaceDetetion import FaceDetection
+from Models import agconfig
+from Models import agutils
 import cv2
 import numpy as np
 

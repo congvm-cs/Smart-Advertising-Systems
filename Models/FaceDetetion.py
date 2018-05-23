@@ -1,4 +1,8 @@
-import agconfig
+import sys
+sys.path.append('..')
+sys.path.append('./Models/')
+
+from Models import agconfig
 import cv2
 import dlib
 from imutils.face_utils import rect_to_bb
