@@ -37,6 +37,7 @@ class MultiTracking():
         self.views_collector = 0
         self.total_views = 0
 
+
     def doRecognizePerson(self, person):
         print('Start predict')
         # Predict gender and age here
@@ -89,7 +90,6 @@ class MultiTracking():
 
 
 #===============================================CREATE NEW FACE========================================#
-
             if matchedFid is False:
                 print("Creating new tracker " + str(self.currentFaceID))
 
@@ -132,7 +132,7 @@ class MultiTracking():
                 #Resize the image to 320x240
                 self.baseImage = cv2.resize(fullSizeBaseImage, (0, 0), fx=0.5, fy=0.5)
                 resultImage = self.baseImage.copy()
-
+ 
 
                 #Check if a key was pressed and if it was Q, then break
                 #from the infinite loop
@@ -252,7 +252,6 @@ class MultiTracking():
                 #Finally, we want to show the images on the screen
                 cv2.imshow("base-image", self.baseImage)
                 cv2.imshow("result-image", largeResult)
-
 
 
         #To ensure we can also deal with the user pressing Ctrl-C in the console
