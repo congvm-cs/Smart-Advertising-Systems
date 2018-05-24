@@ -2,7 +2,6 @@
 '''
 import sys
 sys.path.append('..')
-sys.path.append('./Models/')
 
 import numpy as np
 import cv2

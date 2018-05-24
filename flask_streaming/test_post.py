@@ -1,21 +1,17 @@
 import requests 
-import cv2
+from cv2 import VideoCapture
 import base64 
 import json
 import time
-from multiprocessing import Pool
 
-cap = cv2.VideoCapture(0)
+cap = VideoCapture(0)
 information = {}
 
 while True:
     information.clear()
-    # start = time.time()
     _, image = cap.read()
-    image = cv2.resize(image, (0, 0), fx=0.7, fy=0.7)
-    
+    # image = cv2.resize(image, (0, 0), fx=1, fy=1)
     image_encoded = base64.b64encode(image)
-
     # image_encoded = image.tostring()
     # print(type(image_encoded))
     # print(image_encoded)
@@ -27,12 +23,3 @@ while True:
     # print (type(information), type(json_data))
     # fake_dick.append(information)
     posted = requests.post('http://127.0.0.1:5000/upload_data', json = information)
-    # end = time.time()
-    # print(end-start)
-
-
-if __name__ == '__main__':
-    # term
-    pass
-# print(posted.text)
-# print (posted.content)

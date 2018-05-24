@@ -1,11 +1,6 @@
 import sys
 sys.path.append('..')
-sys.path.append('./Models/')
-
 import cv2
-import dlib
-# import threading
-import multiprocessing
 import time
 import numpy as np
 from Models import agutils
@@ -13,6 +8,7 @@ from Models import agconfig
 from Models import FaceDetetion
 from Models import AGNet
 from Models import Person
+
 
 class MultiTracking():
     def __init__(self):
@@ -23,8 +19,8 @@ class MultiTracking():
         self.agModel = AGNet.AGNet(verbose=False)
         self.detector = FaceDetetion.FaceDetection()    
     
-        self.OUTPUT_SIZE_WIDTH = 775
-        self.OUTPUT_SIZE_HEIGHT = 600
+        self.OUTPUT_SIZE_WIDTH = 640
+        self.OUTPUT_SIZE_HEIGHT = 480
         self.rectangleColor = (0, 255, 0)
         self.fps = 0
 
@@ -44,6 +40,7 @@ class MultiTracking():
 
         #variables holding the current frame number and the current faceid
         self.frameCounter = 0
+        # self.regconize_thread  = multiprocessing.Pool()
 
 
     def doRecognizePerson(self, person):
@@ -98,9 +95,7 @@ class MultiTracking():
                     matchedFid = True
                     # Keep prediction on fid
 
-
 #===============================================CREATE NEW FACE========================================#
-
             if matchedFid is False:
                 print("Creating new tracker " + str(self.currentFaceID))
 
@@ -112,6 +107,7 @@ class MultiTracking():
                 #---------------------------------------------------------------------------------------#
                 #Increase the currentFaceID counter
                 self.currentFaceID += 1
+
 
 #=====================================================================================================#
     def detectAndTrackMultipleFaces(self, frame):
@@ -126,12 +122,6 @@ class MultiTracking():
         #Resize the image to 320x240
         # self.baseImage = cv2.resize(fullSizeBaseImage, (0, 0), fx=0.5, fy=0.5)
         resultImage = self.baseImage.copy()
-
-        #Check if a key was pressed and if it was Q, then break
-        #from the infinite loop
-        # pressedKey = cv2.waitKey(1)
-        # if pressedKey == ord('q'):
-        #     break
         
         self.fidsToDelete.clear()
 
@@ -161,19 +151,19 @@ class MultiTracking():
             cv2.putText(resultImage, "Person: " + str(person.getId()) , 
                         (int(t_x), int(t_y - t_h/3)), 
                         cv2.FONT_HERSHEY_SIMPLEX,
-                        t_w/200, (0, 255, 255), 1)
+                        t_w/200, (0, 255, 255), 2)
 
 
             cv2.putText(resultImage, "#: " + str(person.getGender()) , 
                         (int(t_x), int(t_y - t_h/5)), 
                         cv2.FONT_HERSHEY_SIMPLEX,
-                        t_w/200, (0, 255, 255), 1)
+                        t_w/200, (0, 255, 255), 2)
 
 
             cv2.putText(resultImage, "#: " + str(person.getAge()) , 
                         (int(t_x), int(t_y - t_h/19)), 
                         cv2.FONT_HERSHEY_SIMPLEX,
-                        t_w/200, (0, 255, 255), 1)
+                        t_w/200, (0, 255, 255), 2)
 
 
 #=====================================================================================================#*
@@ -197,12 +187,14 @@ class MultiTracking():
             elif person.getNumFaceInArr() == agconfig.NUM_IMG_STORED:
 
                 print('[DEBUG][MULTI] START THREAD DETECT AND TRACKING')
-                t = multiprocessing.Process(target = self.doRecognizePerson,
-                                        args=([person]))
-
-                t.start()
-                t.join()
-                t.terminate()
+                # t = multiprocessing.Process(target = self.doRecognizePerson,
+                #                         args=([person]))
+                self.doRecognizePerson(person)
+                # pass
+                # self.regconize_thread.map(self.doRecognizePerson, [person])
+                # t.start()
+                # t.join()
+                # t.terminate()
                 
                 print('[DEBUG][MULTI] HANG IN?')
                 person.increase_num_face_in_arr()
@@ -273,13 +265,10 @@ class MultiTracking():
                     #---------------------------------------------------------------------------------------#
                     person = Person.Person(self.currentFaceID)
                     person.startTrack(self.baseImage, bbox)
-
                     self.PersonManager.append(person)
                     #---------------------------------------------------------------------------------------#
-
                     #Increase the currentFaceID counter
                     self.currentFaceID += 1
-
 
             # Calculate Frames per second (FPS)
             self.fps = cv2.getTickFrequency()/(cv2.getTickCount() - timer)

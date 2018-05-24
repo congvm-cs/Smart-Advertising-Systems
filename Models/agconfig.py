@@ -1,10 +1,6 @@
 ''' This is configuration for Smart Ads System
     
 '''
-# import sys
-
-# sys.path.append('..')
-# sys.path.append('./Models/')
 # Input layer
 IMAGE_WIDTH = 64
 IMAGE_HEIGHT = 64
