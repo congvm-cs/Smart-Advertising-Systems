@@ -5,9 +5,14 @@ Our Team:
 	Minh-Cong Vo
 	Ngoc-Phu Le
 
-This project proposes new method to approach and advertise the right customers in big mall, elevator or supermarket 
-using LCD advertising screen and Artificial Intelligence System.
+This project proposes new method to conduct a statistical analysis through approaching and advertising customers in big mall, elevator or supermarket using facial factors detecting system and LCD advertising screen. 
+Four mains factors:
+	1. Age Range
+	2. Gender 
+	3. Views
+	4. Watched Time
+	
 
-Link for first test video: https://drive.google.com/open?id=11HxmyayT3qPQ77zajlfqMvxx_d7K-WPQ
 
+Process: >############################______<---80%
 Deadline: 30/5/2018
