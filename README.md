@@ -6,7 +6,9 @@ Our Team:
 	Ngoc-Phu Le
 
 This project proposes new method to conduct a statistical analysis through approaching and advertising customers in big mall, elevator or supermarket using facial factors detecting system and LCD advertising screen. 
+--
 Four mains factors:
+
 	1. Age Range
 	2. Gender 
 	3. Views
@@ -15,4 +17,5 @@ Four mains factors:
 
 
 Process: >############################______<---80%
+--
 Deadline: 30/5/2018
