@@ -12,9 +12,13 @@ OUTPUT_AGE = 5
 # Pretrain Model
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 WEIGHT_PATH = 'D:\MegaSyns\Projects\Smart-Advertising-Systems\train-weights-model-lastest.h5'
 =======
 WEIGHT_PATH = '/Users/ngocphu/Smart-Advertising-Systems/train-weights-model-lastest.h5'
+>>>>>>> Stashed changes
+=======
+WEIGHT_PATH = 'D:\\MegaSyns\\Projects\\Smart-Advertising-Systems\\train-weights-model-lastest.h5'
 >>>>>>> Stashed changes
 =======
 WEIGHT_PATH = 'D:\\MegaSyns\\Projects\\Smart-Advertising-Systems\\train-weights-model-lastest.h5'
@@ -31,9 +35,13 @@ DETECTION_METHOD = 'HAAR' # DLIB or HAAR
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 HAAR_MODEL_PATH = 'D:\MegaSyns\Projects\Smart-Advertising-Systems\Models\haarcascade_frontalface_default.xml'
 =======
 HAAR_MODEL_PATH = '/Users/ngocphu/Smart-Advertising-Systems/Models/haarcascade_frontalface_default.xml'
+>>>>>>> Stashed changes
+=======
+HAAR_MODEL_PATH = 'D:\\MegaSyns\\Projects\\Smart-Advertising-Systems\\Models\\haarcascade_frontalface_default.xml'
 >>>>>>> Stashed changes
 =======
 HAAR_MODEL_PATH = 'D:\\MegaSyns\\Projects\\Smart-Advertising-Systems\\Models\\haarcascade_frontalface_default.xml'
