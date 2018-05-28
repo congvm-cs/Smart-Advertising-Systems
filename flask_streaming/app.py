@@ -1,16 +1,19 @@
+# system modules
 import sys
 sys.path.append('..')
-from Models.multi_tracking_dlib import MultiTracking 
-from flask import Flask, render_template, Response, request
 import cv2
 import numpy as np
 import base64
 from PIL import Image
 
+# local modules
+from Models.multi_tracking_dlib import MultiTracking 
+from flask import Flask, render_template, Response, request
 
+
+# Init
 app = Flask(__name__)
 mtking = MultiTracking()
-
 information = {}
 
 @app.route('/')
