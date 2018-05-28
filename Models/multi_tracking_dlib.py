@@ -8,7 +8,7 @@ from Models import agconfig
 from Models import FaceDetetion
 from Models import AGNet
 from Models import Person
-
+import threading
 
 class MultiTracking():
     def __init__(self):
@@ -40,7 +40,8 @@ class MultiTracking():
 
         #variables holding the current frame number and the current faceid
         self.frameCounter = 0
-        # self.regconize_thread  = multiprocessing.Pool()
+        
+        self.q = queue.LifoQueue(10)
 
 
     def doRecognizePerson(self, person):
@@ -116,7 +117,6 @@ class MultiTracking():
 
 #=====================================================================================================#*
         # while True:
-        # Start timer
         timer = cv2.getTickCount()
         
         #Resize the image to 320x240
@@ -182,19 +182,17 @@ class MultiTracking():
                 crop_image_resized = cv2.resize(crop_image, (agconfig.IMAGE_WIDTH, agconfig.IMAGE_HEIGHT))
 
                 person.addCroppedFaceArr(crop_image_resized)
+
                 person.increase_num_face_in_arr()
 
             elif person.getNumFaceInArr() == agconfig.NUM_IMG_STORED:
 
                 print('[DEBUG][MULTI] START THREAD DETECT AND TRACKING')
-                # t = multiprocessing.Process(target = self.doRecognizePerson,
-                #                         args=([person]))
-                self.doRecognizePerson(person)
-                # pass
-                # self.regconize_thread.map(self.doRecognizePerson, [person])
-                # t.start()
-                # t.join()
-                # t.terminate()
+                t = threading.Thread(target = self.doRecognizePerson,
+                                        args=([person]))
+                t.setDaemon(True)
+                t.start()
+                t.join()
                 
                 print('[DEBUG][MULTI] HANG IN?')
                 person.increase_num_face_in_arr()
