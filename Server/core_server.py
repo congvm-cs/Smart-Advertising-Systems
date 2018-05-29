@@ -52,14 +52,22 @@ information = {}
 def post_inform():
     if request.method == 'POST':
         content = request.json
-        image = content['image'][2:-1]    # get string format only
-        
+        # image = content['image'][2:-1]    # get string format only
+        image = content['image']
+
+        print(image[:5])
         # Decode
         pad = len(image) % 4            # length of encoded code must be multiply of 4
-        image += "="*pad        
-        image = image.encode()          # convert to byte
+        # print(pad) 
+
+        image += "="*pad
+
+        pad = len(image) % 4            # length of encoded code must be multiply of 4
+        print(pad) 
+
+        image = image.encode('ascii')        # convert to byte
         image_decoded = base64.b64decode(image)     # decode 
-        PIL_img = Image.frombuffer('RGB', (512, 384), 
+        PIL_img = Image.frombuffer('RGB', (224, 168), 
                                     image_decoded, 'raw', 'RGB', 0, 1)  # convert to image
         img = np.array(PIL_img)
         
@@ -69,5 +77,5 @@ def post_inform():
     return Response(content)
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(host='0.0.0.0', port = 5000)
 
