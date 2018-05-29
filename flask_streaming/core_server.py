@@ -7,7 +7,7 @@ import base64
 from PIL import Image
 
 # local modules
-from Models.multi_tracking_dlib import MultiTracking 
+from Models.multi_tracking import MultiTracking 
 from flask import Flask, render_template, Response, request
 
 
@@ -16,36 +16,36 @@ app = Flask(__name__)
 mtking = MultiTracking()
 information = {}
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
 
 
-def gen():
-    cap = cv2.VideoCapture(0)
+# def gen():
+#     cap = cv2.VideoCapture(0)
 
-    while True:
-        ret, frame = cap.read()
+#     while True:
+#         ret, frame = cap.read()
 
-        if not ret:
-            print("Error: failed to capture image")
-            break
+#         if not ret:
+#             print("Error: failed to capture image")
+#             break
 
-        cv2.imwrite('demo.jpg', frame)
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + open('demo.jpg', 'rb').read() + b'\r\n')
-
-
-@app.route('/connected', methods=['GET'])
-def connected():
-    if request.method == 'GET': 
-        return Response('Connected')
+#         cv2.imwrite('demo.jpg', frame)
+#         yield (b'--frame\r\n'
+#                b'Content-Type: image/jpeg\r\n\r\n' + open('demo.jpg', 'rb').read() + b'\r\n')
 
 
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+# @app.route('/connected', methods=['GET'])
+# def connected():
+#     if request.method == 'GET': 
+#         return Response('Connected')
+
+
+# @app.route('/video_feed')
+# def video_feed():
+#     return Response(gen(),
+#                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/upload_data', methods=['POST'])
