@@ -40,8 +40,6 @@ class MultiTracking():
 
         #variables holding the current frame number and the current faceid
         self.frameCounter = 0
-        
-        self.q = queue.LifoQueue(10)
 
 
     def doRecognizePerson(self, person):
