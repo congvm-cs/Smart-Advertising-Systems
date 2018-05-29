@@ -47,14 +47,15 @@ class App:
         self.canvas = tk.Canvas(self.window, width = self.width, height = self.height)
         self.canvas.pack()
         
-        # self.panel = tk.Label(self.window, image=self.photo)
-        # self.panel.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
-        self.thread_2 = threading.Thread(target=self.__read_images)
-        self.thread_1 = threading.Thread(target=self.update)
-        self.thread_2.start()
-        self.thread_1.start()
+        self.panel = tk.Label(self.window, image=self.photo)
+        self.panel.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
+        # self.thread_2 = threading.Thread(target=self.__read_images)
+        # self.thread_1 = threading.Thread(target=self.update)
+        # self.thread_2.start()
+        # self.thread_1.start()
+        self.__read_images()
         self.delay = 1
-        # self.update()
+        self.update()
         self.window.mainloop()
             
     
@@ -77,4 +78,4 @@ class App:
             # break
         print ('2')
         
-App("Tkinter and OpenCV","/Users/ngocphu/Documents/FINAL_PROJECT_RESEARCH/Smart_Advertising_Systems/Smart-Advertising-Systems/flask_streaming/1.avi")
+App("Tkinter and OpenCV","C:\\Users\\VMC\\Desktop\\1.avi")
