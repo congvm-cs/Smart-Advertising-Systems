@@ -1,26 +1,25 @@
 #!/usr/bin/python
 
+# System modules
 import sys
 sys.path.append('./Models')
 import numpy as np
 import queue
-
+from PIL import Image
+from PIL import ImageTk
+import time
+import glob
 PYTHON_VERSION = sys.version_info[0]
-
 if PYTHON_VERSION == 2:
     import Tkinter as tk
     from ttk import Frame, Button
 else:
     import tkinter as tk
     from tkinter import Frame, Button
-
-from PIL import Image
-from PIL import ImageTk
-
-import time
-import glob
-
 import cv2
+
+
+# Local modules
 from Models.agutils import resize_with_ratio
 import skvideo.io
 from threading import Thread
@@ -74,12 +73,12 @@ class SmartAds():
     def __start_buffer(self):
         print('Start buffer!')
 		# start a thread to read frames from the file video stream
-        t = Thread(target=self.__add_into_buffer, args=())
+        t = Thread(target=self.__add_frame_into_buffer, args=())
         t.daemon = True
         t.start()
 
 
-    def __add_into_buffer(self):
+    def __add_frame_into_buffer(self):
         print('Add frame into buffer!')
         # keep looping infinitely
         while True:
@@ -136,7 +135,6 @@ class SmartAds():
             self.root.after(1, self.__update_frame)
 
 
-# TEST
 def main():
     file_paths = 'C:\\Users\\VMC\\Desktop\\1.avi'
     sa = SmartAds(file_paths)
