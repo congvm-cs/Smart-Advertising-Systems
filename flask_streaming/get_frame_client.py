@@ -1,16 +1,18 @@
 import requests 
-from cv2 import VideoCapture
+from cv2 import VideoCapture, resize
 import base64 
 import json
 import time
 
-cap = VideoCapture(0)
+cap = VideoCapture(1)
 information = {}
 
 while True:
     information.clear()
     _, image = cap.read()
-    # image = cv2.resize(image, (0, 0), fx=1, fy=1)
+    image = resize(image, (0, 0), fx=0.4, fy=0.4)
+
+    print(image.shape)
     image_encoded = base64.b64encode(image)
     # image_encoded = image.tostring()
     # print(type(image_encoded))

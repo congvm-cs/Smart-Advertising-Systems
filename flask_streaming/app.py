@@ -64,7 +64,7 @@ def post_inform():
         image += "="*pad        
         image = image.encode()          # convert to byte
         image_decoded = base64.b64decode(image)     # decode 
-        PIL_img = Image.frombuffer('RGB', (640, 480), 
+        PIL_img = Image.frombuffer('RGB', (512, 384), 
                                     image_decoded, 'raw', 'RGB', 0, 1)  # convert to image
         img = np.array(PIL_img)
         
