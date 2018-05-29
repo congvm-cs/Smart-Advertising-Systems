@@ -11,7 +11,7 @@ OUTPUT_GENDER = 1
 OUTPUT_AGE = 5
 
 # Pretrain Model
-WEIGHT_PATH = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems/train-weights-model-lastest.h5'
+WEIGHT_PATH = 'D:\MegaSyns\Projects\Smart-Advertising-Systems\train-weights-model-lastest.h5'
 MODEL_ARCHITECTURE_JSON = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems/model_archi.json'
 
 ''' Face Detection Method
@@ -22,6 +22,6 @@ MODEL_ARCHITECTURE_JSON = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems
 '''
 DETECTION_METHOD = 'HAAR' # DLIB or HAAR
 
-HAAR_MODEL_PATH = '/home/vmc/Desktop/Smart-Advertising-Systems/Models/haarcascade_frontalface_default.xml'
+HAAR_MODEL_PATH = 'D:\MegaSyns\Projects\Smart-Advertising-Systems\Models\haarcascade_frontalface_default.xml'
 
 NUM_IMG_STORED = 15

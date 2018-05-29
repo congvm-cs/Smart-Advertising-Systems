@@ -1,7 +1,7 @@
+# system modules
 import sys
 sys.path.append('..')
 sys.path.append('./Models/')
-
 import tensorflow as tf
 import keras.utils
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, load_img
@@ -9,17 +9,24 @@ from keras.models import Model
 from keras.layers import Dense, Dropout, Activation, Flatten, Input
 from keras.layers import Conv2D, MaxPooling2D, BatchNormalization
 from keras.optimizers import Adam
-from keras.callbacks import ModelCheckpoint
-import keras.backend as K
-from Models.FaceDetetion import FaceDetection
-from Models import agconfig
-from Models import agutils
 import cv2
 import numpy as np
 
-class AGNet():
 
+# local modules
+from Models.FaceDetetion import FaceDetection
+from Models import agconfig
+from Models import agutils
+
+
+class AGNet():
     def __init__(self, verbose=1):
+        """ AGNet for gender and age classification on facial images
+            Parameter:
+                verbose :   show detailed model on console
+                graph   :   tensorflow graph
+                model   :   keras model instance 
+        """
         print('[LOGGING][AGNET] - Load AGModel - Loading')
         self.verbose = verbose
         self.graph = None
@@ -33,8 +40,9 @@ class AGNet():
 
         print('[LOGGING][AGNET] - Load AGModel - Done')
 
+
     def __contruct_model(self):
-        input_x = Input((64, 64, 3))
+        input_x = Input((agconfig.IMAGE_HEIGHT, agconfig.IMAGE_WIDTH, agconfig.IMAGE_DEPTH))
         x = Conv2D(filters=32, kernel_size=(3, 3), padding='same', activation='relu')(input_x)
         x = MaxPooling2D(strides=(2, 2))(x)
         x = BatchNormalization()(x)
@@ -90,6 +98,16 @@ class AGNet():
 
 
     def predict_with_array(self, images):
+        """ Predict using set of images collected from camera
+            In this case, we use 10 cropped face to predict gender and age,
+            then using average predicted number to confirm.
+
+            Parameters:
+                image   :   nparray, list or tuple
+            
+            Return:
+                 [gender_pred, age_pred]
+        """
         gender_sum = 0
         age_sum = [0, 0, 0, 0, 0]
 

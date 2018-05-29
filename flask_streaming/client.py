@@ -27,11 +27,6 @@ def get_frame():
     cv2.waitKey(50)
     return frame
     
-
-
-    # np.save('image_mat', image_arr)
-    # upload = requests.post()
-
 def __main__():
     cap = cv2.VideoCapture(0)
 
