@@ -1,7 +1,7 @@
 Smart-Advertising-Systems
 --
 This is my on-going final project in my University - HCMUTE
---
+
 Our Team:
 	Minh-Cong Vo
 	Ngoc-Phu Le
