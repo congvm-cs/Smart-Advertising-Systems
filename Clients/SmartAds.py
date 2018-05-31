@@ -3,7 +3,7 @@
 # System modules
 import sys
 sys.path.append('..')
-
+import os
 import numpy as np
 from PIL import Image
 from PIL import ImageTk
@@ -23,34 +23,45 @@ from threading import Thread
 # from src.utils import resize_with_ratio
 
 import skvideo.io
-from Client import Client
+# from Client import Client
 import omxplayer
 
-
+VIDEO_DIR = '/Users/ngocphu/Smart-Advertising-Systems/Ad_videos'
+VIDEO_PATH = []
 class SmartAds():
-	def __init__(self, video_source):
-		# Image current index to show
+    def __init__(self):
+        # Image current index to show
+        self.list_videos()
+        # Client using webcam
+        # self.clt = Client()
+        
+        for video in VIDEO_PATH:
+            self.idx = self.get_index(video)
+            self.player = omxplayer.OMXPlayer(video, pause=True)
+        # self.player.set_aspect_mode('fill')
+    
+    def start(self):
+        self.player.play()
+        # self.clt.start()
 
-		# Client using webcam
-		self.clt = Client()
-		self.player = omxplayer.OMXPlayer(video_source, pause=True)
-		# self.player.set_aspect_mode('fill')
+    def stop(self):
+        self.player.quit()
 
-	def start(self):
-		self.player.play()
-		self.clt.start()
+    def list_videos(self):
+        
+        for video_file in os.listdir(VIDEO_DIR):
+            if video_file != '.DS_Store':
+                self.video_path = os.path.join(VIDEO_DIR,video_file)
+                VIDEO_PATH.append(self.video_path)
 
-
-
-	def stop(self):
-		self.player.quit()
-
-
+    def get_index(self, video_name):
+        idx = video_name[:1]
+        return idx
 
 def main():
-    	file_paths = '/home/pi/1.avi'
-    	sa = SmartAds(file_paths)	
-    	sa.start()
+    # file_paths = '/home/pi/1.avi'
+    sa = SmartAds()	
+    sa.start()
 #	time.sleep(10)
 #	sa.stop()
 
