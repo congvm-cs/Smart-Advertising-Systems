@@ -13,7 +13,7 @@ if PYTHON_VERSION == 2:
     from ttk import Frame, Button
 else:
     import tkinter as tk
-    from tkinter import Frame, Button
+    from tkinter import Frame, Button, Label
 import cv2
 from threading import Thread
 
@@ -29,64 +29,64 @@ import signal
 VIDEO_DIR = '/Users/ngocphu/Smart-Advertising-Systems/Ad_videos'
 VIDEO_PATH = []
 class SmartAds():
-    def __init__(self):
+    def __init__(self, loop, play_list):
         # Image current index to show
         #lf.list_videos()
         # Client using webcam
+        self.root = tk.Tk()
+        self.root.title('Smart Ad')
+        self.root.overrideredirect(True)
+        self.root.overrideredirect(False)
+        self.root.attributes('-fullscreen', True)
+        self.panel = tk.Label(self.root)
+        self.panel.config(fg = 'black', bg='black')
+        self.panel.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
         self.clt = Client()
-	index = 0       
-	# load playlist
-	
-	
-	#print(self.play_list)
-        #self.player = vlc.Instance('--input-repeat=-1', '--fullscreen', '--mouse-hide-timeout=0')
-
-        #self.player = omxplayer.OMXPlayer(self.play_list[self.index], pause=False)
-        #self.player.set_aspect_mode('fill')
-
+        self.index = 0
+        self.loops = loop
+        self.play_list = play_list
+        self.current_loop = 0 
+        print('0')
+        self.clt.start()
+        self.run()     
+        print('1')  
+        self.root.mainloop()
 
     def run(self):
-	self.clt.start()
+        print('2')
+        if self.current_loop < self.loops:
+        #     # for idx, video in enumerate(self.play_list):
+            self.clt.set_index(self.index)
+            p1 = subprocess.call(['omxplayer', '-b', self.play_list[self.index], 'daemon'], stdout= PIPE)
+        #     # p1.wait()
+        # time.sleep(0.5)
+        print('3')
 
-	time.sleep(1)
-	print('2')
-	#self.player.load(self.play_list[1])
+        if (self.index + 1) >= len(self.play_list):
+            self.index = 0
+            self.current_loop += 1
+        else:
+            self.index += 1
+
+        self.root.after(1, func=self.run)
+
 
     def set_index(self, index):
         self.clt.set_index(index)
 
-"""
-    def list_videos(self):
-        
-        for video_file in os.listdir(VIDEO_DIR):
-            if video_file != '.DS_Store':
-                self.video_path = os.path.join(VIDEO_DIR,video_file)
-                VIDEO_PATH.append(self.video_path)
 
-    def get_index(self, video_name):
-        idx = video_name[:1]
-        return idx
-
-"""
 def main():
     # file_paths = '/home/pi/1.avi'
-
-    loops = int(input("> How many loops? "))
-    play_list = sorted(glob.glob('/home/pi/Smart-Advertising-Systems/Ad_Videos/*.avi'))
-    sa = SmartAds()
-    sa.run()
-    for i in range(loops):
-        for idx, video in enumerate(play_list):
-            sa.set_index(idx)
-            p1 = subprocess.call(['omxplayer', '-b', video], stdout= PIPE, preexec_fn = os.setsid)
-          
+    try:
+        loops = int(input("> How many loops? "))
+        play_list = sorted(glob.glob('/home/pi/Smart-Advertising-Systems/Ad_Videos/*.avi'))
+        sa = SmartAds(loops, play_list)
+    #sa.run()
+    except KeyboardInterrupt:
+        print('stop')
+    
+    sys.exit()
             
             
-"""
-    if sa.isPlaying():
-	print('1')
-	sa.next()
-	time.sleep(2)
-"""
 if __name__ == '__main__':
     main()
