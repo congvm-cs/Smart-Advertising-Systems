@@ -23,30 +23,41 @@ from threading import Thread
 # from src.utils import resize_with_ratio
 
 import skvideo.io
-# from Client import Client
+from Client import Client
+import vlc
+import glob
 import omxplayer
+import subprocess
+from subprocess import PIPE
+import sys
 
 VIDEO_DIR = '/Users/ngocphu/Smart-Advertising-Systems/Ad_videos'
 VIDEO_PATH = []
 class SmartAds():
     def __init__(self):
         # Image current index to show
-        self.list_videos()
+        #lf.list_videos()
         # Client using webcam
-        # self.clt = Client()
-        
-        for video in VIDEO_PATH:
-            self.idx = self.get_index(video)
-            self.player = omxplayer.OMXPlayer(video, pause=True)
-        # self.player.set_aspect_mode('fill')
-    
-    def start(self):
-        self.player.play()
-        # self.clt.start()
+        self.clt = Client()
+	index = 0       
+	# load playlist
+	
+	
+	#print(self.play_list)
+        #self.player = vlc.Instance('--input-repeat=-1', '--fullscreen', '--mouse-hide-timeout=0')
 
-    def stop(self):
-        self.player.quit()
+        #self.player = omxplayer.OMXPlayer(self.play_list[self.index], pause=False)
+        #self.player.set_aspect_mode('fill')
 
+
+    def run(self):
+	self.clt.start()
+
+	time.sleep(2)
+	print('2')
+	#self.player.load(self.play_list[1])	
+
+"""
     def list_videos(self):
         
         for video_file in os.listdir(VIDEO_DIR):
@@ -58,12 +69,23 @@ class SmartAds():
         idx = video_name[:1]
         return idx
 
+"""
 def main():
     # file_paths = '/home/pi/1.avi'
-    sa = SmartAds()	
-    sa.start()
-#	time.sleep(10)
-#	sa.stop()
+    play_list = sorted(glob.glob('/home/pi/Smart-Advertising-Systems/Ad_Videos/*.avi'))
+    sa = SmartAds()
+    sa.run()
 
+    while True:
+        for idx, video in enumerate(play_list):
+            #index = video.index
+            p1 = subprocess.Popen(['omxplayer', '-b', video], stdout= PIPE)
+            p1.wait()
+"""
+    if sa.isPlaying():
+	print('1')
+	sa.next()
+	time.sleep(2)
+"""
 if __name__ == '__main__':
     main()
