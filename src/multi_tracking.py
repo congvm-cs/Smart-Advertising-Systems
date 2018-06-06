@@ -46,6 +46,7 @@ class MultiTracking():
         #variables holding the current frame number and the current faceid
         self.frameCounter = 0
 
+        self.video_index = 0
 
     def doRecognizePerson(self, person):
         print('Start predict')
@@ -114,16 +115,14 @@ class MultiTracking():
 
 
 #=====================================================================================================#
-    def detectAndTrackMultipleFaces(self, frame):
+    def detectAndTrackMultipleFaces(self, index, frame):
+        self.video_index = index
         self.baseImage = frame    
         self.gray = cv2.cvtColor(self.baseImage, cv2.COLOR_BGR2GRAY)
 
 #=====================================================================================================#*
         # while True:
         timer = cv2.getTickCount()
-        
-        #Resize the image to 320x240
-        # self.baseImage = cv2.resize(fullSizeBaseImage, (0, 0), fx=0.5, fy=0.5)
         resultImage = self.baseImage.copy()
         
         self.fidsToDelete.clear()
@@ -215,13 +214,6 @@ class MultiTracking():
             # t2 = threading.Thread(target=self.check_new_face)
             # t2.start()
             print('[DEBUG][MULTI] CHECK NEW FACES')
-            # print(self.baseImage)
-            
-            # self.check_new_face(self.baseImage)
-            # self.gray = cv2.cvtColor(self.baseImage, cv2.COLOR_BGR2GRAY)
-            
-            # cv2.imshow("Gray", gray)
-            
             #Now use the FaceDetection detector to find all faces
             faces = self.detector.detectMultiFaces(self.gray)
 
@@ -277,6 +269,8 @@ class MultiTracking():
         # Display FPS on frame
         cv2.putText(resultImage, "FPS : " + str(int(self.fps)), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
 
+        # Display index video
+        cv2.putText(resultImage, "Video : " + str(int(self.video_index)), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         # Update Views and Watching Time
         # self.total_watched_time_stored = self.watched_time_collector
         # self.total_views = self.views_collector
