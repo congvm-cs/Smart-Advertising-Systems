@@ -5,8 +5,6 @@ import sys
 sys.path.append('..')
 import os
 import numpy as np
-from PIL import Image
-from PIL import ImageTk
 import time
 import glob
 PYTHON_VERSION = sys.version_info[0]
@@ -22,15 +20,12 @@ from threading import Thread
 # Local modules
 # from src.utils import resize_with_ratio
 
-import skvideo.io
 from Client import Client
-import vlc
-import glob
 import omxplayer
 import subprocess
 from subprocess import PIPE
 import sys
-
+import signal
 VIDEO_DIR = '/Users/ngocphu/Smart-Advertising-Systems/Ad_videos'
 VIDEO_PATH = []
 class SmartAds():
@@ -53,9 +48,12 @@ class SmartAds():
     def run(self):
 	self.clt.start()
 
-	time.sleep(2)
+	time.sleep(1)
 	print('2')
-	#self.player.load(self.play_list[1])	
+	#self.player.load(self.play_list[1])
+
+    def set_index(self, index):
+        self.clt.set_index(index)
 
 """
     def list_videos(self):
@@ -72,15 +70,18 @@ class SmartAds():
 """
 def main():
     # file_paths = '/home/pi/1.avi'
+
+    loops = int(input("> How many loops? "))
     play_list = sorted(glob.glob('/home/pi/Smart-Advertising-Systems/Ad_Videos/*.avi'))
     sa = SmartAds()
     sa.run()
-
-    while True:
+    for i in range(loops):
         for idx, video in enumerate(play_list):
-            #index = video.index
-            p1 = subprocess.Popen(['omxplayer', '-b', video], stdout= PIPE)
-            p1.wait()
+            sa.set_index(idx)
+            p1 = subprocess.call(['omxplayer', '-b', video], stdout= PIPE, preexec_fn = os.setsid)
+          
+            
+            
 """
     if sa.isPlaying():
 	print('1')
