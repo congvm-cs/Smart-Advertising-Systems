@@ -15,14 +15,13 @@ class Client():
 
     def __init__(self):
         self._cap = VideoCapture(-1)
-	#self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, 960)
-	#self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        #self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, 960)
+        #self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         self._information = {}
         self._stop = False
 
 
     def __get_frame(self):
-	print('hi')
         while not self._stop:
             self._information.clear()
             _, image = self._cap.read()

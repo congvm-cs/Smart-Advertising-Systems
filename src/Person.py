@@ -2,10 +2,10 @@ import time
 import dlib
 
 class Person():
-    def __init__(self, person_id, gender=None, age=None):
+    def __init__(self, person_id, gender=None, age=None, bbox=None):
         self.person_id = person_id
         self.face_tracker = dlib.correlation_tracker()
-        self.bbox = None
+        self.bbox = bbox
 
         self.face_info = 'Detecting...'
         self.cropped_face_arr = []
@@ -13,10 +13,10 @@ class Person():
         self.gender = 'Predicting...'
         self.age = 'Predicting...'
         self.watching_time = 0
-        
         self.view = 0  # View = 1 whether if person watch Ads in more than 3 seconds
+        self.collected = False
 
-        self.AGE_RANGE_ARR = ['0-18', '18-25', '25-35', '35-50', '>50']
+        self.AGE_RANGE_ARR = ['0-12', '12-18', '18-25', '25-35', '35-50', '>50']
         self.GENDER_ARR = ['Male', 'Female']
 
         self.t = time.time()    # Start the time whenever initialzing
@@ -118,4 +118,14 @@ class Person():
         trackingQuality = self.face_tracker.update(original_image)
         return trackingQuality
 
+
+    def setCollected(self, status):
+        self.collected = status
+
+
+    def canBeCollected(self):
+        return self.collected
     
+    def reset(self):
+        self.watching_time = 0
+        self.view = 0  

@@ -46,20 +46,14 @@ class SmartAds():
         self.loops = loop
         self.play_list = play_list
         self.current_loop = 0 
-        print('0')
         self.clt.start()
         self.run()     
-        print('1')  
         self.root.mainloop()
 
     def run(self):
-        print('2')
         if self.current_loop < self.loops:
-        #     # for idx, video in enumerate(self.play_list):
             self.clt.set_index(self.index)
             p1 = subprocess.call(['omxplayer', '-b', self.play_list[self.index], 'daemon'], stdout= PIPE)
-        #     # p1.wait()
-        # time.sleep(0.5)
         print('3')
 
         if (self.index + 1) >= len(self.play_list):
@@ -81,7 +75,7 @@ def main():
         loops = int(input("> How many loops? "))
         play_list = sorted(glob.glob('/home/pi/Smart-Advertising-Systems/Ad_Videos/*.avi'))
         sa = SmartAds(loops, play_list)
-    #sa.run()
+        
     except KeyboardInterrupt:
         print('stop')
     

@@ -34,7 +34,7 @@ class AGNet():
         self.__compile()
 
         self.GENDER = ['Male', 'Female']
-        self.AGE = ['0-18', '18-25', '25-35', '35-50', '>50']
+        self.AGE = ['0-12', '12-18', '18-25', '25-35', '35-50', '>50']
         
         self.WEIGHT_PATH = config.WEIGHT_PATH
 
@@ -69,7 +69,39 @@ class AGNet():
 
         model = Model(input_x, [output_gender, output_age])
         model.load_weights(config.WEIGHT_PATH)
+        # input_x = Input((64, 64, 3))
+        # x = Conv2D(filters=32, kernel_size=(3, 3), padding='same', activation='relu')(input_x)
+        # x = Conv2D(filters=32, kernel_size=(3, 3), padding='same', activation='relu')(input_x)
+        # x = MaxPooling2D(strides=(2, 2))(x)
+        # x = BatchNormalization()(x)
 
+        # x = Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu')(x)
+        # x = Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu')(x)
+        # x = MaxPooling2D(strides=(2, 2))(x)
+        # x = BatchNormalization()(x)
+
+        # x = Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu')(x)
+        # x = Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu')(x)
+        # x = MaxPooling2D(strides=(2, 2))(x)
+        # x = BatchNormalization()(x)
+
+        # x = Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu')(x)
+        # x = Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu')(x)
+        # x = MaxPooling2D(strides=(2, 2))(x)
+        # x = BatchNormalization()(x)
+
+        # x = Flatten()(x)
+        # x = Dropout(0.2)(x)
+
+        # x = Dense(128, activation='relu', name='embedded_layer')(x)
+
+        # output_gender = Dense(1, activation='sigmoid', name='gender_output')(x)
+        # output_age = Dense(6, activation='softmax', name='age_output')(x)
+
+        # model = Model(input_x, [output_gender, output_age])
+        # model.load_weights(config.WEIGHT_PATH)
+        # model.load_weights('./model.h5')
+        # print(model.summary())
         if self.verbose:
             print(model.summary())
 
@@ -111,6 +143,8 @@ class AGNet():
         gender_sum = 0
         age_sum = [0, 0, 0, 0, 0]
 
+        div = len(images)
+
         for img in images:
             face_rect_reshape = np.reshape(img, newshape=(1, config.IMAGE_WIDTH, 
                                                                         config.IMAGE_HEIGHT, 
@@ -125,7 +159,7 @@ class AGNet():
             age_sum += y_age_pred
         
         # print(gender_sum/15)
-        gender_pred = self.GENDER[int(np.round(gender_sum/15))]
+        gender_pred = self.GENDER[int(np.round(gender_sum/div))]
         age_pred = self.AGE[np.argmax(y_age_pred)]
 
         return [gender_pred, age_pred]
