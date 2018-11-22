@@ -1,9 +1,30 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Video Streaming Demonstration</title>
-  </head>
-  <body>
-    <h1>Video Streaming Demonstration</h1>
-    <img id="bg" src="{{ url_for('video_feed') }}">
-  </body>
+	<head>
+		<title>Layout</title>
+		<link rel="stylesheet" type="text/css" href="/static/style.css"/>
+	</head>
+	<body>
+		<div id="menu_top">HỆ THỐNG PHÂN TÍCH DỮ LIỆU NGƯỜI XEM QUẢNG CÁO</div>
+		<div id="banner"></div>
+		<div id="main">
+			<div id="vung1">
+				<div id="phat_qc">
+          <video width="500" controls>
+            <source src="{{ url_for('video') }}" type="video/mp4">
+            <!-- <source src="mov_bbb.ogg" type="video/ogg"> -->
+            <!-- Your browser does not support HTML5 video. -->
+          </video>
+        </div>
+				<div id="thong_so">Thong so</div>
+			</div>
+			<div id="vung2">
+				<div id="vung_phat_anh">
+					<img id="bg" src="{{ url_for('video_feed') }}">
+				</div>
+			</div>
+				
+		</div>
+		<div id="footer">Footer</div>
+	</body>
 </html>

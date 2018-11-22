@@ -69,39 +69,7 @@ class AGNet():
 
         model = Model(input_x, [output_gender, output_age])
         model.load_weights(config.WEIGHT_PATH)
-        # input_x = Input((64, 64, 3))
-        # x = Conv2D(filters=32, kernel_size=(3, 3), padding='same', activation='relu')(input_x)
-        # x = Conv2D(filters=32, kernel_size=(3, 3), padding='same', activation='relu')(input_x)
-        # x = MaxPooling2D(strides=(2, 2))(x)
-        # x = BatchNormalization()(x)
 
-        # x = Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu')(x)
-        # x = Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu')(x)
-        # x = MaxPooling2D(strides=(2, 2))(x)
-        # x = BatchNormalization()(x)
-
-        # x = Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu')(x)
-        # x = Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu')(x)
-        # x = MaxPooling2D(strides=(2, 2))(x)
-        # x = BatchNormalization()(x)
-
-        # x = Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu')(x)
-        # x = Conv2D(filters=256, kernel_size=(3, 3), padding='same', activation='relu')(x)
-        # x = MaxPooling2D(strides=(2, 2))(x)
-        # x = BatchNormalization()(x)
-
-        # x = Flatten()(x)
-        # x = Dropout(0.2)(x)
-
-        # x = Dense(128, activation='relu', name='embedded_layer')(x)
-
-        # output_gender = Dense(1, activation='sigmoid', name='gender_output')(x)
-        # output_age = Dense(6, activation='softmax', name='age_output')(x)
-
-        # model = Model(input_x, [output_gender, output_age])
-        # model.load_weights(config.WEIGHT_PATH)
-        # model.load_weights('./model.h5')
-        # print(model.summary())
         if self.verbose:
             print(model.summary())
 
@@ -154,7 +122,7 @@ class AGNet():
             with self.graph.as_default():
                 [y_gender_pred, y_age_pred] = self.model.predict(face_rect_reshape)
             
-            print(y_gender_pred)
+            # print(y_gender_pred)
             gender_sum += y_gender_pred[-1]
             age_sum += y_age_pred
         

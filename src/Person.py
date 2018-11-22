@@ -110,7 +110,7 @@ class Person():
         t_y = t_y - offset
         t_w = t_w + 2*offset
         t_h = t_h + 2*offset
-
+        # self.face_tracker.update()
         return [t_x, t_y, t_w, t_h]
 
 

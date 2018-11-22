@@ -19,6 +19,12 @@ mtking = MultiTracking()
 cap = VideoCamera()
 
 
+
+@app.route('/video')
+def video():
+    return app.send_static_file('dienmayxanh.mp4')
+
+
 @app.route('/')
 def index():
     return render_template('index.html')

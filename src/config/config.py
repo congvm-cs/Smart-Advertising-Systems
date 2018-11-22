@@ -1,8 +1,8 @@
 ''' This is configuration for Smart Ads System
 '''
 # Input layer
-IMAGE_WIDTH = 64
-IMAGE_HEIGHT = 64
+IMAGE_WIDTH = 128
+IMAGE_HEIGHT = 128
 IMAGE_DEPTH = 3
 
 # Last layer
@@ -10,7 +10,9 @@ OUTPUT_GENDER = 1
 OUTPUT_AGE = 5
 
 # Pretrain Model
-WEIGHT_PATH = 'D:/MegaSyns/Projects/Smart-Advertising-Systems/src/pretrain_models/train-weights-model-lastest.h5'
+WEIGHT_PATH_MOBILENET = '/home/congvm/eureka/Smart-Advertising-Systems/src/pretrain_models/ml-ZAGNET-ft-1-bm-MobileNet-is-128-dr-0.2-bs-32-lr-0.05-aw-0.5-gw-1-epoch-96-val_loss-1.8190-val_age_loss-3.1010-val_gender_loss-0.2685-val_gender_out_binary_accuracy-0.9052.h5'
+
+WEIGHT_PATH = '/home/congvm/eureka/Smart-Advertising-Systems/src/pretrain_models/train-weights-model-lastest.h5'
 # WEIGHT_PATH = 'D:/MegaSyns/Projects/Smart-Advertising-Systems/weights-model-24-5.h5'
 MODEL_ARCHITECTURE_JSON = '/mnt/Data/MegaSyns/Projects/Smart-Advertising-Systems/model_archi.json'
 

@@ -12,6 +12,7 @@ from src.config import config
 from src.ultis import utils
 from src import FaceDetetion
 from src.models import AGNet
+from src.models import AGNet_New
 from src import Person
 from src.SMLogger import SMLogger
 
@@ -21,7 +22,7 @@ class MultiTracking():
         ''' This class is a flow to detect and track frontal 
             multi-face, then regconize their gender and age-range
         '''
-        self.agModel = AGNet.AGNet(verbose=False)
+        self.agModel = AGNet_New.ZAGNet(verbose=False)
         self.detector = FaceDetetion.FaceDetection()    
     
         self.OUTPUT_SIZE_WIDTH = 640
@@ -207,6 +208,9 @@ class MultiTracking():
 
             if person.getNumFaceInArr() < config.NUM_IMG_STORED:
                 crop_image = self.baseImage[t_y : t_y+t_h, t_x : t_x+t_w, :]
+                
+                # cv2.imwrite('test.jpg', crop_image)
+
                 crop_image_resized = cv2.resize(crop_image, (config.IMAGE_WIDTH, config.IMAGE_HEIGHT))
                 person.addCroppedFaceArr(crop_image_resized)
                 person.increase_num_face_in_arr()
@@ -224,7 +228,7 @@ class MultiTracking():
 
         #Every 10 frames, we will have to determine which faces
         #are present in the frame
-        if (self.frameCounter % 20) == 0:
+        if (self.frameCounter % 30) == 0:
             # t2 = threading.Thread(target=self.check_new_face)
             # t2.start()
             print('[DEBUG][MULTI] CHECK NEW FACES')
@@ -261,6 +265,7 @@ class MultiTracking():
                         ( x   <= t_x_bar <= (x   + w  )) and 
                         ( y   <= t_y_bar <= (y   + h  ))):
                         matchedFid = True
+                        
                         # Keep prediction on fid
 
 #===============================================CREATE NEW FACE========================================#
@@ -278,16 +283,17 @@ class MultiTracking():
             self.fps = cv2.getTickFrequency()/(cv2.getTickCount() - timer)
         
         # Display FPS on frame
-        cv2.putText(resultImage, "FPS : " + str(int(self.fps)), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        # cv2.putText(resultImage, "FPS : " + str(int(self.fps)), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         # Display index video
         cv2.putText(resultImage, "Video : " + str(int(self.video_index)), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         cv2.putText(resultImage, "Watched Time (sec) : {}".format(str(int(self.total_watched_time_stored))), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
         cv2.putText(resultImage, "Views : {}".format(str(self.total_views)), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
 
 #================================================Visualizing=====================================================#*
-        largeResult = cv2.resize(resultImage,
+        resultImage = cv2.resize(resultImage,
                                 (self.OUTPUT_SIZE_WIDTH, self.OUTPUT_SIZE_HEIGHT))
 
         #Finally, we want to show the images on the screen
-        cv2.imshow("result-image", largeResult)
-        cv2.waitKey(1)
+        # cv2.imshow("result-image", largeResult)
+        # cv2.waitKey(1)
+        return resultImage

@@ -1,0 +1,136 @@
+body {
+
+	font-family: Tahoma;
+	font-size: 13px;
+	width: 100%;
+	margin: 0px auto;
+}
+/*footer {
+	font-family: Tahoma;
+	font-size: 48px
+	width: 1000px;
+	margin: 0px auto;
+}*/
+
+#menu_top {
+/*	margin-top: 20px;
+	margin-right: 100px;
+	margin-left:  100px;*/
+	display: flex;
+	font-size: 32px;
+	text-align: center;
+	justify-content: center;
+	background: rgb(55, 163, 69);
+	color: #fff;
+	height: 90px;
+	align-items: center;
+	/*width: 500px;*/
+}
+#main {
+	display: flex;
+	align-content: center;
+	align-items: center;
+	height: 625px;
+	background-color: white;
+
+}
+#vung1 {
+	display: flex;
+	margin-top: 0px;
+	margin-left: 0px;
+	flex-direction: column;
+	justify-content: center;
+	align-content: center;
+	/*align-items: center;*/
+	width: 50%;
+	min-height: 500px;
+	background: white;
+	/*float: left;*/
+}
+#vung2 {
+	display: flex;
+	margin-top: 0px;
+	margin-right: 0px;
+	align-content: center;
+	flex-direction: column;
+	justify-content: center;
+	/*align-items: center;*/
+	min-height: 500px;
+	width: 50%;
+	background: white;
+	margin-left: 0px;
+}
+#phat_qc {
+	order: 1;
+	flex-grow: 1;
+	text-align: center;
+	/*color: white;*/
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	background: white;
+}
+#thong_so {
+	order: 2;
+	flex-grow: 1;
+	text-align: center;
+	align-items: center;
+	background: white;
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px; 
+/*	width: 300px;
+	height: 300px;*/
+}
+#vung_phat_anh{
+	background: white;
+	flex-grow: 1;
+	text-align: center;
+	/* margin-top: 5%; */
+	margin-left: 2%;
+	margin-right: 2%;
+	/* margin-bottom: 5%; */
+}
+
+/*#main #vung1 #phat_qc {
+	width: 350px;
+	height: 350px;
+	text-align: center;
+	margin-left: 100px;
+	margin-top: 50px;
+	background: #336600;
+}
+
+#main #vung1 #thong_so {
+	width: 350px;
+	height: 350px;
+	text-align: center;
+	margin-left: 100px;
+	margin-top: 50px;
+	background: #336600;
+}
+
+#main #vung2 #vung_phat_anh {
+	width: 500px;
+	height: 500px;
+	text-align: center;
+	margin-right: 100px;
+	margin-top: 50px;
+	background: #336600;
+	float: right;
+}*/
+
+
+#footer {
+	margin-top: 0px;
+/*	margin-bottom: 50px;
+	margin-right: 100px;
+	margin-left:  100px;*/
+	text-align: center;
+	background: rgb(55, 163, 69);
+	height: 53px;
+}
+
+
+
