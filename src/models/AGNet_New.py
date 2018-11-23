@@ -228,7 +228,7 @@ class ZAGNet:
                                                                         config.IMAGE_DEPTH))
             with self.graph.as_default():
                 y_age_pred, y_gender_pred = self.model.predict(face_rect_reshape)
-                # print(y_gender_pred)
+                print(y_gender_pred)
             
             # print(y_gender_pred)
             gender_sum += y_gender_pred[-1]

@@ -11,7 +11,7 @@ import threading
 from src.config import config
 from src.ultis import utils
 from src import FaceDetetion
-from src.models import AGNet
+# from src.models import AGNet
 from src.models import AGNet_New
 from src import Person
 from src.SMLogger import SMLogger
@@ -39,7 +39,10 @@ class MultiTracking():
         self.total_watched_time_stored = 0
 
         self.views_collector = 0
+        
         self.total_views = 0
+        self.n_male = 0
+        self.n_female = 0
 
         self.baseImage = None
         self.gray = None
@@ -65,6 +68,11 @@ class MultiTracking():
         person.setGender(gender_pred)
         person.setAge(age_pred)
         person.setCollected(True)
+
+        if gender_pred == 'female':
+            self.n_female += 1
+        else:    
+            self.n_male += 1
 
 
     def onVideoChanged(self, video_index):
@@ -167,6 +175,7 @@ class MultiTracking():
 #=====================================================================================================#*            
         print('[DEBUG][MULTI-TRACKING] UPDATE POSITIONS')
         for person in self.PersonManager:
+            
             # Update watched time
             self.watched_time_collector += person.getWatchingTime()
             self.views_collector += person.getViews()
@@ -229,6 +238,7 @@ class MultiTracking():
         #Every 10 frames, we will have to determine which faces
         #are present in the frame
         if (self.frameCounter % 30) == 0:
+
             # t2 = threading.Thread(target=self.check_new_face)
             # t2.start()
             print('[DEBUG][MULTI] CHECK NEW FACES')
@@ -285,7 +295,7 @@ class MultiTracking():
         # Display FPS on frame
         # cv2.putText(resultImage, "FPS : " + str(int(self.fps)), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         # Display index video
-        cv2.putText(resultImage, "Video : " + str(int(self.video_index)), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        cv2.putText(resultImage, "Video : " + str(int(self.n_male)), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         cv2.putText(resultImage, "Watched Time (sec) : {}".format(str(int(self.total_watched_time_stored))), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
         cv2.putText(resultImage, "Views : {}".format(str(self.total_views)), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
 
